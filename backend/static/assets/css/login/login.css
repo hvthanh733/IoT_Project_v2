@@ -1,0 +1,107 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    /* background: #fff;
+    background: linear-gradient(to bottom right, #6DBDFF, #2E9DF7);
+
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 60%;
+    text-align: center; */
+    /* background: #fff; */
+    background: linear-gradient(to bottom right, #6DBDFF, #2E9DF7);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 5px 10px 12px 0px rgba(0, 0, 0, 0.15);
+    width: 60%;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin: 20px 0px;
+    font-size: 24px; 
+    color: #2c3e50;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Arial', sans-serif; /* Font dễ đọc */
+}
+.login-container h2 span {
+
+    color: #273896;
+
+}
+
+.login-container input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    margin: 10px 0;
+    border: 3px solid rgba(39, 56, 150, 0.82);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+.login-container input[type="password"]{
+    width: 100%;
+    padding: 10px 14px;
+    margin: 0px 0px 10px 0px;
+    border: 3px solid rgba(39, 56, 150, 0.82);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+.login-container input::placeholder {
+    color: rgba(0, 0, 0, 0.4); 
+}
+
+.login-container input:focus {
+    border-color: #007bff;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+    background: #0056b3;
+}
+
+.logo_usth,
+.logo_ioit{
+    width:100%;
+
+}
+.logo_usth img{
+    max-width: 100%;
+    height: auto;
+}
+.logo_ioit img{
+    max-width: 70%;
+    height: auto;
+}
+
+.password_note {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8); /* Trắng hơi trong suốt */
+    margin: 5px 0 10px;
+    font-style: italic;
+}

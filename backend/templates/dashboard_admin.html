@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="../static/assets/css/admin.css">
+</head>
+<body>
+    <h1>Đăng nhập hệ thống admin</h1>
+    
+    <!-- Form đăng xuất -->
+    <form action="{{ url_for('admin.logout') }}" method="POST">
+        <button type="submit">Đăng xuất</button>
+    </form>
+</body>
+</html>
