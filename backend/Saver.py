@@ -17,7 +17,7 @@ def makeFile(block_number):
     if not os.path.exists(file_path):
         with open(file_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(["time_stemp", "temperature(°C)", "humidity", "fire_state"])
+            writer.writerow(["time_stemp", "temperature", "humidity", "fire_state"])
     else:
         # Nếu file đã tồn tại, kiểm tra số dòng
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -28,7 +28,7 @@ def makeFile(block_number):
             # Tạo mới và ghi header
             with open(file_path, 'w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
-                writer.writerow(["time_stemp", "temperature(°C)", "humidity", "fire_state"])
+                writer.writerow(["time_stemp", "temperature", "humidity", "fire_state"])
 
     return file_path
 
@@ -40,3 +40,5 @@ def saveData(temperature, humidity, fire_status, block_number):
     with open(file_path, 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(row)
+
+

@@ -30,19 +30,19 @@ CREATE TABLE IF NOT EXISTS sensor (
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS sensor_data (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date           DATETIME,
     block_id       INTEGER,
     max_temp       REAL,
     min_temp       REAL,
-    time_max_temp  DATETIME,
-    time_min_temp  DATETIME,
-    do_am          REAL,
-    do_am_max      REAL,
-    do_am_min      REAL,
-    time_max_humi  DATETIME,
-    time_min_humi  DATETIME,
+    time_max_temp  TIME,
+    time_min_temp  TIME,
+    max_humi       REAL,
+    min_humi       REAL,
+    time_max_humi  TIME,
+    time_min_humi  TIME,
     fire_state     BOOLEAN,
-    time_start     DATETIME,
-    total_time     REAL,
+    start_time     TIME,
+    end_time       TIME,
     FOREIGN KEY (block_id) REFERENCES sensor_block(id)
 )
 ''')

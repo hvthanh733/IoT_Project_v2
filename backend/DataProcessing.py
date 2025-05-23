@@ -1,126 +1,119 @@
-import os
+# Reader.py
 import csv
-import time
-import sqlite3
+import os
 from datetime import datetime
+import sqlite3
 
-NUM_BLOCKS = 4
-DATA_DIR = "logs"
+# Thư mục chứa file CSV
+LOG_FOLDER = "logs"
 
-# Biến cục bộ lưu giá trị max/min và thời gian
-block_state = {}
-
-for block_id in range(1, NUM_BLOCKS + 1):
-    block_state[block_id] = {
-        "max_temp": float('-inf'),
-        "min_temp": float('inf'),
+# Global max/min cho 4 block
+global_stats = {
+    i: {
+        "max_temp": float("-inf"),
+        "min_temp": float("inf"),
         "time_max_temp": None,
         "time_min_temp": None,
-        "max_humi": float('-inf'),
-        "min_humi": float('inf'),
+        "max_humi": float("-inf"),
+        "min_humi": float("inf"),
         "time_max_humi": None,
-        "time_min_humi": None,
-        "fire_started": False,
-        "time_start_fire": None,
-        "total_fire_duration": 0.0
-    }
+        "time_min_humi": None
+    } for i in range(1, 5)
+}
 
-def parse_bool(val):
-    return bool(int(val))
+def readLog():
+    today = datetime.now().strftime("%Y%m%d")  # VD: "20250521"
+    folder = os.path.join(LOG_FOLDER, today)
 
-def read_csv_and_update_state():
-    today_str = datetime.now().strftime("%Y%m%d")
+    if not os.path.exists(folder):
+        print(f"[readLog] Folder not found: {folder}")
+        return
 
-    for block_id in range(1, NUM_BLOCKS + 1):
-        file_path = os.path.join(DATA_DIR, today_str, f"block{block_id}_data.csv")
+    for block_id in range(1, 5):
+        file_path = os.path.join(folder, f"block{block_id}_data.csv")
         if not os.path.exists(file_path):
+            print(f"[readLog] File not found: {file_path}")
             continue
 
-        with open(file_path, 'r') as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if len(row) != 4:
+        try:
+            with open(file_path, "r") as f:
+                reader = list(csv.DictReader(f))
+                if not reader:
                     continue
+                last_row = reader[-1]
+        except Exception as e:
+            print(f"[readLog] Failed to read {file_path}: {e}")
+            continue
 
-                try:
-                    time_str, temp_str, humi_str, fire_str = row
-                    temp = float(temp_str)
-                    humi = float(humi_str)
-                    fire = parse_bool(fire_str)
-                    timestamp = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
-                except Exception as e:
-                    continue
+        try:
+            # Lấy dữ liệu từ dòng cuối cùng
+            temp = float(last_row["temperature"])
+            humi = float(last_row["humidity"])
+            fire = int(last_row["fire_state"])
+            timestamp_str = last_row["time_stemp"]
+            datetime = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
+            time = datetime.strptime(timestamp_str, "%H%M%S")
+            stats = global_stats[block_id]
 
-                state = block_state[block_id]
+            # Cập nhật max/min temp
+            if temp > stats["max_temp"]:
+                stats["max_temp"] = temp
+                stats["time_max_temp"] = time
+            if temp < stats["min_temp"]:
+                stats["min_temp"] = temp
+                stats["time_min_temp"] = time
 
-                # Nhiệt độ
-                if temp > state["max_temp"]:
-                    state["max_temp"] = temp
-                    state["time_max_temp"] = timestamp
-                if temp < state["min_temp"]:
-                    state["min_temp"] = temp
-                    state["time_min_temp"] = timestamp
+            # Cập nhật max/min humi
+            if humi > stats["max_humidity"]:
+                stats["max_humidity"] = humi
+                stats["time_max_humi"] = time
+            if humi < stats["min_humidity"]:
+                stats["min_humidity"] = humi
+                stats["time_min_humi"] = time
+            if
+            # Ghi vào DB
+            write2Database(
+                block_id,
+                temp,
+                stats["max_temp"],
+                stats["min_temp"],
+                stats["time_max_temp"],
+                stats["time_min_temp"],
+                humi,
+                stats["max_humidity"],
+                stats["min_humidity"],
+                stats["time_max_humi"],
+                stats["time_min_humi"],
+                fire,
+                None,   # time_start (tùy hệ thống cháy)
+                None    # total_time
+            )
 
-                # Độ ẩm
-                if humi > state["max_humi"]:
-                    state["max_humi"] = humi
-                    state["time_max_humi"] = timestamp
-                if humi < state["min_humi"]:
-                    state["min_humi"] = humi
-                    state["time_min_humi"] = timestamp
+        except Exception as e:
+            print(f"[readLog] ❌ Error parsing row: {e}")
 
-                # Cháy
-                if fire and not state["fire_started"]:
-                    state["fire_started"] = True
-                    if state["time_start_fire"] is None:
-                        state["time_start_fire"] = timestamp
 
-                elif not fire and state["fire_started"]:
-                    # Kết thúc cháy
-                    if state["time_start_fire"]:
-                        duration = (timestamp - state["time_start_fire"]).total_seconds()
-                        state["total_fire_duration"] += duration
-                    state["fire_started"] = False
-                    state["time_start_fire"] = None
 
-def save_to_database():
-    conn = sqlite3.connect("/home/thanh/Desktop/IoT_Project_v2/backend/iot_system.db")
+def write2Database(block_id, temp, max_temp, min_temp, time_max_temp, time_min_temp,
+                   do_am, do_am_max, do_am_min, time_max_humi, time_min_humi,
+                   fire_state, time_start, total_time):
+    conn = sqlite3.connect("iot_system.db")
     cursor = conn.cursor()
 
-    for block_id in range(1, NUM_BLOCKS + 1):
-        s = block_state[block_id]
-
-        cursor.execute('''
-            INSERT INTO sensor_data (
-                block_id, max_temp, min_temp, time_max_temp, time_min_temp,
-                do_am, do_am_max, do_am_min, time_max_humi, time_min_humi,
-                fire_state, time_start, total_time
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            block_id,
-            s["max_temp"],
-            s["min_temp"],
-            s["time_max_temp"].strftime("%Y-%m-%d %H:%M:%S") if s["time_max_temp"] else None,
-            s["time_min_temp"].strftime("%Y-%m-%d %H:%M:%S") if s["time_min_temp"] else None,
-            None,  # do_am hiện tại không lưu, có thể bổ sung nếu cần
-            s["max_humi"],
-            s["min_humi"],
-            s["time_max_humi"].strftime("%Y-%m-%d %H:%M:%S") if s["time_max_humi"] else None,
-            s["time_min_humi"].strftime("%Y-%m-%d %H:%M:%S") if s["time_min_humi"] else None,
-            s["fire_started"],
-            s["time_start_fire"].strftime("%Y-%m-%d %H:%M:%S") if s["time_start_fire"] else None,
-            s["total_fire_duration"]
-        ))
+    cursor.execute('''
+        INSERT INTO sensor_data (
+            block_id, date,
+            max_temp, min_temp, time_max_temp, time_min_temp,
+            do_am_max, do_am_min, time_max_humi, time_min_humi,
+            fire_state, start_time, end_time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        block_id, date,
+        max_temp, min_temp, time_max_temp, time_min_temp,
+        max_humi, min_humi, time_max_humi, time_min_humi,
+        fire_state, start_time, end_time
+    ))
 
     conn.commit()
     conn.close()
-
-def run_loop():
-    while True:
-        read_csv_and_update_state()
-        save_to_database()
-        time.sleep(5)  # Mỗi 5 giây lặp lại
-
-if __name__ == "__main__":
-    print("🚀 Đang chạy đọc và ghi dữ liệu sensor mỗi 5 giây...")
-    run_loop()
+    print(f"[write2Database] ✅ Block {block_id} inserted.")

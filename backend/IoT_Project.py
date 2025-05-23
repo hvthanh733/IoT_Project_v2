@@ -5,7 +5,7 @@ import adafruit_dht
 import board
 from gpiozero import DigitalInputDevice
 from Saver import saveData
-from DataProcessing import read_and_aggregate_logs
+from DataProcessing import readLog
 
 # --- Cấu hình ---
 config = configparser.ConfigParser()
@@ -83,11 +83,18 @@ def start_save_threads():
     for i in range(NUM_BLOCKS):
         threading.Thread(target=saveLoop, args=(i + 1, shared_datas[i], data_locks[i]), daemon=True).start()
 
+def readLogThread():
+    while True:
+        readLog()
+        time.sleep(5)
+
 # --- Main ---
 def main():
-    start_sensor_threads()
+
     print("[main] Sensor threads started. Starting save threads…")
+    start_sensor_threads()
     start_save_threads()
+    threading.Thread(target=readLogThread, daemon=True).start()
 
     try:
         while True:
