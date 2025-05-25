@@ -1,4 +1,3 @@
-# Reader.py
 import csv
 import os
 from datetime import datetime
@@ -17,14 +16,20 @@ global_stats = {
         "max_humi": float("-inf"),
         "min_humi": float("inf"),
         "time_max_humi": None,
-        "time_min_humi": None
+        "time_min_humi": None,
+        "fire_state": None,
+        "start_time": None,
+        "end_time": None,
     } for i in range(1, 5)
 }
 
-def readLog():
-    today = datetime.now().strftime("%Y%m%d")  # VD: "20250521"
-    folder = os.path.join(LOG_FOLDER, today)
+# Global fire detect array & flags
+fire_array = {i: [] for i in range(1, 5)}
+flag = {i: False for i in range(1, 5)}
 
+def readLog():
+    day_time = datetime.now().strftime("%Y%m%d")  # VD: "20250524"
+    folder = os.path.join(LOG_FOLDER, day_time)
     if not os.path.exists(folder):
         print(f"[readLog] Folder not found: {folder}")
         return
@@ -50,70 +55,128 @@ def readLog():
             temp = float(last_row["temperature"])
             humi = float(last_row["humidity"])
             fire = int(last_row["fire_state"])
-            timestamp_str = last_row["time_stemp"]
-            datetime = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
-            time = datetime.strptime(timestamp_str, "%H%M%S")
+            timestamp_str = last_row["time_stemp"]  # Ví dụ: "20250524_154812"
+            dt_obj = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
+            date_str = dt_obj.date().isoformat()    # '2025-05-24'
+            time_str = dt_obj.time().isoformat()    # '15:48:12'
+
             stats = global_stats[block_id]
 
-            # Cập nhật max/min temp
+            # Cập nhật max/min nhiệt độ
             if temp > stats["max_temp"]:
                 stats["max_temp"] = temp
-                stats["time_max_temp"] = time
+                stats["time_max_temp"] = time_str
             if temp < stats["min_temp"]:
                 stats["min_temp"] = temp
-                stats["time_min_temp"] = time
+                stats["time_min_temp"] = time_str
 
-            # Cập nhật max/min humi
-            if humi > stats["max_humidity"]:
-                stats["max_humidity"] = humi
-                stats["time_max_humi"] = time
-            if humi < stats["min_humidity"]:
-                stats["min_humidity"] = humi
-                stats["time_min_humi"] = time
-            if
-            # Ghi vào DB
+            # Cập nhật max/min độ ẩm
+            if humi > stats["max_humi"]:
+                stats["max_humi"] = humi
+                stats["time_max_humi"] = time_str
+            if humi < stats["min_humi"]:
+                stats["min_humi"] = humi
+                stats["time_min_humi"] = time_str
+
+            # Cập nhật lửa
+            if fire == 1:
+                if not flag[block_id]:
+                    stats["start_time"] = time_str
+                    stats["fire_state"] = 1
+                    flag[block_id] = True
+                fire_array[block_id] = []  # reset
+            else:
+                if flag[block_id]:
+                    fire_array[block_id].append(0)
+                    if len(fire_array[block_id]) >= 20:
+                        stats["end_time"] = time_str
+                        stats["fire_state"] = 0
+                        flag[block_id] = False
+
+            # Ghi DB (chỉ test, sau này nên có điều kiện trigger riêng)
             write2Database(
-                block_id,
-                temp,
-                stats["max_temp"],
-                stats["min_temp"],
-                stats["time_max_temp"],
-                stats["time_min_temp"],
-                humi,
-                stats["max_humidity"],
-                stats["min_humidity"],
-                stats["time_max_humi"],
-                stats["time_min_humi"],
-                fire,
-                None,   # time_start (tùy hệ thống cháy)
-                None    # total_time
+                block_id, date_str,
+                stats["max_temp"], stats["min_temp"],
+                stats["time_max_temp"], stats["time_min_temp"],
+                stats["max_humi"], stats["min_humi"],
+                stats["time_max_humi"], stats["time_min_humi"],
+                stats["fire_state"], stats["start_time"], stats["end_time"]
             )
 
         except Exception as e:
             print(f"[readLog] ❌ Error parsing row: {e}")
 
 
-
-def write2Database(block_id, temp, max_temp, min_temp, time_max_temp, time_min_temp,
-                   do_am, do_am_max, do_am_min, time_max_humi, time_min_humi,
-                   fire_state, time_start, total_time):
-    conn = sqlite3.connect("iot_system.db")
-    cursor = conn.cursor()
-
+def insertData(block_id, date,
+               max_temp, min_temp, time_max_temp, time_min_temp,
+               max_humi, min_humi, time_max_humi, time_min_humi,
+               fire_state, start_time, end_time, cursor):
     cursor.execute('''
         INSERT INTO sensor_data (
             block_id, date,
             max_temp, min_temp, time_max_temp, time_min_temp,
-            do_am_max, do_am_min, time_max_humi, time_min_humi,
+            max_humi, min_humi, time_max_humi, time_min_humi,
             fire_state, start_time, end_time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         block_id, date,
         max_temp, min_temp, time_max_temp, time_min_temp,
         max_humi, min_humi, time_max_humi, time_min_humi,
         fire_state, start_time, end_time
     ))
+    print(f"[insertData] ✅ Block {block_id} inserted.")
+
+
+def updateData(block_id, date,
+               max_temp, min_temp, time_max_temp, time_min_temp,
+               max_humi, min_humi, time_max_humi, time_min_humi,
+               fire_state, start_time, end_time, cursor):
+    cursor.execute('''
+        UPDATE sensor_data SET
+            max_temp = ?,
+            min_temp = ?,
+            time_max_temp = ?,
+            time_min_temp = ?,
+            max_humi = ?,
+            min_humi = ?,
+            time_max_humi = ?,
+            time_min_humi = ?,
+            fire_state = ?,
+            start_time = ?,
+            end_time = ?
+        WHERE block_id = ? AND date = ?
+    ''', (
+        max_temp, min_temp, time_max_temp, time_min_temp,
+        max_humi, min_humi, time_max_humi, time_min_humi,
+        fire_state, start_time, end_time,
+        block_id, date
+    ))
+    print(f"[updateData] 🔁 Block {block_id} updated.")
+
+
+def write2Database(block_id, date,
+                   max_temp, min_temp, time_max_temp, time_min_temp,
+                   max_humi, min_humi, time_max_humi, time_min_humi,
+                   fire_state, start_time, end_time):
+    conn = sqlite3.connect("iot_system.db")
+    cursor = conn.cursor()
+
+    # Kiểm tra đã có dòng dữ liệu block_id + date chưa
+    cursor.execute('''
+        SELECT id FROM sensor_data WHERE block_id = ? AND date = ?
+    ''', (block_id, date))
+    result = cursor.fetchone()
+
+    if result:
+        updateData(block_id, date,
+                   max_temp, min_temp, time_max_temp, time_min_temp,
+                   max_humi, min_humi, time_max_humi, time_min_humi,
+                   fire_state, start_time, end_time, cursor)
+    else:
+        insertData(block_id, date,
+                   max_temp, min_temp, time_max_temp, time_min_temp,
+                   max_humi, min_humi, time_max_humi, time_min_humi,
+                   fire_state, start_time, end_time, cursor)
 
     conn.commit()
     conn.close()
-    print(f"[write2Database] ✅ Block {block_id} inserted.")

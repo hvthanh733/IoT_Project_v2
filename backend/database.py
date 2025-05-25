@@ -47,6 +47,9 @@ CREATE TABLE IF NOT EXISTS sensor_data (
 )
 ''')
 
+# --- RESET ID TỰ ĐỘNG TĂNG CHO sensor_data ---
+cursor.execute("DELETE FROM sensor_data;")  # Xóa tất cả dữ liệu cũ
+cursor.execute("DELETE FROM sqlite_sequence WHERE name='sensor_data';")  # Reset AUTOINCREMENT
 
 # Lưu thay đổi và đóng kết nối
 conn.commit()

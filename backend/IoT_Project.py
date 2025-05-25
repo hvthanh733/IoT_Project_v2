@@ -32,7 +32,7 @@ def saveLoop(block_number, shared_data, data_lock):
         else:
             print(f"[block {block_number}] Waiting for full data… t={t}, h={h}, f={f}")
 
-        time.sleep(3)
+        time.sleep(5)
 
 # --- Đọc nhiệt độ và độ ẩm ---
 def temperature_loop(block_index):
@@ -55,7 +55,7 @@ def temperature_loop(block_index):
                 print(f"[{block_name}][DHT11] No data, retrying…")
         except RuntimeError as e:
             print(f"[{block_name}][DHT11] Error: {e}")
-        time.sleep(2)
+        time.sleep(5)
 
 # --- Đọc trạng thái cảm biến lửa ---
 def flame_loop(block_index):
@@ -70,7 +70,7 @@ def flame_loop(block_index):
             shared_datas[block_index]["fire_status"] = 1 if flame == 0 else 0
         if flame == 0:
             print(f"[{block_name}] Flame detected!")
-        time.sleep(2)
+        time.sleep(5)
 
 # --- Khởi tạo các thread cảm biến ---
 def start_sensor_threads():
@@ -86,7 +86,7 @@ def start_save_threads():
 def readLogThread():
     while True:
         readLog()
-        time.sleep(5)
+        time.sleep(7)
 
 # --- Main ---
 def main():
@@ -104,3 +104,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    while True:
+        time.sleep(1)

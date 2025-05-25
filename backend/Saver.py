@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 # 100 Lines equal 8-9Kb
-MAX_LINES = 100  # Include header
+MAX_LINES = 10  # Include header
 
 # Make file block{numbder}_data.csvs
 def makeFile(block_number):
