@@ -4,55 +4,82 @@ import sqlite3
 conn = sqlite3.connect("iot_system.db")
 cursor = conn.cursor()
 
-# Tạo bảng sensor_block
-# cursor.execute('''
-# CREATE TABLE IF NOT EXISTS sensor_block (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     room_id INTEGER,
-#     x INTEGER,
-#     y INTEGER,
-#     description TEXT
-# )
-# ''')
-
-# Tạo bảng sensor
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS sensor (
+# Tạo bảng room
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS room (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    block_id INTEGER,
-    type TEXT,
-    coverage_radius INTEGER,
-    FOREIGN KEY (block_id) REFERENCES sensor_block(id)
+    name_room   TEXT UNIQUE,
+    size_m2     REAL
 )
-''')
+""")
 
-# Tạo bảng sensor_data
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS sensor_data (
+# Tạo bảng sensor_block_position
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS sensor_block_position (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date           DATETIME,
-    block_id       INTEGER,
-    max_temp       REAL,
-    min_temp       REAL,
-    time_max_temp  TIME,
-    time_min_temp  TIME,
-    max_humi       REAL,
-    min_humi       REAL,
-    time_max_humi  TIME,
-    time_min_humi  TIME,
-    fire_state     BOOLEAN,
-    start_time     TIME,
-    end_time       TIME,
-    FOREIGN KEY (block_id) REFERENCES sensor_block(id)
+    room_id         INTEGER,
+    x               INTEGER,
+    y               INTEGER,
+    FOREIGN KEY (room_id) REFERENCES room(id)
 )
-''')
+""")
 
-# --- RESET ID TỰ ĐỘNG TĂNG CHO sensor_data ---
-cursor.execute("DELETE FROM sensor_data;")  # Xóa tất cả dữ liệu cũ
-cursor.execute("DELETE FROM sqlite_sequence WHERE name='sensor_data';")  # Reset AUTOINCREMENT
+# Tạo bảng sensor_block_property
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS sensor_block_property (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    block_id            INTEGER,
+    block_name          TEXT,
+    sensor_type1        TEXT,
+    coverage_sensor1    REAL,
+    sensor_type2        TEXT,
+    coverage_sensor2    REAL,
+    threshold_temp_max  REAL,
+    threshold_temp_min  REAL,
+    threshold_humi_max  REAL,
+    threshold_humi_min  REAL,
+    FOREIGN KEY (block_id) REFERENCES sensor_block_position(id)
+)
+""")
+
+# Tạo bảng sensor_block_data
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS sensor_block_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date                DATETIME,
+    block_id            INTEGER,
+    max_temp            REAL,
+    min_temp            REAL,
+    time_max_temp       TIME,
+    time_min_temp       TIME,
+    max_humi            REAL,
+    min_humi            REAL,
+    time_max_humi       TIME,
+    time_min_humi       TIME,
+    fire_state          BOOLEAN,
+    fire_state_human    BOOLEAN,
+    start_time          TIME,
+    end_time            TIME,
+    FOREIGN KEY (block_id) REFERENCES sensor_block_position(id)
+)
+""")
+
+
+# Danh sách các bảng cần reset ID
+tables = [
+    "room",
+    "sensor_block_position",
+    "sensor_block_property",
+    "sensor_block_data"
+]
+
+# Xóa dữ liệu và reset AUTOINCREMENT cho từng bảng
+for table in tables:
+    cursor.execute(f"DELETE FROM {table};")  # Xóa toàn bộ dữ liệu
+    cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset ID
 
 # Lưu thay đổi và đóng kết nối
 conn.commit()
 conn.close()
 
-print("✅ Tạo bảng thành công.")
+print("Tạo bảng thành công.")

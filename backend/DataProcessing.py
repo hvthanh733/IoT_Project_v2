@@ -18,6 +18,7 @@ global_stats = {
         "time_max_humi": None,
         "time_min_humi": None,
         "fire_state": None,
+        "fire_state_human": None,
         "start_time": None,
         "end_time": None,
     } for i in range(1, 5)
@@ -61,6 +62,7 @@ def readLog():
             time_str = dt_obj.time().isoformat()    # '15:48:12'
 
             stats = global_stats[block_id]
+            stats["fire_state_human"] = 0
 
             # Cập nhật max/min nhiệt độ
             if temp > stats["max_temp"]:
@@ -100,7 +102,8 @@ def readLog():
                 stats["time_max_temp"], stats["time_min_temp"],
                 stats["max_humi"], stats["min_humi"],
                 stats["time_max_humi"], stats["time_min_humi"],
-                stats["fire_state"], stats["start_time"], stats["end_time"]
+                stats["fire_state"], stats["fire_state_human"],
+                stats["start_time"], stats["end_time"]
             )
 
         except Exception as e:
@@ -110,19 +113,22 @@ def readLog():
 def insertData(block_id, date,
                max_temp, min_temp, time_max_temp, time_min_temp,
                max_humi, min_humi, time_max_humi, time_min_humi,
-               fire_state, start_time, end_time, cursor):
+               fire_state, fire_state_human,
+               start_time, end_time, cursor):
     cursor.execute('''
-        INSERT INTO sensor_data (
+        INSERT INTO sensor_block_data (
             block_id, date,
             max_temp, min_temp, time_max_temp, time_min_temp,
             max_humi, min_humi, time_max_humi, time_min_humi,
-            fire_state, start_time, end_time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            fire_state, fire_state_human,
+            start_time, end_time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         block_id, date,
         max_temp, min_temp, time_max_temp, time_min_temp,
         max_humi, min_humi, time_max_humi, time_min_humi,
-        fire_state, start_time, end_time
+        fire_state, fire_state_human,
+        start_time, end_time
     ))
     print(f"[insertData] ✅ Block {block_id} inserted.")
 
@@ -130,9 +136,10 @@ def insertData(block_id, date,
 def updateData(block_id, date,
                max_temp, min_temp, time_max_temp, time_min_temp,
                max_humi, min_humi, time_max_humi, time_min_humi,
-               fire_state, start_time, end_time, cursor):
+               fire_state, fire_state_human,
+               start_time, end_time, cursor):
     cursor.execute('''
-        UPDATE sensor_data SET
+        UPDATE sensor_block_data SET
             max_temp = ?,
             min_temp = ?,
             time_max_temp = ?,
@@ -142,13 +149,15 @@ def updateData(block_id, date,
             time_max_humi = ?,
             time_min_humi = ?,
             fire_state = ?,
+            fire_state_human = ?,
             start_time = ?,
             end_time = ?
         WHERE block_id = ? AND date = ?
     ''', (
         max_temp, min_temp, time_max_temp, time_min_temp,
         max_humi, min_humi, time_max_humi, time_min_humi,
-        fire_state, start_time, end_time,
+        fire_state, fire_state_human,
+        start_time, end_time,
         block_id, date
     ))
     print(f"[updateData] 🔁 Block {block_id} updated.")
@@ -157,13 +166,14 @@ def updateData(block_id, date,
 def write2Database(block_id, date,
                    max_temp, min_temp, time_max_temp, time_min_temp,
                    max_humi, min_humi, time_max_humi, time_min_humi,
-                   fire_state, start_time, end_time):
+                   fire_state, fire_state_human,
+                   start_time, end_time):
     conn = sqlite3.connect("iot_system.db")
     cursor = conn.cursor()
 
     # Kiểm tra đã có dòng dữ liệu block_id + date chưa
     cursor.execute('''
-        SELECT id FROM sensor_data WHERE block_id = ? AND date = ?
+        SELECT id FROM sensor_block_data WHERE block_id = ? AND date = ?
     ''', (block_id, date))
     result = cursor.fetchone()
 
@@ -171,12 +181,14 @@ def write2Database(block_id, date,
         updateData(block_id, date,
                    max_temp, min_temp, time_max_temp, time_min_temp,
                    max_humi, min_humi, time_max_humi, time_min_humi,
-                   fire_state, start_time, end_time, cursor)
+                   fire_state, fire_state_human,
+                   start_time, end_time, cursor)
     else:
         insertData(block_id, date,
                    max_temp, min_temp, time_max_temp, time_min_temp,
                    max_humi, min_humi, time_max_humi, time_min_humi,
-                   fire_state, start_time, end_time, cursor)
+                   fire_state, fire_state_human,
+                   start_time, end_time, cursor)
 
     conn.commit()
     conn.close()
