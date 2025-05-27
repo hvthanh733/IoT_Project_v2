@@ -29,85 +29,88 @@ fire_array = {i: [] for i in range(1, 5)}
 flag = {i: False for i in range(1, 5)}
 
 def readLog():
-    day_time = datetime.now().strftime("%Y%m%d")  # VD: "20250524"
-    folder = os.path.join(LOG_FOLDER, day_time)
-    if not os.path.exists(folder):
-        print(f"[readLog] Folder not found: {folder}")
+    if not os.path.exists(LOG_FOLDER):
+        print(f"[readLogAll] ❌ LOG_FOLDER không tồn tại: {LOG_FOLDER}")
         return
 
-    for block_id in range(1, 5):
-        file_path = os.path.join(folder, f"block{block_id}_data.csv")
-        if not os.path.exists(file_path):
-            print(f"[readLog] File not found: {file_path}")
-            continue
+    # Duyệt tất cả thư mục ngày trong logs/
+    for day_folder in sorted(os.listdir(LOG_FOLDER), reverse=True):
+        folder_path = os.path.join(LOG_FOLDER, day_folder)
+        if not os.path.isdir(folder_path):
+            continue  # Bỏ qua nếu không phải thư mục
 
-        try:
-            with open(file_path, "r") as f:
-                reader = list(csv.DictReader(f))
-                if not reader:
-                    continue
-                last_row = reader[-1]
-        except Exception as e:
-            print(f"[readLog] Failed to read {file_path}: {e}")
-            continue
+        for block_id in range(1, 5):
+            file_path = os.path.join(folder_path, f"block{block_id}_data.csv")
+            if not os.path.exists(file_path):
+                print(f"[readLogAll] ⚠️ Không tìm thấy file: {file_path}")
+                continue
 
-        try:
-            # Lấy dữ liệu từ dòng cuối cùng
-            temp = float(last_row["temperature"])
-            humi = float(last_row["humidity"])
-            fire = int(last_row["fire_state"])
-            timestamp_str = last_row["time_stemp"]  # Ví dụ: "20250524_154812"
-            dt_obj = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
-            date_str = dt_obj.date().isoformat()    # '2025-05-24'
-            time_str = dt_obj.time().isoformat()    # '15:48:12'
+            try:
+                with open(file_path, "r") as f:
+                    reader = list(csv.DictReader(f))
+                    if not reader:
+                        continue
+                    last_row = reader[-1]
+            except Exception as e:
+                print(f"[readLogAll] ❌ Lỗi đọc {file_path}: {e}")
+                continue
 
-            stats = global_stats[block_id]
-            stats["fire_state_human"] = 0
+            try:
+                temp = float(last_row["temperature"])
+                humi = float(last_row["humidity"])
+                fire = int(last_row["fire_state"])
+                timestamp_str = last_row["time_stemp"]
+                dt_obj = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
+                date_str = dt_obj.date().isoformat()
+                time_str = dt_obj.time().isoformat()
 
-            # Cập nhật max/min nhiệt độ
-            if temp > stats["max_temp"]:
-                stats["max_temp"] = temp
-                stats["time_max_temp"] = time_str
-            if temp < stats["min_temp"]:
-                stats["min_temp"] = temp
-                stats["time_min_temp"] = time_str
+                stats = global_stats[block_id]
+                stats["fire_state_human"] = 0
 
-            # Cập nhật max/min độ ẩm
-            if humi > stats["max_humi"]:
-                stats["max_humi"] = humi
-                stats["time_max_humi"] = time_str
-            if humi < stats["min_humi"]:
-                stats["min_humi"] = humi
-                stats["time_min_humi"] = time_str
+                 # Cập nhật max/min nhiệt độ
+                if temp > stats["max_temp"]:
+                    stats["max_temp"] = temp
+                    stats["time_max_temp"] = time_str
+                if temp < stats["min_temp"]:
+                    stats["min_temp"] = temp
+                    stats["time_min_temp"] = time_str
 
-            # Cập nhật lửa
-            if fire == 1:
-                if not flag[block_id]:
-                    stats["start_time"] = time_str
-                    stats["fire_state"] = 1
-                    flag[block_id] = True
-                fire_array[block_id] = []  # reset
-            else:
-                if flag[block_id]:
-                    fire_array[block_id].append(0)
-                    if len(fire_array[block_id]) >= 20:
-                        stats["end_time"] = time_str
-                        stats["fire_state"] = 0
-                        flag[block_id] = False
+                # Cập nhật max/min độ ẩm
+                if humi > stats["max_humi"]:
+                    stats["max_humi"] = humi
+                    stats["time_max_humi"] = time_str
+                if humi < stats["min_humi"]:
+                    stats["min_humi"] = humi
+                    stats["time_min_humi"] = time_str
 
-            # Ghi DB (chỉ test, sau này nên có điều kiện trigger riêng)
-            write2Database(
-                block_id, date_str,
-                stats["max_temp"], stats["min_temp"],
-                stats["time_max_temp"], stats["time_min_temp"],
-                stats["max_humi"], stats["min_humi"],
-                stats["time_max_humi"], stats["time_min_humi"],
-                stats["fire_state"], stats["fire_state_human"],
-                stats["start_time"], stats["end_time"]
-            )
+                # Cập nhật trạng thái lửa
+                if fire == 1:
+                    if not flag[block_id]:
+                        stats["start_time"] = time_str
+                        stats["fire_state"] = 1
+                        flag[block_id] = True
+                    fire_array[block_id] = []
+                else:
+                    if flag[block_id]:
+                        fire_array[block_id].append(0)
+                        if len(fire_array[block_id]) >= 20:
+                            stats["end_time"] = time_str
+                            stats["fire_state"] = 0
+                            flag[block_id] = False
 
-        except Exception as e:
-            print(f"[readLog] ❌ Error parsing row: {e}")
+                # Ghi vào DB
+                write2Database(
+                    block_id, date_str,
+                    stats["max_temp"], stats["min_temp"],
+                    stats["time_max_temp"], stats["time_min_temp"],
+                    stats["max_humi"], stats["min_humi"],
+                    stats["time_max_humi"], stats["time_min_humi"],
+                    stats["fire_state"], stats["fire_state_human"],
+                    stats["start_time"], stats["end_time"]
+                )
+
+            except Exception as e:
+                print(f"[readLogAll] ❌ Lỗi xử lý dòng cuối: {e}")
 
 
 def insertData(block_id, date,

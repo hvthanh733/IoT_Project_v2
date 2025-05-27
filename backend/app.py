@@ -1,10 +1,14 @@
 from flask import Flask, redirect, url_for
 from routes.admin import admin_bp
 from routes.login import login_bp
+from dotenv import load_dotenv
+import os
 
-app = Flask(__name__)
-app.secret_key = "thanhkey"
+load_dotenv()
 
+app = Flask(__name__)backend/services
+app.secret_key =  os.getenv("SECRET_KEY")
+print("SECRET_KEY =", os.getenv("SECRET_KEY"))
 
 # Đăng ký blueprint
 app.register_blueprint(admin_bp)

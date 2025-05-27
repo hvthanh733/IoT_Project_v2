@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS sensor_block_position (
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS sensor_block_property (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    block_id            INTEGER,
     block_name          TEXT,
     sensor_type1        TEXT,
     coverage_sensor1    REAL,
@@ -38,6 +37,7 @@ CREATE TABLE IF NOT EXISTS sensor_block_property (
     threshold_temp_min  REAL,
     threshold_humi_max  REAL,
     threshold_humi_min  REAL,
+    fire_state_alert    BOOLEAN,
     FOREIGN KEY (block_id) REFERENCES sensor_block_position(id)
 )
 """)
@@ -64,19 +64,47 @@ CREATE TABLE IF NOT EXISTS sensor_block_data (
 )
 """)
 
-
+# Tạo bảng user
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    role TEXT CHECK(role IN ('admin', 'user')) DEFAULT 'user'
+)
+""")
 # Danh sách các bảng cần reset ID
 tables = [
     "room",
     "sensor_block_position",
     "sensor_block_property",
-    "sensor_block_data"
+    "sensor_block_data",
+    "user"
 ]
 
 # Xóa dữ liệu và reset AUTOINCREMENT cho từng bảng
 for table in tables:
     cursor.execute(f"DELETE FROM {table};")  # Xóa toàn bộ dữ liệu
     cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset ID
+
+users = [
+    ("admin", "1", None, None, "admin")
+    # ,("thanh", "1", "thanh@gmail.com", "0123456789", "user"),
+    # ("nam", "1", "nam@mail.com", "0901234567", "user"),
+    # ("mai", "1", "mai@mail.com", "0934567890", "user")
+]
+
+for u in users:
+    try:
+        cursor.execute("""
+        INSERT INTO user (username, password, email, phone, role)
+        VALUES (?, ?, ?, ?, ?)
+        """, u)
+    except sqlite3.IntegrityError:
+        print(f"Tài khoản '{u[0]}' đã tồn tại.")
+
 
 # Lưu thay đổi và đóng kết nối
 conn.commit()
