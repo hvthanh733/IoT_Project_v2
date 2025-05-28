@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Chào mừng, {{ session.username }}</h1>
+
+    {% if role == 'admin' %}
+        <h2>🔧 Quản lý người dùng</h2>
+        <ul>
+            <li><a href="/add_user">➕ Thêm user</a></li>
+            <li><a href="/edit_user">✏️ Sửa user</a></li>
+            <li><a href="/delete_user">🗑️ Xóa user</a></li>
+        </ul>
+    {% endif %}
+
+    <h2>🌡️ Dữ liệu cảm biến</h2>
+    <!-- phần dashboard chung -->
+</body>
+</html>

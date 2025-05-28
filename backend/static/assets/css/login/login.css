@@ -6,41 +6,41 @@ body {
     align-items: center;
     height: 100vh;
 }
-
-.login-container {
-    /* background: #fff;
+.main{
     background: linear-gradient(to bottom right, #6DBDFF, #2E9DF7);
-
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 60%;
-    text-align: center; */
-    /* background: #fff; */
-    background: linear-gradient(to bottom right, #6DBDFF, #2E9DF7);
-    padding: 30px 40px;
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: 5px 10px 12px 0px rgba(0, 0, 0, 0.15);
-    width: 60%;
+
+}
+.login-container1{
+
+    border-right: 1px solid rgb(206, 201, 201);
+    margin: 10px 0;
+    padding: 30px 40px;
     text-align: center;
 }
-
-.login-container h2 {
+.login-container2{
+     margin: 10px 0;
+    padding: 30px 20px 30px 0;
+}
+.login-container1 h2,
+.login-container2 h2{
     margin: 20px 0px;
     font-size: 24px; 
     color: #2c3e50;
     font-weight: bold;
-    text-align: center;
     text-transform: uppercase;
     font-family: 'Arial', sans-serif; /* Font dễ đọc */
 }
-.login-container h2 span {
+.login-container1 h2 span {
 
     color: #273896;
 
 }
 
-.login-container input[type="text"] {
+
+.login-container1 input[type="text"],
+.login-container2 input[type="text"]{
     width: 100%;
     padding: 10px 14px;
     margin: 10px 0;
@@ -50,7 +50,8 @@ body {
     outline: none;
     transition: border-color 0.3s ease;
 }
-.login-container input[type="password"]{
+.login-container1 input[type="password"],
+.login-container2 input[type="password"]{
     width: 100%;
     padding: 10px 14px;
     margin: 0px 0px 10px 0px;
@@ -60,15 +61,18 @@ body {
     outline: none;
     transition: border-color 0.3s ease;
 }
-.login-container input::placeholder {
+.login-container2 input::placeholder,
+.login-container1 input::placeholder {
     color: rgba(0, 0, 0, 0.4); 
 }
 
-.login-container input:focus {
+.login-container2 input:focus,
+.login-container1 input:focus {
     border-color: #007bff;
 }
 
-.login-container button {
+.login-container2 button,
+.login-container1 button {
     width: 100%;
     padding: 10px;
     background: #007bff;
@@ -81,7 +85,8 @@ body {
     transition: background 0.3s ease;
 }
 
-.login-container button:hover {
+.login-container2 button:hover,
+.login-container1 button:hover {
     background: #0056b3;
 }
 
