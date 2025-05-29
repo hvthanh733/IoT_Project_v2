@@ -7,4 +7,4 @@ class User(db.Model):
     password    = db.Column(db.String(255), nullable=False)  # nên để String, không nên là Float!
     email       = db.Column(db.String(255))
     phone       = db.Column(db.String(20))
-    role        = db.Column(db.String(20))
+    role = db.Column(db.String(20), nullable=False)

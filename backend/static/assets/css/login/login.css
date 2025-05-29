@@ -23,8 +23,7 @@ body {
      margin: 10px 0;
     padding: 30px 20px 30px 0;
 }
-.login-container1 h2,
-.login-container2 h2{
+.login-container1 h2{
     margin: 20px 0px;
     font-size: 24px; 
     color: #2c3e50;
@@ -32,6 +31,16 @@ body {
     text-transform: uppercase;
     font-family: 'Arial', sans-serif; /* Font dễ đọc */
 }
+
+.login-container2 h2{
+    margin: 20px 0px 10% 0;
+    font-size: 24px; 
+    color: #2c3e50;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: 'Arial', sans-serif; /* Font dễ đọc */
+}
+
 .login-container1 h2 span {
 
     color: #273896;
@@ -43,18 +52,18 @@ body {
 .login-container2 input[type="text"]{
     width: 100%;
     padding: 10px 14px;
-    margin: 10px 0;
     border: 3px solid rgba(39, 56, 150, 0.82);
     border-radius: 6px;
     font-size: 14px;
     outline: none;
+    margin: 10px 0;
     transition: border-color 0.3s ease;
 }
 .login-container1 input[type="password"],
 .login-container2 input[type="password"]{
     width: 100%;
     padding: 10px 14px;
-    margin: 0px 0px 10px 0px;
+    margin: 10px 0;
     border: 3px solid rgba(39, 56, 150, 0.82);
     border-radius: 6px;
     font-size: 14px;
@@ -104,9 +113,29 @@ body {
     height: auto;
 }
 
-.password_note {
+.note {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.8); /* Trắng hơi trong suốt */
     margin: 5px 0 10px;
     font-style: italic;
+}
+
+/* form */
+
+
+
+.login-container2 form button {
+    margin-top: 6%;
+}
+
+
+/* message alert */
+.message_alert {
+    background-color: #f8d7da;  /* Màu nền đỏ nhạt */
+    color: #721c24;             /* Màu chữ đỏ đậm */
+    border: 1px solid #f5c6cb;  /* Viền đỏ nhạt */
+    border-radius: 4px;         /* Bo góc nhẹ */
+    padding: 6px 12px;          /* Padding vừa phải */
+    font-size: 14px;            /* Cỡ chữ nhỏ gọn */
+    margin-bottom: 10px;        /* Khoảng cách dưới */
 }

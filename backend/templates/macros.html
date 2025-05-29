@@ -1,0 +1,9 @@
+{% macro show_flash(category_name) %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      {% if category == category_name %}
+        <div class="message_alert">{{ message }}</div>
+      {% endif %}
+    {% endfor %}
+  {% endwith %}
+{% endmacro %}

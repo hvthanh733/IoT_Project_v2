@@ -1,13 +1,14 @@
-from flask import Flask, redirect, url_for, render_template, session, request, jsonify
+from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
 from dotenv import load_dotenv
 import os
+from flask import flash, get_flashed_messages
 from flask_login import login_required
 from functools import wraps
 import jwt
 import datetime
 import re
 from models.connect_db import db  # chỉ import db từ connect_db
-from services.user_service import check_user_pass
+from services import user_service
 
 load_dotenv()
 
@@ -24,11 +25,41 @@ db.init_app(app)  # kết nối app với SQLAlchemy
 
 @app.route('/')
 def default_route():
-    return redirect(url_for('sign_up'))
-    
+    return redirect(url_for('login_form'))
+@app.route('/error')
+def error():
+    print("Đây là thông báo lỗi mẫu!")  # In ra console
+    return "Lỗi đã được ghi log.", 200
+
+
+
+
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
-    return render_template('sign_up.html')
+    if request.method == 'POST':
+        username_signup = request.form.get('username_signup')
+        password_signup = request.form.get('password_signup')
+        phone_signup = request.form.get('phone_signup')
+        email_signup = request.form.get('email_signup')
+
+        exist_field = user_service.check_user_exists(username_signup, email_signup, phone_signup)
+        if exist_field == "username":
+            flash("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác", "username_exist")
+            return redirect(url_for('login_form'))
+        elif exist_field == "email":
+            flash("Email đã được đăng ký, vui lòng nhập email khác", "email_exist")
+            return redirect(url_for('login_form'))
+        elif exist_field == "phone":
+            flash("Số điện thoại đã được đăng ký, vui lòng nhập số khác", "number_exist")
+            return redirect(url_for('login_form'))
+
+
+        new_user = user_service.create_user(username_signup, password_signup, email_signup, phone_signup)
+        flash('Đã tạo tài khoản thành công', 'signup_successfull')
+        return redirect(url_for('login_form'))
+
+    return render_template('login.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_form():
@@ -36,22 +67,22 @@ def login_form():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        success, user = check_user_pass(username, password)
+        success, user = user_service.check_user_pass(username, password)
         if success:
             session['username'] = username
-            session['role'] = user.role  # Gán role vào session
-
+            session['role'] = user.role
             return redirect(url_for('dashboard'))
         else:
-            flash('Sai username hoặc mật khẩu')
-            return render_template('login.html')
+            flash('user not found!', category="fail_login")
+            return redirect(url_for('login_form'))
 
     return render_template('login.html')
+
 
 @app.route('/dashboard')
 def dashboard():
     role = session.get('role', 'user')  # Mặc định là user nếu không có
-    return render_template('test.html', role=role)
+    return render_template('user_management.html', role=role)
 
 
 
