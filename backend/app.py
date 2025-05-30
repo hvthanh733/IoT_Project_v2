@@ -8,7 +8,7 @@ import jwt
 import datetime
 import re
 from models.connect_db import db  # chỉ import db từ connect_db
-from services import user_service
+from services.user_service import UserService
 
 load_dotenv()
 
@@ -42,7 +42,7 @@ def sign_up():
         phone_signup = request.form.get('phone_signup')
         email_signup = request.form.get('email_signup')
 
-        exist_field = user_service.check_user_exists(username_signup, email_signup, phone_signup)
+        exist_field = UserService.check_user_exists(username_signup, email_signup, phone_signup)
         if exist_field == "username":
             flash("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác", "username_exist")
             return redirect(url_for('login_form'))
@@ -54,8 +54,8 @@ def sign_up():
             return redirect(url_for('login_form'))
 
 
-        new_user = user_service.create_user(username_signup, password_signup, email_signup, phone_signup)
-        flash('Đã tạo tài khoản thành công', 'signup_successfull')
+        new_user = UserService.create_user(username_signup, password_signup, email_signup, phone_signup)
+        flash('Đã gửi yêu cầu tạo tài khoản đến admin', 'signup_successfull')
         return redirect(url_for('login_form'))
 
     return render_template('login.html')
@@ -67,7 +67,12 @@ def login_form():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        success, user = user_service.check_user_pass(username, password)
+        print(f"username: {username}")
+        print(f"password: {password}")
+
+        success, user = UserService.login(username, password)
+        print(f"success: {success}")
+        print(f"user: {user}")
         if success:
             session['username'] = username
             session['role'] = user.role

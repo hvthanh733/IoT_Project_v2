@@ -1,0 +1,41 @@
+
+.box_form{
+    width: 90%;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+    border: 2px solid rgba(0, 0, 0, 1);
+    margin-bottom: 2%;
+    box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
+}
+
+.box_form h3,
+.box_form label{
+    text-align: left;
+}
+
+.box_form h3{
+    color: #2c3e50;
+    font-weight: bold;
+}
+/* Căn giữa nút theo chiều dọc và ngang */
+#threshold .push_threshold {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #5D60EF; /* Màu tím */
+    color: white;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    padding: 5px 10px;
+}
+
+/* Làm sáng khi hover */
+#threshold .push_threshold:hover {
+    background-color: #787BFA; /* Tím sáng hơn */
+    transform: scale(1.1); /* Phóng to nhẹ khi hover */
+}

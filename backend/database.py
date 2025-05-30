@@ -1,5 +1,5 @@
 import sqlite3
-from werkzeug.security import generate_password_hash
+from utils import pass_controller
 # Kết nối đến database (sẽ tạo mới nếu chưa có)
 conn = sqlite3.connect("iot_system.db")
 cursor = conn.cursor()
@@ -88,26 +88,36 @@ cursor = conn.cursor()
 # );
 
 # """)
-# # Danh sách các bảng cần reset ID
-# tables = [
-#     # "room",
-#     # "sensor_block_position",
-#     # "sensor_block_property",
-#     # "sensor_block_data",
-#     "user"
-# ]
+# Danh sách các bảng cần reset ID
+table = [
+    # "room",
+    # "sensor_block_position",
+    # "sensor_block_property",
+    # "sensor_block_data",
+    "user"
+]
 
-# Xóa dữ liệu và reset AUTOINCREMENT cho từng bảng
-# for table in tables:
 
-#     cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset ID
 
+# Xóa toàn bộ dữ liệu trong bảng user
+# cursor.execute("DELETE FROM user;")
+
+# cursor.execute("DELETE FROM sqlite_sequence WHERE name='user';")
+
+#  Thiet lap user
 users = [
     ("admin", "1", None, None, "admin"),
-    ("thanh", generate_password_hash("1"), "thanh@gmail.com", "0123456789", "user")
+    ("thanh", pass_controller.hash_password("1"), "thanh@gmail.com", "0123456789", "user")
     # ("nam", "1", "nam@mail.com", "0901234567", "user"),
     # ("mai", "1", "mai@mail.com", "0934567890", "user")
 ]
+# x = pass_controller.hash_password("1")
+# kq = pass_controller.verify_password("1", x)
+# if kq == True:
+#     print("oke r")
+# else:
+#     print("sai r")
+
 
 for u in users:
     try:

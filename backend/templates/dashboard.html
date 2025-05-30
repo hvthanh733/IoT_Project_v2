@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+  
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/assets/css/reset.css" class="">
+
+    <link rel="stylesheet" href="../static/assets/css/dashboard/dashboard.css" class="">
+    <link rel="stylesheet" href="../static/assets/css/dashboard/dashboard_right.css" class="">
+    <link rel="stylesheet" href="../static/assets/css/dashboard/dashboard_middle.css" class="">
+    <link rel="stylesheet" href="data_table.css" class="">
+    <link rel="stylesheet" href="../static/assets/css/threshold_settings/threshold.css" class="">
+    <script src="https://kit.fontawesome.com/46329671cb.js" crossorigin="anonymous"></script>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const dasboardBtn = document.getElementById("1");      // Nút menu Dashboard
+            const thresholdBtn = document.getElementById("2");     // Nút menu Threshold
+            const table_eventBtn = document.getElementById("3"); 
+
+            const dashboardPage = document.getElementById("dashboard");  // Nội dung trang dashboard
+            const thresholdPage = document.getElementById("threshold");  // Nội dung trang threshold
+            const table_eventPage = document.getElementById("table_page");  // Nội dung trang threshold
+
+            if (dashboardPage && thresholdPage && table_eventPage) {
+                dashboardPage.style.display = "block";   // Hiện dashboard
+                thresholdPage.style.display = "none";    // Ẩn threshold
+                table_eventPage.style.display = "none";
+            }
+
+            if (dasboardBtn) {
+                dasboardBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "block";   // Hiện dashboard
+                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    table_eventPage.style.display = "none";
+                });
+            }
+
+            if (thresholdBtn) {
+                thresholdBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "none";   // Hiện dashboard
+                    thresholdPage.style.display = "block";    // Ẩn threshold
+                    table_eventPage.style.display = "none";
+                });
+            }
+
+            if (table_eventBtn) {
+                table_eventBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "none";   // Hiện dashboard
+                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    table_eventPage.style.display = "block";
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById("thresholdform");
+
+            for (let row = 0; row < 2; row++) {
+                const rowDiv = document.createElement("div");
+                rowDiv.className = "row";
+
+                for (let col = 0; col < 2; col++) {
+                    const i = row * 2 + col + 1;  // Tính số khối (1 đến 4)
+
+                    const colDiv = document.createElement("div");
+                    colDiv.className = "col-6";
+
+                    colDiv.innerHTML = `
+                        <div class="box_form ">
+                            <h3>Khối ${i}</h3>
+
+                            <div class="row">
+                                <label class="col-4 col-form-label">Nhiệt độ tối đa (°C):</label>
+                                <div class="col-7">
+                                    <input type="number" id="maxTemp${i}" class="form-control" required min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label class="col-4 col-form-label">Nhiệt độ tối thiểu (°C):</label>
+                                <div class="col-7">
+                                    <input type="number" id="minTemp${i}" class="form-control" required min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label class="col-4 col-form-label">Độ ẩm tối đa (%):</label>
+                                <div class="col-7">
+                                    <input type="number" id="maxHumi${i}" class="form-control" required min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label class="col-4 col-form-label">Độ ẩm tối thiểu (%):</label>
+                                <div class="col-7">
+                                    <input type="number" id="minHumi${i}" class="form-control" required min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    rowDiv.appendChild(colDiv);
+                }
+
+                container.appendChild(rowDiv);
+            }
+
+            // Gán sự kiện cho nút push
+            const pushBtn = document.querySelector(".push_threshold");
+            pushBtn.addEventListener("click", function () {
+                for (let i = 1; i <= 4; i++) {
+                    const maxTemp = document.getElementById(`maxTemp${i}`);
+                    const minTemp = document.getElementById(`minTemp${i}`);
+                    const maxHumi = document.getElementById(`maxHumi${i}`);
+                    const minHumi = document.getElementById(`minHumi${i}`);
+
+                    let hasValue = false;
+
+                    if (maxTemp.value) {
+                        console.log(`Khối ${i} - Nhiệt độ tối đa: ${maxTemp.value}`);
+                        hasValue = true;
+                    }
+                    if (minTemp.value) {
+                        console.log(`Khối ${i} - Nhiệt độ tối thiểu: ${minTemp.value}`);
+                        hasValue = true;
+                    }
+                    if (maxHumi.value) {
+                        console.log(`Khối ${i} - Độ ẩm tối đa: ${maxHumi.value}`);
+                        hasValue = true;
+                    }
+                    if (minHumi.value) {
+                        console.log(`Khối ${i} - Độ ẩm tối thiểu: ${minHumi.value}`);
+                        hasValue = true;
+                    }
+
+                    // Nếu có ô nào có giá trị → reset tất cả ô của khối đó
+                    if (hasValue) {
+                        maxTemp.value = "";
+                        minTemp.value = "";
+                        maxHumi.value = "";
+                        minHumi.value = "";
+                    }
+                }
+            });
+        });
+
+
+       
+    </script>
+</head>
+<body>
+    <section class="dashboard">
+        <div class="container-fluid">
+            <div class="dashboard_content" >
+                <div class="row">
+                    <div class="col-2">
+                        <div class="logo">
+                            <img src="../static/img/usth.png" alt="" class="">
+                        </div>
+                        <div class="menu">
+                            <ul>
+                                <li id="1"><p>Dashboard</p></li>
+                                <li id="2"><p>Threshold Settings</p></li>
+                                <li id="3"><p>Data Table</p></li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-10">
+                        <div id="dashboard">
+                            
+                            <div class="box_content">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="namepage">
+                                            <h3>Dashboard</h3>
+                                        </div>
+                                        <div class="main_content">
+                                            <div class="mat_san">
+                                                <div class="namepage">
+                                                    <h3>Sơ đồ nhà</h3>
+                                                </div>
+                                                <img src="../static/img/dashboard_img/so_do_nha.jpg" alt="Database Diagram" class="rotated-img">
+        
+                                            </div>
+                                            <div class="table_dashboard">
+                                                <div class="namepage">
+                                                    <h3>Sự kiện gần nhất</h3>
+                                                </div>
+                                                <table>
+                                                    <tr>
+                                                        <th colspan="2" rowspan="2">Thời gian</th>
+                                                        <th colspan="2">Nhiệt độ</th>
+                                                        <th colspan="2">Độ ẩm</th>
+                                                        <th colspan="2">Lửa</th>
+                                                    </tr>
+                                            
+                                                    <tr>
+                                                        <td>Cao nhất</td>
+                                                        <td>Thấp nhất</td>
+                                                        <td>Cao nhất</td>
+                                                        <td>Thấp nhất</td>
+                                                        <td>Bắt đầu</td>
+                                                        <td>Kết thúc</td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td rowspan="4">07/03/2003 - Hiện tại</td>
+                                                        <td>Khối 1</td>
+                                                        <td>33°C</td>
+                                                        <td>33°C</td>
+                                                        <td>20%</td>
+                                                        <td>80%</td>
+                                                        <td>00:00:00</td>
+                                                        <td>01:00:00</td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Khối 2</td>
+                                                        <td>33°C</td>
+                                                        <td>33°C</td>
+                                                        <td>20%</td>
+                                                        <td>80%</td>
+                                                        <td>00:00:00</td>
+                                                        <td>01:00:00</td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Khối 3</td>
+                                                        <td>33°C</td>
+                                                        <td>33°C</td>
+                                                        <td>20%</td>
+                                                        <td>80%</td>
+                                                        <td>00:00:00</td>
+                                                        <td>01:00:00</td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Khối 4</td>
+                                                        <td>33°C</td>
+                                                        <td>33°C</td>
+                                                        <td>20%</td>
+                                                        <td>80%</td>
+                                                        <td>00:00:00</td>
+                                                        <td>01:00:00</td>
+                                                        
+                                                    </tr>
+                                                </table> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="namepage">
+                                            <h3>Block Property</h3>
+                                        </div>
+                                        <div class="col_roll">
+                                            
+                                            <div class="box_khoi">
+                                                <p class="name_block">Khối 1</p>
+    
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <div class="box_circle">
+                                                            <div class="box_fire">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_temp">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_humi">
+                                                                <p> 50%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="content_box">
+                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
+                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
+                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
+                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+        
+                                                
+                                            </div>              
+                                            <div class="box_khoi">
+                                                <p class="name_block">Khối 1</p>
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <div class="box_circle">
+                                                            <div class="box_fire">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_temp">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_humi">
+                                                                <p> 50%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="content_box">
+                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
+                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
+                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
+                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+        
+                                                
+                                            </div>
+                                            <div class="box_khoi">
+                                                <p class="name_block">Khối 1</p>
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <div class="box_circle">
+                                                            <div class="box_fire">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_temp">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_humi">
+                                                                <p> 50%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="content_box">
+                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
+                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
+                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
+                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+        
+                                                
+                                            </div>
+                                            <div class="box_khoi">
+                                                <p class="name_block">Khối 1</p>
+    
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <div class="box_circle">
+                                                            <div class="box_fire">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_temp">
+                                                                <p>50&degC</p>
+                                                            </div>
+                                                            <div class="box_humi">
+                                                                <p> 50%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="content_box">
+                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
+                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
+                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
+                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+        
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div id="threshold">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row head_page">
+                                        <div class="col-6">
+                                            <div class="namepage">
+                                                <h3>Threshold Settings</h3>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 d-flex justify-content-end align-items-center">
+                                            <button class="push_threshold">Push Threshold</button>
+                                        </div>
+                                    </div>
+
+                                    <div id="thresholdform">
+
+                                                
+                                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="table_page">
+                            <div class="row">
+                                <div class="col-11">
+                                    <div class="table_data">
+                                        <p>Data Table Event</p>
+                                        <table>
+                                            <tr>
+                                                <th colspan="2" rowspan="2">Thời gian</th>
+                                                <th colspan="2">Nhiệt độ</th>
+                                                <th colspan="2">Độ ẩm</th>
+                                                <th colspan="2">Lửa</th>
+                                            </tr>
+                                    
+                                            <tr>
+                                                <td>Cao nhất</td>
+                                                <td>Thấp nhất</td>
+                                                <td>Cao nhất</td>
+                                                <td>Thấp nhất</td>
+                                                <td>Bắt đầu</td>
+                                                <td>Tổng thời gian cháy</td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="4">07/03/2003 - Hiện tại</td>
+                                                <td>Khối 1</td>
+                                                <td>33°C</td>
+                                                <td>33°C</td>
+                                                <td>20%</td>
+                                                <td>80%</td>
+                                                <td>00:00:00</td>
+                                                <td>5 tiếng</td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>Khối 2</td>
+                                                <td>33°C</td>
+                                                <td>33°C</td>
+                                                <td>20%</td>
+                                                <td>80%</td>
+                                                <td>00:00:00</td>
+                                                <td>5 tiếng</td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>Khối 3</td>
+                                                <td>33°C</td>
+                                                <td>33°C</td>
+                                                <td>20%</td>
+                                                <td>80%</td>
+                                                <td>00:00:00</td>
+                                                <td>5 tiếng</td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>Khối 4</td>
+                                                <td>33°C</td>
+                                                <td>33°C</td>
+                                                <td>20%</td>
+                                                <td>80%</td>
+                                                <td>00:00:00</td>
+                                                <td>5 tiếng</td>
+                                                
+                                            </tr>
+                                        </table> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
