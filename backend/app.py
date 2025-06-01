@@ -1,4 +1,4 @@
- from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
+from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
 from dotenv import load_dotenv
 import os
 from flask import flash, get_flashed_messages
@@ -10,6 +10,8 @@ import re
 from models.connect_db import db  # chỉ import db từ connect_db
 from services.user_service import UserService
 import subprocess
+from Alert import send_email_resetpass
+from services.password_hash import generate_password, verify_pass
 
 load_dotenv()
 
@@ -39,22 +41,23 @@ def forgot_password():
         username_forgot_password = request.form.get('username_forgot_password')
         email_forgot_password = request.form.get('email_forgot_password')
 
-        exist_field = UserService.check_user_exists(username_signup, email_signup, phone_signup)
-        if exist_field == "username":
-            continue
+        result = UserService.check_user_email(username_forgot_password, email_forgot_password)
         
-        if exist_field == "email":
-            flash("Email đã được đăng ký, vui lòng nhập email khác", "email_exist")
-            continue
-        elif exist_field == "phone":
-            flash("Số điện thoại đã được đăng ký, vui lòng nhập số khác", "number_exist")
-            continue
+        if result:
+            # result trả về (True, user_obj, email_obj) nếu tồn tại
+            newpass = send_email_resetpass(username_forgot_password, "hthanhjj0703@gmail.com") 
+            check = UserService.reset_newpassword(username_forgot_password, email_forgot_password, newpass)
+            if check:
+                flash("✅ Đã gửi yêu cầu thay đổi mật khẩu thành công", "reset_pass_successfull")
+            else:
+                flash("❌ Đã gửi email nhưng không lưu được mật khẩu mới", "reset_fail_db")
+        else:
+            flash("Username hoặc email không tồn tại", "wrong_user_or_pass")
+        
+        return redirect(url_for('forgot_password'))
+    
+    return render_template('forgot_password.html')
 
-
-        new_user = UserService.create_user(username_signup, password_signup, email_signup, phone_signup)
-        flash('Đã gửi yêu cầu tạo tài khoản đến admin', 'signup_successfull')
-        return redirect(url_for('login_form'))
-    return render_template('login.html')
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
@@ -64,23 +67,47 @@ def sign_up():
         phone_signup = request.form.get('phone_signup')
         email_signup = request.form.get('email_signup')
 
-        exist_field = UserService.check_user_exists(username_signup, email_signup, phone_signup)
+        # Validate input format
+        valid = UserService.validate_user_input(username_signup, password_signup, phone_signup, email_signup)
+        if valid != "ok":
+            if valid == "username_format":
+                flash("Tên đăng nhập không đúng định dạng (chỉ chứa chữ/số, tối đa 10 ký tự, không dấu cách hoặc ký tự đặc biệt)", "username_error")
+            elif valid == "password_format":
+                flash("Mật khẩu không đúng định dạng (tối đa 16 ký tự, không dấu cách hoặc ký tự đặc biệt)", "password_error")
+            elif valid == "phone_format":
+                flash("Số điện thoại phải là số và tối đa 10 chữ số", "phone_error")
+            
+            elif valid == "username_space":
+                flash("Tên đăng nhập không được chứa khoảng trắng", "username_space")
+            elif valid == "password_space":
+                flash("Mật khẩu không được chứa khoảng trắng", "password_space")
+            elif valid == "phone_space":
+                flash("Số điện thoại không được chứa khoảng trắng", "phone_space")
+            elif valid == "email_space":
+                flash("Email không được chứa khoảng trắng", "email_space")
+            return redirect(url_for('sign_up'))
+
+        # Check if exists
+        exist_field = UserService.check_user_exists(username_signup, phone_signup, email_signup)
+
         if exist_field == "username":
             flash("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác", "username_exist")
-            return redirect(url_for('login_form'))
+            return redirect(url_for('sign_up'))
         elif exist_field == "email":
             flash("Email đã được đăng ký, vui lòng nhập email khác", "email_exist")
-            return redirect(url_for('login_form'))
+            return redirect(url_for('sign_up'))
         elif exist_field == "phone":
             flash("Số điện thoại đã được đăng ký, vui lòng nhập số khác", "number_exist")
-            return redirect(url_for('login_form'))
+            return redirect(url_for('sign_up'))
+        else:
+            UserService.create_user(username_signup, password_signup, phone_signup, email_signup)
+            flash('Đã gửi yêu cầu tạo tài khoản đến admin', 'signup_successfull')
+            return redirect(url_for('sign_up'))
 
+        return redirect(url_for('sign_up'))
 
-        new_user = UserService.create_user(username_signup, password_signup, email_signup, phone_signup)
-        flash('Đã gửi yêu cầu tạo tài khoản đến admin', 'signup_successfull')
-        return redirect(url_for('login_form'))
+    return render_template('sign_up.html')
 
-    return render_template('login.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -88,13 +115,8 @@ def login_form():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
-        print(f"username: {username}")
-        print(f"password: {password}")
-
+        
         success, user = UserService.login(username, password)
-        print(f"success: {success}")
-        print(f"user: {user}")
         if success:
             session['username'] = username
             session['role'] = user.role

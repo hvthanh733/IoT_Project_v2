@@ -2,51 +2,70 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from zlapi import ZaloAPI
+import os
+from dotenv import load_dotenv
+import random
+import string
+
+def generate_random_password(length=5):
+    characters = string.ascii_lowercase + string.digits  # chỉ chữ thường và số
+    return ''.join(random.choices(characters, k=length))
+
 load_dotenv()
-# sender_email = "alertiotproject@gmail.com"
-# receiver_email = "hthanhjj0703@gmail.com"
-# password = "dvnj riqm rlvp cxyd" 
+sender_email = os.getenv("GMAIL_SEND_ALERT")
+receiver_email_test = os.getenv("GMAIL_RECEIVE_ALERT")
+password = os.getenv("PASSWORD_GMAIL_ALERT")
 
-# message = MIMEMultipart()
-# message["From"] = sender_email
-# message["To"] = receiver_email
-# message["Subject"] = "Thử gửi email bằng Python"
+def send_email_resetpass(username, receiver_email):
+    newpassword = generate_random_password()
 
-# body = "Nanh quả là đz"
-
-# message.attach(MIMEText(body, "plain"))
-
-# try:
-#     with smtplib.SMTP("smtp.gmail.com", 587) as server:
-#         server.starttls() 
-#         server.login(sender_email, password)
-#         server.sendmail(sender_email, receiver_email, message.as_string())
-#         print("Email đã được gửi thành công!")
-# except Exception as e:
-#     print("Có lỗi xảy ra:", e)
-sender_email = os.getenv("GMAIL_ALERT")
-def send_email_notification(receiver_email, subject, body):
-    sender_email = "alertiotproject@gmail.com"
-    password = "dvnj riqm rlvp cxyd"  # App password từ Google
-
-    # Tạo nội dung email
     message = MIMEMultipart()
     message["From"] = sender_email
-    message["To"] = receiver_email
-    message["Subject"] = subject
+    message["To"] = receiver_email_test
+    message["Subject"] = "IoT - Sending New Password"
+
+    body = f"Hello {username},\n\nYour new password is: {newpassword}\n\nPlease change it after logging in."
+
 
     message.attach(MIMEText(body, "plain"))
-
+    
     try:
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()  # Bắt đầu giao tiếp an toàn
+            server.starttls() 
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
-            print("✅ Email đã được gửi đến", receiver_email)
+            print("Email đã được gửi thành công!")
     except Exception as e:
-        print("❌ Lỗi khi gửi email:", e)
+        print("Có lỗi xảy ra:", e)
+    return newpassword
+# sender_email = os.getenv("GMAIL_ALERT")
+# def send_email_notification(receiver_email, subject, body):
+#     sender_email = "alertiotproject@gmail.com"
+#     password = "dvnj riqm rlvp cxyd"  # App password từ Google
+
+#     # Tạo nội dung email
+#     message = MIMEMultipart()
+#     message["From"] = sender_email
+#     message["To"] = receiver_email
+#     message["Subject"] = subject
+
+#     message.attach(MIMEText(body, "plain"))
+
+#     try:
+#         with smtplib.SMTP("smtp.gmail.com", 587) as server:
+#             server.starttls()  # Bắt đầu giao tiếp an toàn
+#             server.login(sender_email, password)
+#             server.sendmail(sender_email, receiver_email, message.as_string())
+#             print("✅ Email đã được gửi đến", receiver_email)
+#     except Exception as e:
+#         print("❌ Lỗi khi gửi email:", e)
 
 
-def alertZalo():
-    bot = ZaloAPI(phone="0923775005", password="MẬT_KHẨU", imei="IMEI", session_cookies=COOKIES)
-    bot.sendMessage(user_id="USER_ID", message="Nội dung tin nhắn")
+# def alertZalo():
+#     bot = ZaloAPI(phone="0923775005", password="vinahey309", imei="IMEI", session_cookies=COOKIES)
+
+#     friends = bot.getFriends()
+#     for friend in friends:
+#         print(friend["user_id"], "-", friend["display_name"])
+
+# alertZalo()

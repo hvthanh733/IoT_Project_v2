@@ -48,7 +48,7 @@
                         <div class="row">
                             <div class="col-3">
                                 <div class="back_button">
-                                    <a href="./login.html"><i class="fa-solid fa-arrow-left"></i> Login</a>
+                                    <a href="{{ url_for('login_form') }}"><i class="fa-solid fa-arrow-left"></i> Login</a>
                                 </div>
                             </div>
                         </div>
@@ -72,6 +72,15 @@
                             {{ macros.show_flash('number_exist') }}
                             {{ macros.show_flash('signup_successfull') }}
                             
+                            {{ macros.show_flash('username_error') }}
+                            {{ macros.show_flash('password_error') }}
+                            {{ macros.show_flash('phone_error') }}
+
+                            {{ macros.show_flash('username_space') }}
+                            {{ macros.show_flash('password_space') }}
+                            {{ macros.show_flash('phone_space') }}
+                            {{ macros.show_flash('email_space') }}
+
                             <button type="submit">SIGN UP</button>
                         </form>
                     </div>

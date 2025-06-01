@@ -27,3 +27,7 @@ pip install jwt
 
 <!-- sqlalchemy -->
 pip install flask-sqlalchemy
+
+
+<!-- zlapi -->
+pip install zlapi

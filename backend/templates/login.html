@@ -61,10 +61,11 @@
                             <div class="forgot_password_signup">
                             <div class="row">
                                 <div class="col-6 d-flex justify-content-start">
-                                    <a href="./sign_up.html" class="sign_up_click"><p>Sign up if you don't have an account</p></a>
+                                    <a href="{{ url_for('sign_up') }}" class="sign_up_click"><p>Sign up if you don't have an account</p></a>
                                 </div>
                                 <div class="col-6 d-flex justify-content-end">
-                                    <a href="./forgot_pass.html" class="forgot_password"><p>Forgot password?</p></a>
+                                    <a href="{{ url_for('forgot_password') }}" class="forgot_password"><p>Forgot password?</p></a>
+
                                 </div>
                             </div>
 

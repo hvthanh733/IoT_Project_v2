@@ -1,0 +1,77 @@
+Case 1: 
+table User có user tên kien - 1 - 0123456789 - kien@gmail.com 
+
+-----Login
+user tên kien - 1
+-> Đăng nhập thành công
+
+user tên kien - 123
+-> User notfound
+
+user tên nanh - 1
+-> User notfound
+
+user tên 'tooiteen là thanh ạ' - 1
+-> User notfound
+
+user tên thanh $dz1]ơ'ươ;'pơ]0 - 1
+-> User notfound
+-----Login-----Pass-----
+
+-----Sign up
+Case 1: 
+username < 10 kí tự
+password < 16 ký tự
+phone == 10
+user tên kien - 1 - 0123456789 - kien@gmail.com
+-> Tên đăng nhập đã tồn tại tạo tên khác 
+
+user tên nanh - 1 - 0123456789 - kien@gmail.com
+-> email được đăng ký, vui lòng nhập email khác
+
+user tên nanh - 1 - 0123456789 - nanh@gmail.com
+-> SĐTH được đăng ký, vui lòng nhập SĐTH khác
+
+user tên nanh - 1 - 0123456788 - nanh@gmail.com 
+-> Lưu vào queue thành công
+
+-----Thử sign up với tài khoản đã trong queue
+user tên nanh - 1 - 0123456788 - nanh@gmail.com 
+-> Tên đăng nhập đã tồn tại tạo tên khác
+
+user tên trung - 1 - 0123456788 - nanh@gmail.com 
+-> email được đăng ký, vui lòng nhập email khác
+
+user tên trung - 1 - t0123456788 - rung@gmail.com 
+-> SĐTH được đăng ký, vui lòng nhập SĐTH khác
+
+user tên trung - 1 - 01234567777 - trung@gmail.com
+-> Lưu vào queue thành công
+
+Case 2: 
+username > 10 kí tự
+password < 16 ký tự
+phone == 10
+
+---- 1 user mới 
+user tên nanhnanhnanhnanh - 1 - 0123456788 - nanh@gmail.com
+-> Tên đăng nhập không đúng định dạng (chỉ chứa chữ/số, tối đa 10 ký tự, không dấu cách hoặc ký tự đặc biệt)
+
+user tên nanh - toitenlathanhhehehe - 0123456788 - nanh@gmail.com
+-> Mật khẩu không đúng định dạng (tối đa 16 ký tự, không dấu cách hoặc ký tự đặc biệt)
+
+user tên nanh - thanh $dz1]ơ'ươ;'pơ]0 - 0123456788 - nanh@gmail.com
+-> Mật khẩu không đúng định dạng (tối đa 16 ký tự, không dấu cách hoặc ký tự đặc biệt)
+
+user tên nanh - 1 - 0123456788 - nanh P#%@gmail.com
+-> Email không được chứa khoảng trắng
+
+user tên nanh - 1 - 0123456788 - nanhP#%@gmail.com
+-> Đã gửi yêu cầu tạo tài khoản đến admin
+-----Sign up-----Pass-----
+
+
+-----Forgot password
+user kien - kien@gmail.com 
+
+
