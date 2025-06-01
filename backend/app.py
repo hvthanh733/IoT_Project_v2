@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
+ from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
 from dotenv import load_dotenv
 import os
 from flask import flash, get_flashed_messages
@@ -9,6 +9,7 @@ import datetime
 import re
 from models.connect_db import db  # chỉ import db từ connect_db
 from services.user_service import UserService
+import subprocess
 
 load_dotenv()
 
@@ -32,7 +33,28 @@ def error():
     return "Lỗi đã được ghi log.", 200
 
 
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        username_forgot_password = request.form.get('username_forgot_password')
+        email_forgot_password = request.form.get('email_forgot_password')
 
+        exist_field = UserService.check_user_exists(username_signup, email_signup, phone_signup)
+        if exist_field == "username":
+            continue
+        
+        if exist_field == "email":
+            flash("Email đã được đăng ký, vui lòng nhập email khác", "email_exist")
+            continue
+        elif exist_field == "phone":
+            flash("Số điện thoại đã được đăng ký, vui lòng nhập số khác", "number_exist")
+            continue
+
+
+        new_user = UserService.create_user(username_signup, password_signup, email_signup, phone_signup)
+        flash('Đã gửi yêu cầu tạo tài khoản đến admin', 'signup_successfull')
+        return redirect(url_for('login_form'))
+    return render_template('login.html')
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
@@ -93,7 +115,12 @@ def dashboard():
 
 if __name__ == '__main__':
     try:
+        tailscale_output = subprocess.getoutput("tailscale ip")
+        tailscale_ip = tailscale_output.splitlines()[0]  # Lấy dòng đầu tiên (IPv4)
+
+        print(f"http://{tailscale_ip}:8000")
         app.run(host='0.0.0.0', port=8000)
+       
     except Exception as e:
         print(f"Error starting the app: {e}")
 

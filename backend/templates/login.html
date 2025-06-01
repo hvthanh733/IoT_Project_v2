@@ -1,4 +1,4 @@
-{% import 'macros.html' as macros %}   
+<!-- {% import 'macros.html' as macros %}    -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/assets/css/reset.css" class="">
-    <link rel="stylesheet" href="../static/assets/css/login/login.css" class="">
-    
+    <link rel="stylesheet" href="../static/assets/reset.css" class="">
+    <link rel="stylesheet" href="../static/assets/login/login.css" class="">
+    <link rel="stylesheet" href="../static/assets/shared/message_alert.css" class="">
+
+    <script src="https://kit.fontawesome.com/46329671cb.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
     <!-- <section class="header">
@@ -31,11 +35,10 @@
 
     <section class="main">
         <div class="container">
-            <div class="row">
+            <div class="row justify-content-center align-items-center">
 
-                <div class="col-6">
-                    <div class="login-container1">
-                        <!-- <img src="../static/img/usth.png"> -->
+                <div class="col-12 col-md-10 col-lg-6">
+                    <div class="logn_in_content">
                         <div class="logo_login">
                             <div class="row">
                                 <div class="col-6 d-flex justify-content-center align-items-center">
@@ -55,33 +58,23 @@
                         <form action="/login" method="POST">
                             <input type="text" name="username" placeholder="Username" required>
                             <input type="password" name="password" placeholder="Password" required>
-                             {{ macros.show_flash('fail_login') }}
+                            <div class="forgot_password_signup">
+                            <div class="row">
+                                <div class="col-6 d-flex justify-content-start">
+                                    <a href="./sign_up.html" class="sign_up_click"><p>Sign up if you don't have an account</p></a>
+                                </div>
+                                <div class="col-6 d-flex justify-content-end">
+                                    <a href="./forgot_pass.html" class="forgot_password"><p>Forgot password?</p></a>
+                                </div>
+                            </div>
+
+
+                            {{ macros.show_flash('fail_login') }}
                             <button type="submit">LOGIN</button>
                         </form>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="login-container2">
-                        <h2>Sign Up</h2>
-                        
-                        <form action="/sign_up" method="POST">
-                            <!-- username -->
-                            <p class="note">*username & password: *Max 10 characters, letters and numbers only.</p>
-                            <input type="text" name="username_signup" placeholder="Username" required>
-                            <!-- password -->
-                            <input type="password" name="password_signup" placeholder="Password" required>
-                            <!-- phone -->
-                            <input type="text" name="phone_signup" placeholder="Phone numbers" required>
-                            <!-- email -->
-                            <input type="text" name="email_signup" placeholder="Email" required>
-                            {{ macros.show_flash('username_exist') }}
-                            {{ macros.show_flash('email_exist') }}
-                            {{ macros.show_flash('number_exist') }}
-                            {{ macros.show_flash('signup_successfull') }}
-                            <button type="submit">SIGN UP</button>
-                        </form>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </section>

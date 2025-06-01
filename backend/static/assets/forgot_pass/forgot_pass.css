@@ -1,39 +1,49 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f5f5f5;
+    /* background: linear-gradient(to bottom right, #6DBDFF, #2e9df75e); */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
-.main{
+
+.forgot_pass_content {
+    padding: 30px 20px;
     background: linear-gradient(to bottom right, #6DBDFF, #2E9DF7);
     border-radius: 10px;
-    box-shadow: 5px 10px 12px 0px rgba(0, 0, 0, 0.15);
-
-}
-.login-container1{
-
-    border-right: 1px solid rgb(206, 201, 201);
-    margin: 10px 0;
-    padding: 30px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
-.login-container2{
-     margin: 10px 0;
-    padding: 30px 20px 30px 0;
+/* Đặt riêng nút back */
+.back_button a{
+    display: inline-block;      /* Rất quan trọng: không để full width */
+    margin-bottom: 10px;        /* Cách dưới một chút */
+    background: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    text-decoration: none;
 }
-.login-container1 h2{
+
+.back_button a:hover {
+    background: #0056b3;
+}
+
+/* .login-container1 h2{
     margin: 20px 0px;
     font-size: 24px; 
     color: #2c3e50;
     font-weight: bold;
     text-transform: uppercase;
-    font-family: 'Arial', sans-serif; /* Font dễ đọc */
-}
+    font-family: 'Arial', sans-serif; 
+} */
 
-.login-container2 h2{
-    margin: 20px 0px 10% 0;
+.forgot_pass_content h2{
+    margin: 20px 0px 5% 0;
     font-size: 24px; 
     color: #2c3e50;
     font-weight: bold;
@@ -48,8 +58,7 @@ body {
 }
 
 
-.login-container1 input[type="text"],
-.login-container2 input[type="text"]{
+.forgot_pass_content input[type="text"]{
     width: 100%;
     padding: 10px 14px;
     border: 3px solid rgba(39, 56, 150, 0.82);
@@ -59,8 +68,7 @@ body {
     margin: 10px 0;
     transition: border-color 0.3s ease;
 }
-.login-container1 input[type="password"],
-.login-container2 input[type="password"]{
+.forgot_pass_content input[type="password"]{
     width: 100%;
     padding: 10px 14px;
     margin: 10px 0;
@@ -70,18 +78,15 @@ body {
     outline: none;
     transition: border-color 0.3s ease;
 }
-.login-container2 input::placeholder,
-.login-container1 input::placeholder {
+.forgot_pass_content input::placeholder {
     color: rgba(0, 0, 0, 0.4); 
 }
 
-.login-container2 input:focus,
-.login-container1 input:focus {
+.forgot_pass_content input:focus{
     border-color: #007bff;
 }
 
-.login-container2 button,
-.login-container1 button {
+.forgot_pass_content button {
     width: 100%;
     padding: 10px;
     background: #007bff;
@@ -94,8 +99,7 @@ body {
     transition: background 0.3s ease;
 }
 
-.login-container2 button:hover,
-.login-container1 button:hover {
+.forgot_pass_content button:hover{
     background: #0056b3;
 }
 
@@ -120,22 +124,17 @@ body {
     font-style: italic;
 }
 
-/* form */
-
-
-
-.login-container2 form button {
-    margin-top: 6%;
+.forgot_password {
+    text-align: right;
+    font-size: 0.9rem;
+    color: #064789;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-
-/* message alert */
-.message_alert {
-    background-color: #f8d7da;  /* Màu nền đỏ nhạt */
-    color: #721c24;             /* Màu chữ đỏ đậm */
-    border: 1px solid #f5c6cb;  /* Viền đỏ nhạt */
-    border-radius: 4px;         /* Bo góc nhẹ */
-    padding: 6px 12px;          /* Padding vừa phải */
-    font-size: 14px;            /* Cỡ chữ nhỏ gọn */
-    margin-bottom: 10px;        /* Khoảng cách dưới */
+.forgot_password:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }

@@ -31,7 +31,6 @@ class UserService:
             return "phone"
         return None
 
-
     def create_user(username_signup: str, password: str, email_signup: str, phone_signup: str) -> bool:
         password_hashed = generate_password_hash(password)
         UserRepo.create_user(username_signup, password_hashed, email_signup, phone_signup)
