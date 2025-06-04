@@ -1,0 +1,79 @@
+#user_manager,
+#signup_list_manager{
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: none;
+    border: 2px solid rgb(0, 0, 0);
+    margin-bottom: 2%;
+    box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
+}
+
+#signup_list_manager .list_user,
+#user_manager .list_user {
+    margin-top: 20px;
+}
+
+#signup_list_manager input,
+#user_manager input {
+    width: 40%;
+}
+
+#signup_list_manager table tr,
+#signup_list_manager table td,
+#signup_list_manager table th,
+#user_manager table tr,
+#user_manager table td,
+#user_manager table th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px 15px;
+    vertical-align: middle;
+}
+
+
+
+/* #user_table {
+    max-height: 10px;
+    overflow-y: auto;
+    padding-right: 8px; 
+}
+
+
+#user_table::-webkit-scrollbar {
+    width: 6px; 
+}
+
+
+#user_table::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05); 
+    border-radius: 10px;
+}
+
+
+#user_table::-webkit-scrollbar-thumb {
+    background: rgba(100, 100, 100, 0.3);
+    border-radius: 10px;
+}
+
+#user_table::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 100, 100, 0.5);
+}
+
+
+#user_table::-webkit-scrollbar-button {
+    height: 8px;
+    background: rgba(100, 100, 100, 0.2);
+    border-radius: 50%;
+}
+
+#user_table::-webkit-scrollbar-button:hover {
+    background: rgba(100, 100, 100, 0.4);
+}
+
+#user_table {
+    scrollbar-color: rgba(100, 100, 100, 0.3) rgba(0, 0, 0, 0.05);
+    scrollbar-width: thin;
+} */

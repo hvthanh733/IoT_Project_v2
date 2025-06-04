@@ -10,8 +10,6 @@ class UserService:
         # Check user in database table "user"
         if user is None:
             return False, None
-        print(user)
-        print(password)
         # check password hashed with the password of user in database
         if verify_pass(password, user.password):
             return True, user
@@ -35,7 +33,7 @@ class UserService:
             return "username_format"
         if len(password) > 16:
             return "password_format"
-        if len(phone) > 10:
+        if len(phone) != 10:
             return "phone_format"
 
         # Whitespace check
@@ -80,3 +78,21 @@ class UserService:
     def reset_newpassword(username: str, email: str, newpassword: str) -> bool:
         password_hashed = generate_password(newpassword)
         return UserRepo.reset_password(username, email,password_hashed)
+
+   
+    def get_users_by_type(user_type, keyword):
+        return UserRepo.search_users(user_type, keyword)
+
+    def updateUserQueue(userId, isAccepted):
+        user = UserRepo.get_user_by_id(userId)
+        newUser = UserRepo.updateUserQueue(user, isAccepted)
+        return newUser
+
+    def delete_user(user_id):
+        user = UserRepo.delete_user(user_id)
+        message = ""
+        if user:
+            message = "Delete successfully"
+        else:
+            message = "Error while delete"
+        return user, message

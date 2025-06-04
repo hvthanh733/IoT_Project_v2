@@ -36,7 +36,8 @@ body {
 	font-family: 'Segoe UI', 'Roboto', sans-serif;
     user-select: none;
 
-
+ 	user-select: none;   /* Ngăn chọn văn bản */
+    cursor: pointer;     /* Hiển thị hình bàn tay khi hover */
 }
 /* 
 #table{

@@ -16,6 +16,7 @@ sender_email = os.getenv("GMAIL_SEND_ALERT")
 receiver_email_test = os.getenv("GMAIL_RECEIVE_ALERT")
 password = os.getenv("PASSWORD_GMAIL_ALERT")
 
+
 def send_email_resetpass(username, receiver_email):
     newpassword = generate_random_password()
 

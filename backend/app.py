@@ -12,27 +12,100 @@ from services.user_service import UserService
 import subprocess
 from Alert import send_email_resetpass
 from services.password_hash import generate_password, verify_pass
+import sqlite3
+from flask import jsonify, request
+from flask_login import login_required, LoginManager
 
 load_dotenv()
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+login_manager.login_view = 'login_form'
+
 app.secret_key = os.getenv("SECRET_KEY")
 
-# ✅ Cấu hình SQLite hoặc database của bạn
-basedir = os.path.abspath(os.path.dirname(__file__))  # đường dẫn tuyệt đối đến thư mục hiện tại (backend/)
+basedir = os.path.abspath(os.path.dirname(__file__)) 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'iot_system.db')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)  # kết nối app với SQLAlchemy
-# Đăng ký blueprint
+db.init_app(app) 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route('/')
 def default_route():
     return redirect(url_for('login_form'))
-@app.route('/error')
-def error():
-    print("Đây là thông báo lỗi mẫu!")  # In ra console
-    return "Lỗi đã được ghi log.", 200
+
+@login_required
+@app.route('/dashboard')
+def dashboard():
+    role = session.get('role', 'user')
+    return render_template('dashboard.html', role=role)
+
+# @app.route('/')
+# def default_route():
+#     session['role'] = 'admin'  # Gán role luôn ở đây
+#     return redirect(url_for('dashboard'))
+
+# @app.route('/dashboard')
+# def dashboard():
+#     role = session.get('role', 'user')  # Lấy role từ session
+#     return render_template('dashboard.html', role=role)
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('login_form'))
+
+
+@login_required
+@app.route('/api/users')
+def api_users():
+    keyword = request.args.get('keyword', '').strip()
+    return UserService.get_users_by_type('user', keyword)
+
+@login_required
+@app.route('/api/signup_queue')
+def api_signup_queue():
+    keyword = request.args.get('keyword', '').strip()
+    return UserService.get_users_by_type('queue', keyword)
+
+@login_required
+@app.route('/api/userAccept', methods=['POST'])
+def api_userAccept():
+    data = request.get_json()
+    user_id = data.get('userId')
+    is_accepted = data.get('isAccepted')
+
+    userService = UserService.updateUserQueue(user_id, is_accepted)
+    if (userService):
+        return jsonify({
+            'success': True,
+            'message': 'Update user success'
+        })
+    return jsonify({
+        'success': False,
+        'message': "Error while update status account"
+    })
+
+@app.route('/api/users/<int:user_id>', methods=['DELETE'])
+def api_delete_user(user_id):
+    success, message = UserService.delete_user(user_id)
+
+    if success:
+        return jsonify({
+            'success': True,
+            'message': message
+        }), 200
+
+    return jsonify({
+        'success': False,
+        'message': message
+    }), 400
 
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -42,15 +115,15 @@ def forgot_password():
         email_forgot_password = request.form.get('email_forgot_password')
 
         result = UserService.check_user_email(username_forgot_password, email_forgot_password)
-        
+        print(result)
         if result:
             # result trả về (True, user_obj, email_obj) nếu tồn tại
-            newpass = send_email_resetpass(username_forgot_password, "hthanhjj0703@gmail.com") 
+            newpass = send_email_resetpass(username_forgot_password, email_forgot_password) 
             check = UserService.reset_newpassword(username_forgot_password, email_forgot_password, newpass)
             if check:
-                flash("✅ Đã gửi yêu cầu thay đổi mật khẩu thành công", "reset_pass_successfull")
+                flash("Đã gửi yêu cầu thay đổi mật khẩu thành công", "reset_pass_successfull")
             else:
-                flash("❌ Đã gửi email nhưng không lưu được mật khẩu mới", "reset_fail_db")
+                flash("Đã gửi email nhưng không lưu được mật khẩu mới", "reset_fail_db")
         else:
             flash("Username hoặc email không tồn tại", "wrong_user_or_pass")
         
@@ -128,20 +201,15 @@ def login_form():
     return render_template('login.html')
 
 
-@app.route('/dashboard')
-def dashboard():
-    role = session.get('role', 'user')  # Mặc định là user nếu không có
-    return render_template('user_management.html', role=role)
-
 
 
 if __name__ == '__main__':
     try:
         tailscale_output = subprocess.getoutput("tailscale ip")
-        tailscale_ip = tailscale_output.splitlines()[0]  # Lấy dòng đầu tiên (IPv4)
+        tailscale_ip = tailscale_output.splitlines()[0]
 
         print(f"http://{tailscale_ip}:8000")
-        app.run(host='0.0.0.0', port=8000)
+        app.run(host='0.0.0.0', port=8000, debug=True)
        
     except Exception as e:
         print(f"Error starting the app: {e}")

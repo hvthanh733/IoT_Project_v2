@@ -11,29 +11,48 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/assets/css/reset.css" class="">
+    <link rel="stylesheet" href="../static/assets/reset.css" class="">
 
-    <link rel="stylesheet" href="../static/assets/css/dashboard/dashboard.css" class="">
-    <link rel="stylesheet" href="../static/assets/css/dashboard/dashboard_right.css" class="">
-    <link rel="stylesheet" href="../static/assets/css/dashboard/dashboard_middle.css" class="">
-    <link rel="stylesheet" href="data_table.css" class="">
-    <link rel="stylesheet" href="../static/assets/css/threshold_settings/threshold.css" class="">
+    <link rel="stylesheet" href="../static/assets/dashboard/dashboard.css" class="">
+    <link rel="stylesheet" href="../static/assets/dashboard/dashboard_right.css" class="">
+    <link rel="stylesheet" href="../static/assets/dashboard/dashboard_middle.css" class="">
+
+    <link rel="stylesheet" href="../static/assets/data_table/data_table.css" class="">
+
+    <link rel="stylesheet" href="../static/assets/threshold_settings/threshold.css" class="">
+
+    <link rel="stylesheet" href="../static/assets/user_information/user_information.css" class="">
+
+    <link rel="stylesheet" href="../static/assets/user_manager/user_manager.css" class="">
+
+
     <script src="https://kit.fontawesome.com/46329671cb.js" crossorigin="anonymous"></script>
     <script>
         
         document.addEventListener('DOMContentLoaded', function() {
             const dasboardBtn = document.getElementById("1");      // Nút menu Dashboard
             const thresholdBtn = document.getElementById("2");     // Nút menu Threshold
-            const table_eventBtn = document.getElementById("3"); 
+            const table_eventBtn = document.getElementById("3");
+            const user_informationBtn = document.getElementById("4"); 
+            const signup_listuser_managerBtn = document.getElementById("5"); 
+            const user_managerBtn = document.getElementById("6"); 
+
 
             const dashboardPage = document.getElementById("dashboard");  // Nội dung trang dashboard
             const thresholdPage = document.getElementById("threshold");  // Nội dung trang threshold
             const table_eventPage = document.getElementById("table_page");  // Nội dung trang threshold
+            const user_informationPage = document.getElementById("user_information");
+            const signup_listuser_managerPage = document.getElementById("signup_list_manager");
+            const user_managerPage = document.getElementById("user_manager");
 
-            if (dashboardPage && thresholdPage && table_eventPage) {
+
+            if (dashboardPage && thresholdPage && table_eventPage && user_informationPage && user_managerPage) {
                 dashboardPage.style.display = "block";   // Hiện dashboard
                 thresholdPage.style.display = "none";    // Ẩn threshold
                 table_eventPage.style.display = "none";
+                user_informationPage.style.display = "none";
+                signup_listuser_managerPage.style.display = "none";
+                user_managerPage.style.display = "none";
             }
 
             if (dasboardBtn) {
@@ -41,6 +60,10 @@
                     dashboardPage.style.display = "block";   // Hiện dashboard
                     thresholdPage.style.display = "none";    // Ẩn threshold
                     table_eventPage.style.display = "none";
+                    user_informationPage.style.display = "none";
+                    signup_listuser_managerPage.style.display = "none";
+                    user_managerPage.style.display = "none";
+
                 });
             }
 
@@ -49,6 +72,10 @@
                     dashboardPage.style.display = "none";   // Hiện dashboard
                     thresholdPage.style.display = "block";    // Ẩn threshold
                     table_eventPage.style.display = "none";
+                    user_informationPage.style.display = "none";
+                    signup_listuser_managerPage.style.display = "none";
+                    user_managerPage.style.display = "none";
+
                 });
             }
 
@@ -57,8 +84,50 @@
                     dashboardPage.style.display = "none";   // Hiện dashboard
                     thresholdPage.style.display = "none";    // Ẩn threshold
                     table_eventPage.style.display = "block";
+                    user_informationPage.style.display = "none";
+                    signup_listuser_managerPage.style.display = "none";
+                    user_managerPage.style.display = "none";
+
                 });
             }
+
+            if (user_informationBtn) {
+                user_informationBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "none";   // Hiện dashboard
+                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    table_eventPage.style.display = "none";
+                    user_informationPage.style.display = "block";
+                    signup_listuser_managerPage.style.display = "none";
+                    user_managerPage.style.display = "none";
+
+                });
+            }
+
+            if (signup_listuser_managerBtn) {
+                signup_listuser_managerBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "none";   // Hiện dashboard
+                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    table_eventPage.style.display = "none";
+                    user_informationPage.style.display = "none";
+                    signup_listuser_managerPage.style.display = "block";
+                    user_managerPage.style.display = "none";
+
+                });
+            }
+
+            if (user_managerBtn) {
+                user_managerBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "none";   // Hiện dashboard
+                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    table_eventPage.style.display = "none";
+                    user_informationPage.style.display = "none";
+                    signup_listuser_managerPage.style.display = "none";
+                    user_managerPage.style.display = "block";
+
+                });
+            }
+
+
         });
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -142,7 +211,6 @@
                         hasValue = true;
                     }
 
-                    // Nếu có ô nào có giá trị → reset tất cả ô của khối đó
                     if (hasValue) {
                         maxTemp.value = "";
                         minTemp.value = "";
@@ -154,7 +222,144 @@
         });
 
 
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Search User
+        function searchUser() {
+            const keyword = document.getElementById("search_user_input").value;
+            fetch(`/api/users?keyword=${encodeURIComponent(keyword)}`)
+                .then(res => res.json())
+                .then(data => renderUserTable(data.users));
+        }
+
+        function searchUserSignUp() {
+            const keyword = document.getElementById("search_usersignup_input").value;
+            fetch(`/api/signup_queue?keyword=${encodeURIComponent(keyword)}`)
+                .then(res => res.json())
+                .then(data => renderUser_QueueTable(data.users));
+        }
+
+        function resetSearchSignUp() {
+            document.getElementById("search_usersignup_input").value = "";
+            searchUserSignUp();
+        }
+
+        function resetSearchUser() {
+            document.getElementById("search_user_input").value = "";
+            searchUser();
+        }
+
+
+        window.onload = function () {
+            searchUser();
+            searchUserSignUp();
+        };
+
+
+        function renderUser_QueueTable(users) {
+            const tbody = document.getElementById("user_queue_table_body");
+            tbody.innerHTML = ""; 
+
+            users.forEach(user => {
+                const row = document.createElement("tr");
+                row.setAttribute('id', `user-row-${user.id}`);
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td><button class="btn btn-success btn-sm" onclick="acceptUser(${user.id}, true)">Accept</button></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="acceptUser(${user.id}, false)">Denied</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderUserTable(users) {
+            const tbody = document.getElementById("user_table_body");
+            tbody.innerHTML = ""; 
+
+            users.forEach(user => {
+                const row = document.createElement("tr");
+                row.setAttribute('id', `user-row-${user.id}`);
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete User</button></td>
+
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                fetch(`/api/users/${userId}`, {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        searchUser();
+                        const row = document.getElementById(`user-row-${userId}`);
+                        if (row) row.remove();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(err => {
+                    alert("Error: " + err);
+                });
+            }
+        }
+
+
+        function acceptUser(userId, isAccepted) {
+            if (confirm('Are you sure you want to accept this account as your user?')) {
+                fetch('/api/userAccept', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        isAccepted: isAccepted
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User status updated successfully');
+                        searchUserSignUp();
+                        const row = document.getElementById(`user-row-${userId}`);
+                        if (row) row.remove();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Something went wrong. Please try again.');
+                });
+            }
+        }
     </script>
 </head>
 <body>
@@ -171,9 +376,19 @@
                                 <li id="1"><p>Dashboard</p></li>
                                 <li id="2"><p>Threshold Settings</p></li>
                                 <li id="3"><p>Data Table</p></li>
-
+                                <li id="4"><p>User information</p></li>
+                                {% if role == 'admin' %}
+                                    <li id="5"><p>Sign Up List Manager</p></li>
+                                {% endif %}
+                                {% if role == 'admin' %}
+                                    <li id="6"><p>User Manager</p></li>
+                                {% endif %}
                             </ul>
                         </div>
+                        <form action="{{ url_for('logout') }}" method="POST">
+                            <button type="submit" class="">Log out</button>
+                        </form>
+
                     </div>
                     <div class="col-10">
                         <div id="dashboard">
@@ -474,7 +689,105 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <div id="user_information">
+                            <div class="row">
+                                <div class="col-11">
+                                    <div class="box_account">
+                                        <h3 class="">Account Information:</h3>
+                                        <p class="">Role:</p>
+                                        <p class="">Username: </p>
+                                        <p class="">Password: </p>
+                                        <p class="">Phone Number:</p>
+                                        <p class="">Email: </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="signup_list_manager">
+                            <div class="namepage">
+                                <h3>List Account in Sign up Queue</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" id="search_usersignup_input" class="form-control" placeholder="Search by username...">
+                                    <button onclick="searchUser()" class="btn btn-primary mt-2">Search</button>
+                                    <button onclick="resetSearchSignUp()" class="btn btn-primary mt-2"><i class="fa-solid fa-rotate-right"></i></button>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="list_user row">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-striped" id="user_table">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="1">ID</th>
+                                                <th rowspan="1">Username</th>
+                                                <th rowspan="1">Email</th>
+                                                <th rowspan="1">Phone</th>
+                                                <th colspan="2">Approved</th>
+                                            </tr>
+                                            
+                                        </thead>
+
+                                        <tbody id="user_queue_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="user_manager">
+                            
+                            <div class="namepage">
+                                <h3>List Account User</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" id="search_user_input" class="form-control" placeholder="Search by username...">
+                                    <button onclick="searchUser()" class="btn btn-primary mt-2">Search</button>
+                                    <button onclick="resetSearchUser()" class="btn btn-primary mt-2"><i class="fa-solid fa-rotate-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="list_user row">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-striped" id=" signup_queue_table">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="1">ID</th>
+                                                <th rowspan="1">Username</th>
+                                                <th rowspan="1">Email</th>
+                                                <th rowspan="1">Phone</th>
+                                                <th colspan="3">Action</th>
+                                            </tr>
+                                            
+                                        </thead>
+
+                                        <tbody id="user_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                
+                            </div>
+
+                            
+                        </div>
                     </div>
                 </div>
             </div>

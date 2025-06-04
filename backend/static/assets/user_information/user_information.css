@@ -1,0 +1,12 @@
+.box_account{
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: none;
+    overflow-x: auto;
+    border: 2px solid rgb(0, 0, 0);
+    margin-bottom: 2%;
+    box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
+}
