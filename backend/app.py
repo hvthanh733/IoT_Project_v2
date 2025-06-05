@@ -44,7 +44,16 @@ def default_route():
 @app.route('/dashboard')
 def dashboard():
     role = session.get('role', 'user')
-    return render_template('dashboard.html', role=role)
+    user_id = session.get('user_id')
+    print("user_id in session:", session.get('user_id'))
+    return render_template('dashboard.html', role=role, user_id=user_id)
+
+
+# @login_required
+# @app.route('/dashboard')
+# def dashboard():
+#     role = session.get('role', 'user')
+#     return render_template('dashboard.html', role=role)
 
 # @app.route('/')
 # def default_route():
@@ -92,6 +101,21 @@ def api_userAccept():
         'message': "Error while update status account"
     })
 
+# @app.route('/api/user_info/<int:user_id>', methods=['GET'])
+# def api_delete_user(user_id):
+#     success, message = UserService.delete_user(user_id)
+
+#     if success:
+#         return jsonify({
+#             'success': True,
+#             'message': message
+#         }), 200
+
+#     return jsonify({
+#         'success': False,
+#         'message': message
+#     }), 400
+
 @app.route('/api/users/<int:user_id>', methods=['DELETE'])
 def api_delete_user(user_id):
     success, message = UserService.delete_user(user_id)
@@ -106,6 +130,38 @@ def api_delete_user(user_id):
         'success': False,
         'message': message
     }), 400
+
+@app.route('/api/users/<int:user_id>', methods=['GET'])
+def api_get_user(user_id):
+    success, user = UserService.infor_user(user_id)
+    if user:
+        return jsonify({
+            'success': True,
+            'user': user
+        }), 200
+
+    return jsonify({
+        'success': False,
+        'message': user
+    }), 400
+
+@app.route('/api/users/<int:user_id>', methods=['PUT'])
+def api_change_username(user_id):
+
+    data = request.get_json()
+    new_username = data.get('new_username')
+    message, success = UserService.change_username(new_username, user_id)
+    if message:
+        return jsonify({
+            'success': True,
+            'message': message
+        }), 200
+
+    return jsonify({
+        'success': False,
+        'message': message
+    }), 400
+
 
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -193,6 +249,8 @@ def login_form():
         if success:
             session['username'] = username
             session['role'] = user.role
+            session['user_id'] = user.id
+            print(user.id)
             return redirect(url_for('dashboard'))
         else:
             flash('user not found!', category="fail_login")

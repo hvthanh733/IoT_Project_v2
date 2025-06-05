@@ -1,3 +1,5 @@
+{% import 'macros.html' as macros %}   
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,10 +49,10 @@
 
 
             if (dashboardPage && thresholdPage && table_eventPage && user_informationPage && user_managerPage) {
-                dashboardPage.style.display = "block";   // Hiện dashboard
+                dashboardPage.style.display = "none";   // Hiện dashboard
                 thresholdPage.style.display = "none";    // Ẩn threshold
                 table_eventPage.style.display = "none";
-                user_informationPage.style.display = "none";
+                user_informationPage.style.display = "block";
                 signup_listuser_managerPage.style.display = "none";
                 user_managerPage.style.display = "none";
             }
@@ -105,8 +107,8 @@
 
             if (signup_listuser_managerBtn) {
                 signup_listuser_managerBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";   // Hiện dashboard
-                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    dashboardPage.style.display = "none";
+                    thresholdPage.style.display = "none";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "block";
@@ -117,8 +119,8 @@
 
             if (user_managerBtn) {
                 user_managerBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";   // Hiện dashboard
-                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    dashboardPage.style.display = "none";
+                    thresholdPage.style.display = "none";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
@@ -261,11 +263,13 @@
             document.getElementById("search_user_input").value = "";
             searchUser();
         }
-
-
         window.onload = function () {
+            
+            const userId = document.getElementById("user_id_hidden").value;
+            console.log('UserId lấy được:', userId);
             searchUser();
             searchUserSignUp();
+            showinforUser(userId);
         };
 
 
@@ -329,7 +333,63 @@
                 });
             }
         }
+        function showinforUser(userId) {
+            console.log('showinforUser được gọi với userId:', userId);
 
+            fetch(`/api/users/${userId}`, {
+                method: 'GET'
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Data từ API:', data);
+                if (data.success) {
+                    const user = data.user;
+                    document.getElementById("role_info").textContent = user.role;
+                    document.getElementById("username_info").textContent = user.username;
+                    document.getElementById("phone_info").textContent = user.phone;
+                    document.getElementById("email_info").textContent = user.email;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                alert("Error: " + err);
+            });
+        }
+
+
+        window.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('changeUsernameForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const userId = document.getElementById('user_id').value;
+                const newUsername = document.getElementById('new_username').value;
+
+                fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ new_username: newUsername })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // const new_username = document.getElementById("username_info");
+                    const message_changeusername = document.getElementById("change_username_result");
+                    if (data.success) {
+                        document.getElementById("username_info").textContent = newUsername;
+
+                        message_changeusername.textContent = "Thay đổi username thành công!";
+                    } else {
+                        message_changeusername.textContent = "Thay đổi username không thành công.";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("change_username_result").textContent = "Đã xảy ra lỗi khi gửi yêu cầu.";
+                });
+            });
+        });
 
         function acceptUser(userId, isAccepted) {
             if (confirm('Are you sure you want to accept this account as your user?')) {
@@ -376,7 +436,9 @@
                                 <li id="1"><p>Dashboard</p></li>
                                 <li id="2"><p>Threshold Settings</p></li>
                                 <li id="3"><p>Data Table</p></li>
-                                <li id="4"><p>User information</p></li>
+                                {% if role == 'user' %}
+                                    <li id="4"><p>User information</p></li>
+                                {% endif %}
                                 {% if role == 'admin' %}
                                     <li id="5"><p>Sign Up List Manager</p></li>
                                 {% endif %}
@@ -692,13 +754,43 @@
                         <div id="user_information">
                             <div class="row">
                                 <div class="col-11">
+                                    <input type="hidden" id="user_id_hidden" value="{{ user_id }}">
+
                                     <div class="box_account">
-                                        <h3 class="">Account Information:</h3>
-                                        <p class="">Role:</p>
-                                        <p class="">Username: </p>
-                                        <p class="">Password: </p>
-                                        <p class="">Phone Number:</p>
-                                        <p class="">Email: </p>
+                                        <div class="namepage">
+                                            <h3>Account Information:</h3>
+                                        </div>
+                                        <p id="role_info" data-label="Role"></p>
+                                        <p id="username_info" data-label="Username"></p>
+                                        <p id="phone_info" data-label="Phone Number"></p>
+                                        <p id="email_info" data-label="Email"></p>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="box_account">
+                                        <div class="namepage">
+                                            <h3>Change Username:</h3>
+                                        </div>
+                                        <form id="changeUsernameForm">
+                                            <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
+                                            
+                                            <label for="new_username">New Username:</label><br>
+                                            <input type="text" id="new_username" name="new_username" required placeholder="Enter new username"><br><br>
+                                            
+                                            <p id="change_username_result" data-label="Message"></p>
+                                            <button type="submit">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="box_account">
+                                        <div class="namepage">
+                                            <h3>Change Phone number</h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

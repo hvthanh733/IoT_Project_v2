@@ -82,4 +82,24 @@ class UserRepo:
             return True
         return False
 
-
+    def infor_user(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            return {
+                'id': user.id,
+                # 'username': user.username,
+                'email': user.email,
+                'phone': user.phone,
+                'role': user.role,
+                'username': user.username
+            }
+            return user
+        return None
+    
+    def change_username(new_username: str, user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            user.username = new_username
+            db.session.commit()
+            return True
+        return False

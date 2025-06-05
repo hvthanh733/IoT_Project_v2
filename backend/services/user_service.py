@@ -96,3 +96,21 @@ class UserService:
         else:
             message = "Error while delete"
         return user, message
+
+    def infor_user(user_id):
+        user = UserRepo.infor_user(user_id)
+        message = ""
+        if user:
+            message = "Show infor successfully"
+        else:
+            message = "Error while show infor"
+        return message, user
+
+    def change_username(new_username:str, user_id):
+        success = UserRepo.change_username(new_username, user_id)
+        message = ""
+        if success:
+            message = "Change username successfully"
+        else:
+            message = "Error while change username"
+        return message, success
