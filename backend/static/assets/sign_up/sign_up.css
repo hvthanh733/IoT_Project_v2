@@ -78,6 +78,16 @@ body {
     outline: none;
     transition: border-color 0.3s ease;
 }
+.sign_up_content input[type="email"]{
+    width: 100%;
+    padding: 10px 14px;
+    margin: 10px 0;
+    border: 3px solid rgba(39, 56, 150, 0.82);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
 .sign_up_content input::placeholder {
     color: rgba(0, 0, 0, 0.4); 
 }

@@ -10,3 +10,44 @@
     margin-bottom: 2%;
     box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
 }
+
+
+#overlay2 {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* mờ */
+  z-index: 999;
+}
+
+#popup2 {
+    width: 30%;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+#popup_content2 {
+    text-align: center;
+}
+
+#popup_content2 .namepage{
+    margin-bottom: 5%;
+}
+
+#popup_content2 input[type="text"],
+#popup_content2 input[type="text"]{
+    width: 100%;
+    padding: 10px 14px;
+    border: 3px solid rgba(39, 56, 150, 0.82);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+

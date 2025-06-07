@@ -210,13 +210,14 @@ table tr:hover {
 }
 
 
-.content_box i {
-    color: #260f6c;
-    font-size: 20px;
-    /* color: red; */
-    width: 40px;
-    height: 40px;
+
+.content_box p {
+    padding: 10px 0;
 }
+
+/* .content_box .fa-fire {
+    color: red;
+} */
 
 .namepage h3{
 
@@ -225,6 +226,7 @@ table tr:hover {
     padding-bottom: 10px;
     font-weight: bold;
 }
+
 
 
 

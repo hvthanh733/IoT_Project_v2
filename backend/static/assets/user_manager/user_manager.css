@@ -59,117 +59,42 @@
     color: #222;
 }
 
-#changeUsernameForm input[type="text"]{
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* mờ */
+  z-index: 999;
+}
+
+#popup {
+    width: 30%;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+#popup_content {
+    text-align: center;
+}
+
+#popup_content .namepage{
+    margin-bottom: 5%;
+}
+#popup_inputs input[type="password"],
+#popup_inputs input[type="email"],
+#popup_inputs input[type="text"]{
     width: 100%;
     padding: 10px 14px;
     border: 3px solid rgba(39, 56, 150, 0.82);
     border-radius: 6px;
     font-size: 14px;
     outline: none;
-    margin: 10px 0;
     transition: border-color 0.3s ease;
 }
-#changeUsernameForm input::placeholder {
-    color: rgba(0, 0, 0, 0.4); 
-}
-#changeUsernameForm input:focus{
-    border-color: #007bff;
-}
-#changeUsernameForm button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-}
-#changeUsernameForm button:hover{
-    background: #0056b3;
-} input::placeholder {
-    color: rgba(0, 0, 0, 0.4); 
-}
 
-#changeUsernameForm input::placeholder {
-    color: rgba(0, 0, 0, 0.4); 
-}
-#changeUsernameForm input:focus{
-    border-color: #007bff;
-}
-#changeUsernameForm button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-}
-#changeUsernameForm button:hover{
-    background: #0056b3;
-} input:focus{
-    border-color: #007bff;
-}
-
-#changeUsernameForm input::placeholder {
-    color: rgba(0, 0, 0, 0.4); 
-}
-#changeUsernameForm input:focus{
-    border-color: #007bff;
-}
-#changeUsernameForm button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-}
-#changeUsernameForm button:hover{
-    background: #0056b3;
-} button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-}
-
-#changeUsernameForm input::placeholder {
-    color: rgba(0, 0, 0, 0.4); 
-}
-#changeUsernameForm input:focus{
-    border-color: #007bff;
-}
-#changeUsernameForm button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-}
-#changeUsernameForm button:hover{
-    background: #0056b3;
-} button:hover{
-    background: #0056b3;
-}

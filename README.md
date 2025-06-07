@@ -31,3 +31,8 @@ pip install flask-sqlalchemy
 
 <!-- zlapi -->
 pip install zlapi
+
+
+<!--  -->
+pip install RPi.GPIO
+pip install flask_login

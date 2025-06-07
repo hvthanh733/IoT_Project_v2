@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard.css" class="">
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_right.css" class="">
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_middle.css" class="">
+    <link rel="stylesheet" href="../static/assets/dashboard/dashboard_left.css" class="">
 
     <link rel="stylesheet" href="../static/assets/data_table/data_table.css" class="">
 
@@ -49,10 +50,10 @@
 
 
             if (dashboardPage && thresholdPage && table_eventPage && user_informationPage && user_managerPage) {
-                dashboardPage.style.display = "none";   // Hiện dashboard
+                dashboardPage.style.display = "block";   // Hiện dashboard
                 thresholdPage.style.display = "none";    // Ẩn threshold
                 table_eventPage.style.display = "none";
-                user_informationPage.style.display = "block";
+                user_informationPage.style.display = "none";
                 signup_listuser_managerPage.style.display = "none";
                 user_managerPage.style.display = "none";
             }
@@ -71,8 +72,8 @@
 
             if (thresholdBtn) {
                 thresholdBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";   // Hiện dashboard
-                    thresholdPage.style.display = "block";    // Ẩn threshold
+                    dashboardPage.style.display = "none";
+                    thresholdPage.style.display = "block";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
@@ -83,8 +84,8 @@
 
             if (table_eventBtn) {
                 table_eventBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";   // Hiện dashboard
-                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    dashboardPage.style.display = "none";
+                    thresholdPage.style.display = "none";
                     table_eventPage.style.display = "block";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
@@ -95,8 +96,8 @@
 
             if (user_informationBtn) {
                 user_informationBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";   // Hiện dashboard
-                    thresholdPage.style.display = "none";    // Ẩn threshold
+                    dashboardPage.style.display = "none";
+                    thresholdPage.style.display = "none";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "block";
                     signup_listuser_managerPage.style.display = "none";
@@ -228,6 +229,73 @@
 
 
 
+        function openUpdatePopup(type) {
+            document.getElementById('overlay2').style.display = 'block';
+            document.getElementById('popup2').style.display = 'block';          // ✅ SỬA: thêm dòng này
+            document.getElementById('popup_content2').style.display = 'block';
+
+            const title = {
+                username: "Update Username",
+                phone: "Update Phone Number",
+                email: "Update Email",
+                password: "Update Password"
+            };
+
+            const inputs = {
+                username: `<input type="text" id="new_username" name="new_username" placeholder="Enter new username" required><br><br>`,
+                phone: `<input type="text" id="new_phone" name="new_phone" placeholder="Enter new phone" required><br><br>`,
+                email: `<input type="email" id="new_email" name="new_email" placeholder="Enter new email" required><br><br>`,
+                password: `
+                    <input type="password" id="old_password" name="old_password" placeholder="Enter old password" required><br><br>
+                    <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required><br><br>
+                `
+            };
+
+            document.getElementById('popup_title').innerText = title[type];
+            document.getElementById('popup_inputs').innerHTML = inputs[type];
+            document.getElementById('updateForm').setAttribute('data-type', type);
+        }
+
+        function closePopup_userinfor() {
+            document.getElementById('overlay2').style.display = 'none';
+            document.getElementById('popup2').style.display = 'none'; 
+            document.getElementById('popup_content2').style.display = 'none';
+            document.getElementById('popup_inputs').innerHTML = '';
+        }
+
+        function submitUpdate_userinfor() {
+            const form = document.getElementById('updateForm');
+            const type = form.getAttribute('data-type');
+            const userId = document.getElementById('user_id').value;
+            const formData = new FormData();
+            formData.append('user_id', document.getElementById('user_id').value);
+
+            if (type === 'username') {
+                formData.append('new_username', document.getElementById('new_username').value);
+            } else if (type === 'phone') {
+                formData.append('new_phone', document.getElementById('new_phone').value);
+            } else if (type === 'email') {
+                formData.append('new_email', document.getElementById('new_email').value);
+            } else if (type === 'password') {
+                formData.append('old_password', document.getElementById('old_password').value);
+                formData.append('new_password', document.getElementById('new_password').value);
+            }
+
+            fetch(`/update_${type}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                
+                closePopup_userinfor();
+                showinforUser(userId);
+            })
+            .catch(err => {
+                alert("Error: " + err);
+            });
+        }
 
 
 
@@ -239,7 +307,110 @@
 
 
 
-        // Search User
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+        function fetchData12() {
+            fetch("/sensor_data12")
+                .then(res => res.json())
+                .then(data => {
+                    const now = new Date();
+                    const timeNow = now.toLocaleTimeString();
+
+                    for (let block in data) {
+                        document.getElementById(block + "_temp").innerText = data[block].temperature + "°C";
+                        document.getElementById(block + "_humi").innerText = data[block].humidity + "%";
+                        document.getElementById(block + "_fire").innerText = data[block].fire;
+                        document.getElementById(block + "_time").innerText = timeNow;
+                    }
+                })
+                .catch(err => console.log("Lỗi:", err));
+        }
+        // function fetchData34() {
+        //     fetch("/sensor_data34")
+        //         .then(res => res.json())
+        //         .then(data => {
+        //             const now = new Date();
+        //             const timeNow = now.toLocaleTimeString();
+
+        //             for (let block in data) {
+        //                 document.getElementById(block + "_temp").innerText = data[block].temperature + "°C";
+        //                 document.getElementById(block + "_humi").innerText = data[block].humidity + "%";
+        //                 document.getElementById(block + "_fire").innerText = data[block].fire;
+        //                 document.getElementById(block + "_time").innerText = timeNow;
+        //             }
+        //         })
+        //         .catch(err => console.log("Lỗi:", err));
+        // }
+
+        setInterval(() => {
+            fetchData12();
+            // fetchData34();
+        }, 1000);
+
+        window.onload = function () {
+            fetchData12();
+            // fetchData34();
+            const userId = document.getElementById("user_id_hidden").value;
+            console.log('UserId lấy được:', userId);
+            searchUser();
+            searchUserSignUp();
+            showinforUser(userId);
+           
+        };
+
+        function addUser() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+
+
+
+
+
+        function addNewUser(event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            formData.append('add_username', document.getElementById('add_username').value);
+            formData.append('add_phone', document.getElementById('add_phone').value);
+            formData.append('add_email', document.getElementById('add_email').value);
+            closePopup();
+
+            fetch(`/add_newusers`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                resetSearchUser();
+                
+                alert(data.message);
+            })
+            .catch(err => {
+                alert("Error: " + err);
+            });
+        }
+
+
+
+
         function searchUser() {
             const keyword = document.getElementById("search_user_input").value;
             fetch(`/api/users?keyword=${encodeURIComponent(keyword)}`)
@@ -263,15 +434,6 @@
             document.getElementById("search_user_input").value = "";
             searchUser();
         }
-        window.onload = function () {
-            
-            const userId = document.getElementById("user_id_hidden").value;
-            console.log('UserId lấy được:', userId);
-            searchUser();
-            searchUserSignUp();
-            showinforUser(userId);
-        };
-
 
         function renderUser_QueueTable(users) {
             const tbody = document.getElementById("user_queue_table_body");
@@ -311,7 +473,6 @@
             });
         }
 
-
         function deleteUser(userId) {
             if (confirm('Are you sure you want to delete this user?')) {
                 fetch(`/api/users/${userId}`, {
@@ -333,6 +494,7 @@
                 });
             }
         }
+        
         function showinforUser(userId) {
             console.log('showinforUser được gọi với userId:', userId);
 
@@ -341,10 +503,9 @@
             })
             .then(res => res.json())
             .then(data => {
-                console.log('Data từ API:', data);
+                // console.log('Data từ API:', data);
                 if (data.success) {
                     const user = data.user;
-                    document.getElementById("role_info").textContent = user.role;
                     document.getElementById("username_info").textContent = user.username;
                     document.getElementById("phone_info").textContent = user.phone;
                     document.getElementById("email_info").textContent = user.email;
@@ -356,41 +517,7 @@
                 alert("Error: " + err);
             });
         }
-
-
-        window.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('changeUsernameForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                const userId = document.getElementById('user_id').value;
-                const newUsername = document.getElementById('new_username').value;
-
-                fetch(`/api/users/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ new_username: newUsername })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    // const new_username = document.getElementById("username_info");
-                    const message_changeusername = document.getElementById("change_username_result");
-                    if (data.success) {
-                        document.getElementById("username_info").textContent = newUsername;
-
-                        message_changeusername.textContent = "Thay đổi username thành công!";
-                    } else {
-                        message_changeusername.textContent = "Thay đổi username không thành công.";
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById("change_username_result").textContent = "Đã xảy ra lỗi khi gửi yêu cầu.";
-                });
-            });
-        });
-
+      
         function acceptUser(userId, isAccepted) {
             if (confirm('Are you sure you want to accept this account as your user?')) {
                 fetch('/api/userAccept', {
@@ -431,26 +558,29 @@
                         <div class="logo">
                             <img src="../static/img/usth.png" alt="" class="">
                         </div>
-                        <div class="menu">
-                            <ul>
-                                <li id="1"><p>Dashboard</p></li>
-                                <li id="2"><p>Threshold Settings</p></li>
-                                <li id="3"><p>Data Table</p></li>
-                                {% if role == 'user' %}
-                                    <li id="4"><p>User information</p></li>
-                                {% endif %}
-                                {% if role == 'admin' %}
-                                    <li id="5"><p>Sign Up List Manager</p></li>
-                                {% endif %}
-                                {% if role == 'admin' %}
-                                    <li id="6"><p>User Manager</p></li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                        <form action="{{ url_for('logout') }}" method="POST">
-                            <button type="submit" class="">Log out</button>
-                        </form>
+                        <div class="sidebar-container">
+                             <div class="menu">
+                                <ul>
+                                    <li id="1"><p>Dashboard</p></li>
+                                    <li id="2"><p>Threshold Settings</p></li>
+                                    <li id="3"><p>Data Table</p></li>
+                                    {% if role == 'user' %}
+                                        <li id="4"><p>User information</p></li>
+                                    {% endif %}
+                                    {% if role == 'admin' %}
+                                        <li id="5"><p>Sign Up List Manager</p></li>
+                                    {% endif %}
+                                    {% if role == 'admin' %}
+                                        <li id="6"><p>User Manager</p></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <form class="buttonLogout" action="{{ url_for('logout') }}" method="POST">
+                                <button type="submit" class="btn btn-danger mt-2">Log out</button>
+                            </form>
 
+                        </div>
+                       
                     </div>
                     <div class="col-10">
                         <div id="dashboard">
@@ -540,121 +670,36 @@
                                             <h3>Block Property</h3>
                                         </div>
                                         <div class="col_roll">
+                                            {% for i in range(1, 5) %}
+                                                <div class="box_khoi {{ i }}">
+                                                    <p class="name_block">Khối {{ i }}</p>
+        
+                                                    <div class="row">
+                                                        <div class="col-7">
+                                                            <div class="box_circle">
+                                                                <div id="alertBoxFire" class="box_fire">
+                                                                    <p>Test</p>
+                                                                </div>
+                                                                <div id="alertBoxTemp" class="box_temp">
+                                                                    <p>Test</p>
+                                                                </div>
+                                                                <div id="alertBoxHumi" class="box_humi">
+                                                                    <p>Test</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <div class="content_box">
+                                                                <p><i class="fa-solid fa-temperature-three-quarters"></i> <span id="Block{{ i }}_temp"></span></p>
+                                                                <p><i class="fa-solid fa-water"></i> <span id="Block{{ i }}_humi"></span></p>
+                                                                <p><i id="alertIconFire" class="fa fa-fire" aria-hidden="true"></i> <span id="Block{{ i }}_fire"></span></p>
+                                                                <p><i class="fa-regular fa-clock"></i> <span id="Block{{ i }}_time"></span></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>                                             
+                                                </div>   
+                                            {% endfor %}           
                                             
-                                            <div class="box_khoi">
-                                                <p class="name_block">Khối 1</p>
-    
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <div class="box_circle">
-                                                            <div class="box_fire">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_temp">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_humi">
-                                                                <p> 50%</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="content_box">
-                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
-                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
-                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
-                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-        
-                                                
-                                            </div>              
-                                            <div class="box_khoi">
-                                                <p class="name_block">Khối 1</p>
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <div class="box_circle">
-                                                            <div class="box_fire">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_temp">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_humi">
-                                                                <p> 50%</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="content_box">
-                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
-                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
-                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
-                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-        
-                                                
-                                            </div>
-                                            <div class="box_khoi">
-                                                <p class="name_block">Khối 1</p>
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <div class="box_circle">
-                                                            <div class="box_fire">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_temp">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_humi">
-                                                                <p> 50%</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="content_box">
-                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
-                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
-                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
-                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-        
-                                                
-                                            </div>
-                                            <div class="box_khoi">
-                                                <p class="name_block">Khối 1</p>
-    
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <div class="box_circle">
-                                                            <div class="box_fire">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_temp">
-                                                                <p>50&degC</p>
-                                                            </div>
-                                                            <div class="box_humi">
-                                                                <p> 50%</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="content_box">
-                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> 50C</p>
-                                                            <p><i class="fa-solid fa-water"></i> 50%</p>
-                                                            <p><i class="fa fa-fire" aria-hidden="true"></i> Có cháy</p>
-                                                            <p><i class="fa-regular fa-clock"></i> 00:00:00</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-        
-                                                
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -685,7 +730,7 @@
                         </div>
                         <div id="table_page">
                             <div class="row">
-                                <div class="col-11">
+                                <div class="col-12">
                                     <div class="table_data">
                                         <p>Data Table Event</p>
                                         <table>
@@ -760,40 +805,41 @@
                                         <div class="namepage">
                                             <h3>Account Information:</h3>
                                         </div>
-                                        <p id="role_info" data-label="Role"></p>
                                         <p id="username_info" data-label="Username"></p>
                                         <p id="phone_info" data-label="Phone Number"></p>
                                         <p id="email_info" data-label="Email"></p>
+                                        <button onclick="openUpdatePopup('username')" class="btn btn-primary mt-2">Update Username</button>
+                                        <button onclick="openUpdatePopup('phone')" class="btn btn-primary mt-2">Update Phone Number</button>
+                                        <button onclick="openUpdatePopup('email')" class="btn btn-primary mt-2">Update Email</button>
+                                        <button onclick="openUpdatePopup('password')" class="btn btn-primary mt-2">Update Password</button>
+
+                                        <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
+
+                                        <div id="overlay2" style="display: none;"></div>
+
+                                        <div id="popup2" style="display: none;">
+                                            <div id="popup_content2" style="display: none;">
+                                                <div class="namepage">
+                                                    <h3 id="popup_title">Update</h3>
+                                                </div>
+                                                <form id="updateForm" method="POST">
+                                                    <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
+                                                    <div id="popup_inputs"></div>
+
+                                                    <button type="button" onclick="submitUpdate_userinfor()" class="btn btn-success mt-2">Update</button>
+                                                    <button type="button" onclick="closePopup_userinfor()" class="btn btn-danger mt-2">Close</button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                                                                
+
+
 
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="box_account">
-                                        <div class="namepage">
-                                            <h3>Change Username:</h3>
-                                        </div>
-                                        <form id="changeUsernameForm">
-                                            <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
-                                            
-                                            <label for="new_username">New Username:</label><br>
-                                            <input type="text" id="new_username" name="new_username" required placeholder="Enter new username"><br><br>
-                                            
-                                            <p id="change_username_result" data-label="Message"></p>
-                                            <button type="submit">Save</button>
-                                        </form>
-                                    </div>
-                                </div>
-
-                                <div class="col-6">
-                                    <div class="box_account">
-                                        <div class="namepage">
-                                            <h3>Change Phone number</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                         <div id="signup_list_manager">
                             <div class="namepage">
@@ -804,7 +850,7 @@
                                     <input type="text" id="search_usersignup_input" class="form-control" placeholder="Search by username...">
                                     <button onclick="searchUser()" class="btn btn-primary mt-2">Search</button>
                                     <button onclick="resetSearchSignUp()" class="btn btn-primary mt-2"><i class="fa-solid fa-rotate-right"></i></button>
-
+                         
                                 </div>
                             </div>
                             <div class="row">
@@ -845,13 +891,44 @@
                                 <div class="col-6">
                                     <input type="text" id="search_user_input" class="form-control" placeholder="Search by username...">
                                     <button onclick="searchUser()" class="btn btn-primary mt-2">Search</button>
-                                    <button onclick="resetSearchUser()" class="btn btn-primary mt-2"><i class="fa-solid fa-rotate-right"></i></button>
+                                    <button onclick="resetSearchUser()" class="btn btn-primary mt-2"> Refresh Lists</button>
+                                    <button id="btnAddUser" onclick="addUser()" class="btn btn-primary mt-2">Add User</button>
+
+                                    
+                                    <div id="overlay" style="display: none;"></div>
+
+                                   
+                                    <div id="popup" style="display: none;">
+                                        <div id="popup_content">
+                                            <div class="namepage">
+                                                <h3>Form new user information</h3>
+                                            </div>
+                                            <form id="addUserForm" method="POST">
+                                                <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
+                                                
+                                                <input type="text" id="add_username" name="add_username" required placeholder="Enter new username"><br><br>
+                                                <input type="text" id="add_phone" name="add_phone" required placeholder="Enter new user phone"><br><br>
+                                                <input type="text" id="add_email" name="add_email" required placeholder="Enter new user email"><br><br>
+                                                {{ macros.show_flash('username_error') }}
+                                                {{ macros.show_flash('phone_error') }}
+
+                                                {{ macros.show_flash('username_space') }}
+                                                {{ macros.show_flash('phone_space') }}
+                                                {{ macros.show_flash('email_space') }}
+
+                                                <button onclick="addNewUser(event)" type="button" class="btn btn-success mt-2">Add new User</button>
+                                                <button onclick="closePopup()" type="button" class="btn btn-danger mt-2">Close Form</button>
+
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="list_user row">
                                     </div>
+                                    <div id="userFormContainer"></div>
                                 </div>
                             </div>
                             <div class="row">

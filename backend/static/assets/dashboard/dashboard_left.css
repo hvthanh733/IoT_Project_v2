@@ -1,0 +1,16 @@
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* full height of the screen */
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.buttonLogout {
+    margin-bottom: 10%;
+}
+
+
+.buttonLogout button{
+	width: 100%;
+}

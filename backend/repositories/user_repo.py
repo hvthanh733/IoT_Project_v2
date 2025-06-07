@@ -26,10 +26,17 @@ class UserRepo:
         return user or user_queue
 
     def create_user(username_signup: str, password: str, phone_signup: str, email_signup: str):
-        password_hashed = generate_password(password)
         new_user = SignUpQueue(username=username_signup, password=password, phone=phone_signup, email=email_signup,role="user",approved=False)
         db.session.add(new_user)
         db.session.commit()
+
+    def add_newuser(new_username: str, password_hashed: str, new_phone: str,  new_email: str):
+        new_user = User(username=new_username, password=password_hashed, phone=new_phone, email=new_email,role="user")
+        if new_user:
+            db.session.add(new_user)
+            db.session.commit()
+            return True
+        return False
 
     def updateUserQueue(user: SignUpQueue, is_accepted: bool):
         if is_accepted:
@@ -43,8 +50,8 @@ class UserRepo:
             db.session.commit()
             return True
     
-    def reset_password(username: str, email: str, newpassword: str):
-        user = User.query.filter_by(username=username, email=email).first()
+    def reset_password(email: str, newpassword: str):
+        user = User.query.filter_by(email=email).first()
         if not user:
             return False
         user.password = newpassword
@@ -103,3 +110,37 @@ class UserRepo:
             db.session.commit()
             return True
         return False
+
+    def update_username(user_id: str, new_username: str):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            user.username = new_username
+            db.session.commit()
+            return True
+        return False
+    
+    def update_phone(user_id: str, new_phonenumber: str):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            user.phone = new_phonenumber
+            db.session.commit()
+            return True
+        return False
+    
+    def update_email(user_id: str, new_email: str):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            user.email = new_email
+            db.session.commit()
+            return True
+        return False
+    
+    def update_password(user_id, old_password:str, new_password:str):
+        user = User.query.filter_by(id=user_id).first()
+        hash_new_password = generate_password(new_password)
+        if user:
+            user.password = hash_new_password
+            db.session.commit()
+            return True
+        return False
+

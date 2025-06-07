@@ -2,6 +2,7 @@ from repositories.user_repo import UserRepo
 from models.model_project import User
 from services.password_hash import generate_password, verify_pass
 import re
+from Alert import send_email_resetpass
 
 # Class UserService handle logic
 class UserService:
@@ -27,47 +28,47 @@ class UserService:
             return "email"
         return None
 
-    def validate_user_input(username: str, password: str, phone: str, email: str):
-        # Length check
+    
+    def validate_user_fields(username: str, phone: str, email: str):
         if len(username) > 10:
             return "username_format"
-        if len(password) > 16:
-            return "password_format"
         if len(phone) != 10:
             return "phone_format"
 
-        # Whitespace check
         if ' ' in username:
             return "username_space"
-        if ' ' in password:
-            return "password_space"
         if ' ' in phone:
             return "phone_space"
         if ' ' in email:
             return "email_space"
 
-        # Regex format check
         if not re.fullmatch(r"[A-Za-z0-9]+", username):
             return "username_format"
-        if not re.fullmatch(r"[A-Za-z0-9]+", password):
-            return "password_format"
-        if not re.fullmatch(r"\d{1,10}", phone):  # Only digits
+        if not re.fullmatch(r"\d{1,10}", phone):
             return "phone_format"
+
         return "ok"
 
+    def validate_password_format(password: str):
+        if len(password) > 16:
+            return "password_format"
+        if ' ' in password:
+            return "password_space"
+        if not re.fullmatch(r"[A-Za-z0-9]+", password):
+            return "password_format"
+        return "ok"
 
     # Function for forgot_password part
-    def check_user_email(username: str, email: str):
+    def check_email(email: str):
         # Check the exist of user and email
-        if not username or not email:
+        if not email:
             return None
 
-        check_user = UserRepo.get_user_by_username(username)
-        check_email = UserRepo.get_user_by_email(email)  # Chỗ này phải gọi get_user_by_email chứ không phải get_user_by_username(email)
+        check_email = UserRepo.get_user_by_email(email)
 
         # if username and email are true -> return True
-        if check_user and check_email:
-            return True, check_user, check_email
+        if check_email:
+            return True, check_email
         return None
 
     # Create user form sign_up form
@@ -75,9 +76,9 @@ class UserService:
         password_hashed = generate_password(password)
         UserRepo.create_user(username_signup, password_hashed, email_signup, phone_signup)
     
-    def reset_newpassword(username: str, email: str, newpassword: str) -> bool:
+    def reset_newpassword(email: str, newpassword: str) -> bool:
         password_hashed = generate_password(newpassword)
-        return UserRepo.reset_password(username, email,password_hashed)
+        return UserRepo.reset_password(email, password_hashed)
 
    
     def get_users_by_type(user_type, keyword):
@@ -114,3 +115,22 @@ class UserService:
         else:
             message = "Error while change username"
         return message, success
+
+    def add_newuser(new_username: str,  new_phone: str, new_email: str) -> bool:
+        newpass = send_email_resetpass(new_email)
+        password_hashed = generate_password(newpass)
+        new_user = UserRepo.add_newuser(new_username , password_hashed, new_phone, new_email)
+        return new_user
+
+
+    def update_username(userid, new_username:str) -> bool:
+        user = UserRepo.update_username(userid, new_username)
+        return user
+
+    def update_phone(userid, new_phonenumber:str) -> bool:
+        user = UserRepo.update_phone(userid, new_phonenumber)
+        return user
+
+    def update_password(userid, old_password:str, new_password:str) -> bool:
+        user = UserRepo.update_password(userid, old_password, new_password)
+        return user

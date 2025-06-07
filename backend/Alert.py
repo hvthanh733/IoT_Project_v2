@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from zlapi import ZaloAPI
 import os
 from dotenv import load_dotenv
 import random
@@ -13,11 +12,11 @@ def generate_random_password(length=5):
 
 load_dotenv()
 sender_email = os.getenv("GMAIL_SEND_ALERT")
-receiver_email_test = os.getenv("GMAIL_RECEIVE_ALERT")
+receiver_email_test = "hthanhjj0703@gmail.com"
 password = os.getenv("PASSWORD_GMAIL_ALERT")
 
 
-def send_email_resetpass(username, receiver_email):
+def send_email_resetpass(receiver_email):
     newpassword = generate_random_password()
 
     message = MIMEMultipart()
@@ -25,7 +24,7 @@ def send_email_resetpass(username, receiver_email):
     message["To"] = receiver_email_test
     message["Subject"] = "IoT - Sending New Password"
 
-    body = f"Hello {username},\n\nYour new password is: {newpassword}\n\nPlease change it after logging in."
+    body = f"Your new password is: {newpassword}\n\nPlease change it after logging in."
 
 
     message.attach(MIMEText(body, "plain"))
@@ -57,9 +56,9 @@ def send_email_resetpass(username, receiver_email):
 #             server.starttls()  # Bắt đầu giao tiếp an toàn
 #             server.login(sender_email, password)
 #             server.sendmail(sender_email, receiver_email, message.as_string())
-#             print("✅ Email đã được gửi đến", receiver_email)
+#             print("Email đã được gửi đến", receiver_email)
 #     except Exception as e:
-#         print("❌ Lỗi khi gửi email:", e)
+#         print("Lỗi khi gửi email:", e)
 
 
 # def alertZalo():

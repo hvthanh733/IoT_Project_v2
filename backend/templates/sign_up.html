@@ -43,7 +43,7 @@
                             <input type="password" id="password_signup" name="password_signup" placeholder="Password" required>
 
                             <input type="text" name="phone_signup" placeholder="Phone numbers" required>
-                            <input type="text" name="email_signup" placeholder="Email" required>
+                            <input type="email" name="email_signup" placeholder="Email" required>
                             <a href="{{ url_for('forgot_password') }}" class="forgot_password"><p>Forgot password?</p></a>
                             {{ macros.show_flash('username_exist') }}
                             {{ macros.show_flash('email_exist') }}

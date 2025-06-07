@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Giám sát 4 Block</title>
+    <script>
+        function fetchData12() {
+            fetch("/sensor_data12")
+                .then(res => res.json())
+                .then(data => {
+                    const now = new Date();
+                    const timeNow = now.toLocaleString(); // Định dạng giờ phút giây ngày/tháng/năm
+
+                    for (let block in data) {
+                        document.getElementById(block + "_temp").innerText = "Nhiệt độ: " + data[block].temperature + "°C";
+                        document.getElementById(block + "_humi").innerText = "Độ ẩm: " + data[block].humidity + "%";
+                        document.getElementById(block + "_fire").innerText = "Lửa: " + data[block].fire;
+                        document.getElementById(block + "_time").innerText = "Thời gian: " + timeNow;
+                    }
+                })
+                .catch(err => console.log("Lỗi:", err));
+        }
+        function fetchData34() {
+            fetch("/sensor_data34")
+                .then(res => res.json())
+                .then(data => {
+                    const now = new Date();
+                    const timeNow = now.toLocaleString(); // Định dạng giờ phút giây ngày/tháng/năm
+
+                    for (let block in data) {
+                        document.getElementById(block + "_temp").innerText = "Nhiệt độ: " + data[block].temperature + "°C";
+                        document.getElementById(block + "_humi").innerText = "Độ ẩm: " + data[block].humidity + "%";
+                        document.getElementById(block + "_fire").innerText = "Lửa: " + data[block].fire;
+                        document.getElementById(block + "_time").innerText = "Thời gian: " + timeNow;
+                    }
+                })
+                .catch(err => console.log("Lỗi:", err));
+        }
+
+        setInterval(() => {
+            fetchData12();
+            fetchData34();
+        }, 1000);
+
+        window.onload = function () {
+            fetchData12();
+            fetchData34();
+        };
+
+    </script>
+
+</head>
+<body>
+    <h1>Giám sát 4 Block Cảm biến</h1>
+    {% for i in range(1, 5) %}
+    <div>
+        <h2>Block{{ i }}</h2>
+        <p id="Block{{ i }}_temp">Nhiệt độ: --</p>
+        <p id="Block{{ i }}_humi">Độ ẩm: --</p>
+        <p id="Block{{ i }}_fire">Lửa: --</p>
+        <p id="Block{{ i }}_time">Thời gian: --</p>
+        <hr>
+    </div>
+    {% endfor %}
+</body>
+</html>
