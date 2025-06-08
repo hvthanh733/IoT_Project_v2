@@ -4,7 +4,6 @@ import os
 from datetime import datetime
 from collections import deque
 
-# Trạng thái lưu cho từng block
 previous_data = {}      # Lưu lần gần nhất đã ghi: { block_number: {"temp": ..., "humi": ...} }
 temp_his = {}           # Ghi lại lịch sử từng giá trị đã ghi: { block_number: {"temp": set(), "humi": set()} }
 fire_state_queue = {}   # Hàng đợi lưu 2 trạng thái gần nhất: { block_number: deque }
@@ -25,7 +24,7 @@ def makeFile(block_number):
 
     return file_path
 
-# --- Hàm lưu dữ liệu nếu cần ---
+# --- Hàm lưu dữ liệu ---
 def saveData(temperature, humidity, fire_status, block_number):
     file_path = makeFile(block_number)
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -63,13 +62,13 @@ def saveData(temperature, humidity, fire_status, block_number):
     # --- Xử lý lửa ---
     fire_state_queue[block_number].append(fire_status)
 
-    # Nếu 2 lần liên tiếp đều Fire và trước đó chưa cháy → bắt đầu cháy
+    # Nếu 2 lần liên tiếp đều Fire và trước đó chưa cháy -> bắt đầu cháy
     if list(fire_state_queue[block_number]) == ["Fire", "Fire"] and not was_fire:
         fire_status = "Fire"
         is_fire_active[block_number] = True
         should_save = True
 
-    # Nếu 2 lần liên tiếp đều No Fire và trước đó đang cháy → kết thúc cháy
+    # Nếu 2 lần liên tiếp đều No Fire và trước đó đang cháy -> kết thúc cháy
     if list(fire_state_queue[block_number]) == ["No Fire", "No Fire"] and was_fire:
         fire_status = "No Fire"
         is_fire_active[block_number] = False
@@ -80,7 +79,7 @@ def saveData(temperature, humidity, fire_status, block_number):
         should_save = True
         fire_status = "Fire"
 
-    # Nếu không có gì đặc biệt → không ghi
+    # Nếu không có gì đặc biệt -> không ghi
     if not should_save:
         return
 

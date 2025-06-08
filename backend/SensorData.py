@@ -8,15 +8,12 @@ from Saver import saveData
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-# 2 biến global riêng biệt cho 2 nhóm block
 sensor_data_all12 = {}
 sensor_data_all34 = {}
 
-# 2 lock riêng biệt để tránh tranh chấp thread
 data_lock12 = threading.Lock()
 data_lock34 = threading.Lock()
 
-# Lưu cảm biến đã khởi tạo
 sensor_instances = {}
 
 def get_sensor_instances(block_name):
@@ -42,7 +39,6 @@ def read_block(block_name, data_dict, lock):
         return
 
     try:
-         # Cho sensor thời gian ổn định
         temperature = dht_sensor.temperature
         humidity = dht_sensor.humidity
         fire = fire_sensor.value
@@ -60,7 +56,6 @@ def read_block(block_name, data_dict, lock):
         }
     time.sleep(1)
     
-# Đọc Block1 và Block2
 def value_all_blocks12():
     global sensor_data_all12
     sensor_data_all12 = {}
