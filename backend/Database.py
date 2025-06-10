@@ -90,22 +90,22 @@ cursor = conn.cursor()
 
 # """)
 # Danh sách các bảng cần reset ID
-tables = [
-    "user",
-    "sign_up_queue"
-]
+# tables = [
+#     "user",
+#     "sign_up_queue"
+# ]
 
-for table in tables:
-    cursor.execute(f"DELETE FROM {table};")  # Xoá dữ liệu
-    cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset AUTOINCREMENT (nếu có)
+# for table in tables:
+#     cursor.execute(f"DELETE FROM {table};")  # Xoá dữ liệu
+#     cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset AUTOINCREMENT (nếu có)
 
-#  Thiet lap user
-users = [
-    ("admin", generate_password("1"), None, None, "admin"),
-    ("kien", generate_password("1"), "kien@gmail.com", "0123456789", "user")
-    # ("nam", "1", "nam@mail.com", "0901234567", "user"),
-    # ("mai", "1", "mai@mail.com", "0934567890", "user")
-]
+# #  Thiet lap user
+# users = [
+#     ("admin", generate_password("1"), None, None, "admin"),
+#     ("kien", generate_password("1"), "kien@gmail.com", "0123456789", "user")
+#     # ("nam", "1", "nam@mail.com", "0901234567", "user"),
+#     # ("mai", "1", "mai@mail.com", "0934567890", "user")
+# ]
 # verify_pass("1",generate_password("1"))
 # print(verify_pass("1",generate_password("1")))
 # print(generate_password("1"))
@@ -117,16 +117,30 @@ users = [
 #     print("sai r")
 
 
-for u in users:
-    try:
-        cursor.execute("""
-        INSERT INTO user (username, password, email, phone, role)
-        VALUES (?, ?, ?, ?, ?)
-        """, u)
-    except sqlite3.IntegrityError:
-        print(f"Tài khoản '{u[0]}' đã tồn tại.")
+# for u in users:
+#     try:
+#         cursor.execute("""
+#         INSERT INTO user (username, password, email, phone, role)
+#         VALUES (?, ?, ?, ?, ?)
+#         """, u)
+#     except sqlite3.IntegrityError:
+#         print(f"Tài khoản '{u[0]}' đã tồn tại.")
 
 
+cursor.execute("DROP TABLE IF EXISTS button_alert;")  # XÓA bảng cũ
+
+cursor.execute("""
+CREATE TABLE button_alert (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    time_start TEXT NOT NULL,
+    time_end TEXT,
+    note TEXT
+);
+""")
+
+
+# cursor.execute("DELETE FROM button_alert")
 # Lưu thay đổi và đóng kết nối
 conn.commit()
 conn.close()

@@ -89,3 +89,46 @@ def saveData(temperature, humidity, fire_status, block_number):
     with open(file_path, 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(row)
+
+# Nếu 1 giá trị lớn hơn threshold max min đã set up trước -> báo lỗi luôn
+# def saveDataThreshold:
+
+#     queue (liên tục lớn hơn X (Threshold đã set))
+#     path = logs/threshold/ block{{i}}
+#     định dạng
+#     if queue:
+#         1.tạo path
+
+#         2.time_temp, nhiệt, ẩm, lửa như trên
+
+#     Alert()
+
+# def saveDataButton:
+#     Alert()
+
+
+# 1/
+# 1. Bình thường cháy ví dụ 9:00:00 queue 2 cái là cháy hết -> ghi Fire
+# 2. qeue 2 cái là ko cháy -> ghi No Fire
+# -> tìm được thời gian bắt đầu, kết thúc
+# Nếu có Fire -> Alert (): Có cháy
+
+# 2/ 
+# 4 block value
+# ví dụ block 1 cháy:
+# 9:00:00 30, 30, 0
+# -> Case 2 threshod
+
+# if button1: # Báo cháy
+#     Alert()
+#     mở path /logs/buttonAlert_1/date1/ ghi 9:00:00,30,30,0
+#     ko ghi thời gian kết thúc
+   
+# if threshold:
+#     Alert()
+#     mở path /logs/threshold/date_1/ ghi 9:00:00,30,30,0
+#     ko ghi thời gian kết thúc
+# if not button and threshold()
+#     SaveData
+
+

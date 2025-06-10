@@ -22,3 +22,11 @@ class SignUpQueue(db.Model):
     role     = db.Column(db.String(20), nullable=False, default='user')
     approved = db.Column(db.Boolean, default=False)
 
+# This class defines the structure and attribute of the ButtonAlertEvent table and in the database.
+class ButtonAlertEvent(db.Model):
+    __tablename__ = 'button_alert' 
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date = db.Column(db.String, nullable=False)
+    time_start = db.Column(db.String, nullable=False)
+    time_end = db.Column(db.String, nullable=True)
+    note = db.Column(db.String, nullable=True)

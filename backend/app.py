@@ -18,7 +18,7 @@ from flask import jsonify, request
 from functools import wraps
 from flask_login import LoginManager,login_user
 from flask import session, redirect, url_for
-
+import time
 # test
 # from SensorData import value_all_blocks
 import SensorData
@@ -45,17 +45,17 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 @app.route('/')
-# @login_required
+@login_required
 def default_route():
     session.clear()
     return redirect(url_for('login_form'))
     # return redirect(url_for('test_sensor'))
 # source venv/bin/activate
 
-@app.route("/sensor_data12")
-def sensor_data12():
-    data = SensorData.value_all_blocks12()
-    return data
+# @app.route("/sensor_data12")
+# def sensor_data12():
+#     data = SensorData.value_all_blocks12()
+#     return data
 
 # @app.route("/sensor_data34")
 # def sensor_data34():
@@ -90,18 +90,30 @@ def api_addnewusers():
     new_phone = request.form.get('add_phone')
     new_email = request.form.get('add_email')
 
-    validate_result = UserService.validate_user_fields(new_username, new_phone, new_email)
-    error_messages = {
-        "username_format": "Tên người dùng không đúng định dạng (chỉ chứa chữ/số, không quá 10 ký tự)",
-        "username_space":  "Tên người dùng không được chứa khoảng trắng",
-        "phone_format":    "Số điện thoại phải gồm đúng 10 chữ số",
-        "phone_space":     "Số điện thoại không được chứa khoảng trắng",
-        "email_space":     "Email không được chứa khoảng trắng",
-    }
+    # Kiểm tra hợp lệ từng trường
+    validations = [
+        (UserService.validate_username(new_username), {
+            "username_format": "Tên người dùng không đúng định dạng (chỉ chứa chữ/số, không quá 10 ký tự)",
+            "username_space":  "Tên người dùng không được chứa khoảng trắng",
+        }),
+        (UserService.validate_phone(new_phone), {
+            "phone_format": "Số điện thoại phải gồm đúng 10 chữ số",
+            "phone_space":  "Số điện thoại không được chứa khoảng trắng",
+        }),
+        (UserService.validate_email(new_email), {
+            "email_space": "Email không được chứa khoảng trắng",
+        }),
+    ]
 
-    if validate_result != "ok":
-        return jsonify({'success': False, 'message': error_messages.get(validate_result, "Dữ liệu điền không hợp lệ")})
+    # Xử lý lỗi validation
+    for result, messages in validations:
+        if result != "ok":
+            return jsonify({
+                'success': False,
+                'message': messages.get(result, "Dữ liệu điền không hợp lệ")
+            })
 
+    # Kiểm tra tồn tại
     exist_field = UserService.check_user_exists(new_username, new_phone, new_email)
     if exist_field:
         error_messages2 = {
@@ -109,8 +121,12 @@ def api_addnewusers():
             "phone":    "Số điện thoại đã được sử dụng",
             "email":    "Email đã được đăng ký",
         }
-        return jsonify({'success': False, 'message': error_messages2.get(exist_field, "Tài khoản đã tồn tại")})
+        return jsonify({
+            'success': False,
+            'message': error_messages2.get(exist_field, "Tài khoản đã tồn tại")
+        })
 
+    # Tạo người dùng
     created = UserService.add_newuser(new_username, new_phone, new_email)
     if created:
         return jsonify({'success': True, 'message': 'Thêm người dùng thành công'})
@@ -121,6 +137,14 @@ def api_addnewusers():
 def api_update_username():
     user_id = request.form.get('user_id')
     new_username = request.form.get('new_username')
+
+    result = UserService.validate_username(new_username)
+    if result != "ok":
+        error_messages = {
+            "username_format": "Tên người dùng không đúng định dạng (chỉ chứa chữ/số, tối đa 10 ký tự)",
+            "username_space":  "Tên người dùng không được chứa khoảng trắng"
+        }
+        return jsonify({'success': False, 'message': error_messages.get(result, "Tên người dùng không hợp lệ")})
 
     success = UserService.update_username(user_id, new_username)
     if success:
@@ -133,6 +157,16 @@ def api_update_phone():
     user_id = request.form.get('user_id')
     new_phone = request.form.get('new_phone')
 
+    # Validate phone
+    result = UserService.validate_phone(new_phone)
+    if result != "ok":
+        error_messages = {
+            "phone_format": "Số điện thoại phải gồm đúng 10 chữ số",
+            "phone_space":  "Số điện thoại không được chứa khoảng trắng"
+        }
+        return jsonify({'success': False, 'message': error_messages.get(result, "Số điện thoại không hợp lệ")})
+
+    # Nếu hợp lệ, tiến hành cập nhật
     success = UserService.update_phone(user_id, new_phone)
     if success:
         return jsonify({'success': True, 'message': 'Update thành công'})
@@ -143,6 +177,14 @@ def api_update_phone():
 def api_update_email():
     user_id = request.form.get('user_id')
     new_email = request.form.get('new_email')
+
+    result = UserService.validate_email(new_email)
+    if result != "ok":
+        error_messages = {
+            "email_space": "Email không được chứa khoảng trắng",
+            "email_format": "Email không đúng định dạng hợp lệ"
+        }
+        return jsonify({'success': False, 'message': error_messages.get(result, "Email không hợp lệ")})
 
     success = UserService.update_email(user_id, new_email)
     if success:
@@ -156,10 +198,19 @@ def api_update_password():
     old_password = request.form.get('old_password')
     new_password = request.form.get('new_password')
 
+    # Validate định dạng mật khẩu mới
+    validation_result = UserService.validate_password_format(new_password)
+    if validation_result != "ok":
+        error_messages = {
+            "password_format": "Mật khẩu không đúng định dạng (chỉ chữ/số, tối đa 16 ký tự)",
+            "password_space":  "Mật khẩu không được chứa khoảng trắng"
+        }
+        return jsonify({'success': False, 'message': error_messages.get(validation_result, "Mật khẩu không hợp lệ")})
+
     success = UserService.update_password(user_id, old_password, new_password)
     if success:
         return jsonify({'success': True, 'message': 'Update thành công'})
-    
+
     return jsonify({'success': False, 'message': 'Update không thành công'})
 
 @app.route('/api/users')
@@ -167,6 +218,10 @@ def api_users():
     keyword = request.args.get('keyword', '').strip()
     return UserService.get_users_by_type('user', keyword)
 
+@app.route('/api/button_event', methods=['GET'])
+def api_get_button_events():
+    keyword = request.args.get('keyword', '').strip()
+    return UserService.get_eventButton_by_type(keyword)
 
 @app.route('/api/signup_queue')
 def api_signup_queue():
@@ -251,7 +306,6 @@ def api_change_username(user_id):
     }), 400
 
 
-
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -284,22 +338,27 @@ def sign_up():
         phone = request.form.get('phone_signup')
         email = request.form.get('email_signup')
 
-        # Validate user input
-        errors = {
-            UserService.validate_user_fields(username, phone, email): {
+        validation_errors = [
+            (UserService.validate_username(username), {
                 "username_format": ("Tên đăng nhập không đúng định dạng (chỉ chứa chữ/số, tối đa 10 ký tự, không dấu cách hoặc ký tự đặc biệt)", "username_error"),
-                "phone_format":    ("Số điện thoại phải là số và tối đa 10 chữ số", "phone_error"),
                 "username_space":  ("Tên đăng nhập không được chứa khoảng trắng", "username_space"),
-                "phone_space":     ("Số điện thoại không được chứa khoảng trắng", "phone_space"),
-                "email_space":     ("Email không được chứa khoảng trắng", "email_space"),
-            },
-            UserService.validate_password_format(password): {
+            }),
+            (UserService.validate_phone(phone), {
+                "phone_format": ("Số điện thoại phải là số và đúng 10 chữ số", "phone_error"),
+                "phone_space":  ("Số điện thoại không được chứa khoảng trắng", "phone_space"),
+            }),
+            (UserService.validate_email(email), {
+                "email_space": ("Email không được chứa khoảng trắng", "email_space"),
+                "email_format": ("Email không đúng định dạng hợp lệ", "email_format"),
+            }),
+            (UserService.validate_password_format(password), {
                 "password_format": ("Mật khẩu không đúng định dạng (tối đa 16 ký tự, không dấu cách hoặc ký tự đặc biệt)", "password_error"),
                 "password_space":  ("Mật khẩu không được chứa khoảng trắng", "password_space"),
-            }
-        }
+            }),
+        ]
 
-        for result, mapping in errors.items():
+        # Nếu có lỗi thì hiển thị flash và redirect
+        for result, mapping in validation_errors:
             if result != "ok":
                 msg, category = mapping.get(result, ("Lỗi không xác định", "error"))
                 flash(msg, category)
@@ -328,6 +387,7 @@ def sign_up():
 
 
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login_form():
     session.clear()
@@ -344,7 +404,6 @@ def login_form():
             return redirect(url_for('dashboard'))
         else:
             flash('user not found!', category="fail_login")
-            return redirect(url_for('login_form'))
 
     return render_template('login.html')
 

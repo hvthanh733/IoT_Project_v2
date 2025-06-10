@@ -39,6 +39,7 @@
             const user_informationBtn = document.getElementById("4"); 
             const signup_listuser_managerBtn = document.getElementById("5"); 
             const user_managerBtn = document.getElementById("6"); 
+            const buttonAlert_managerBtn = document.getElementById("7"); 
 
 
             const dashboardPage = document.getElementById("dashboard");  // Nội dung trang dashboard
@@ -47,15 +48,19 @@
             const user_informationPage = document.getElementById("user_information");
             const signup_listuser_managerPage = document.getElementById("signup_list_manager");
             const user_managerPage = document.getElementById("user_manager");
+            const buttonAlert_managerPage = document.getElementById("buttonAlert_manager"); 
 
 
-            if (dashboardPage && thresholdPage && table_eventPage && user_informationPage && user_managerPage) {
-                dashboardPage.style.display = "block";   // Hiện dashboard
+            if (dashboardPage && thresholdPage 
+                && table_eventPage && user_informationPage 
+                && user_managerPage && buttonAlert_managerPage ) {
+                dashboardPage.style.display = "none";   // Hiện dashboard
                 thresholdPage.style.display = "none";    // Ẩn threshold
                 table_eventPage.style.display = "none";
                 user_informationPage.style.display = "none";
                 signup_listuser_managerPage.style.display = "none";
                 user_managerPage.style.display = "none";
+                buttonAlert_managerPage.style.display = "block";
             }
 
             if (dasboardBtn) {
@@ -66,6 +71,7 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
+                    buttonAlert_managerPage.style.display = "none";
 
                 });
             }
@@ -78,6 +84,7 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
+                    buttonAlert_managerPage.style.display = "none";
 
                 });
             }
@@ -90,6 +97,7 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
+                    buttonAlert_managerPage.style.display = "none";
 
                 });
             }
@@ -102,6 +110,7 @@
                     user_informationPage.style.display = "block";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
+                    buttonAlert_managerPage.style.display = "none";
 
                 });
             }
@@ -114,6 +123,7 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "block";
                     user_managerPage.style.display = "none";
+                    buttonAlert_managerPage.style.display = "none";
 
                 });
             }
@@ -126,10 +136,23 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "block";
+                    buttonAlert_managerPage.style.display = "none";
 
                 });
             }
 
+            if (buttonAlert_managerBtn) {
+                buttonAlert_managerBtn.addEventListener('click', function() {
+                    dashboardPage.style.display = "none";
+                    thresholdPage.style.display = "none";
+                    table_eventPage.style.display = "none";
+                    user_informationPage.style.display = "none";
+                    signup_listuser_managerPage.style.display = "none";
+                    user_managerPage.style.display = "none";
+                    buttonAlert_managerPage.style.display = "block";
+
+                });
+            }
 
         });
 
@@ -297,46 +320,22 @@
             });
         }
 
+        // function fetchData12() {
+        //     fetch("/sensor_data12")
+        //         .then(res => res.json())
+        //         .then(data => {
+        //             const now = new Date();
+        //             const timeNow = now.toLocaleTimeString();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-        function fetchData12() {
-            fetch("/sensor_data12")
-                .then(res => res.json())
-                .then(data => {
-                    const now = new Date();
-                    const timeNow = now.toLocaleTimeString();
-
-                    for (let block in data) {
-                        document.getElementById(block + "_temp").innerText = data[block].temperature + "°C";
-                        document.getElementById(block + "_humi").innerText = data[block].humidity + "%";
-                        document.getElementById(block + "_fire").innerText = data[block].fire;
-                        document.getElementById(block + "_time").innerText = timeNow;
-                    }
-                })
-                .catch(err => console.log("Lỗi:", err));
-        }
+        //             for (let block in data) {
+        //                 document.getElementById(block + "_temp").innerText = data[block].temperature + "°C";
+        //                 document.getElementById(block + "_humi").innerText = data[block].humidity + "%";
+        //                 document.getElementById(block + "_fire").innerText = data[block].fire;
+        //                 document.getElementById(block + "_time").innerText = timeNow;
+        //             }
+        //         })
+        //         .catch(err => console.log("Lỗi:", err));
+        // }
         // function fetchData34() {
         //     fetch("/sensor_data34")
         //         .then(res => res.json())
@@ -355,19 +354,19 @@
         // }
 
         setInterval(() => {
-            fetchData12();
+            // fetchData12();
             // fetchData34();
         }, 1000);
 
         window.onload = function () {
-            fetchData12();
+            
             // fetchData34();
             const userId = document.getElementById("user_id_hidden").value;
             console.log('UserId lấy được:', userId);
             searchUser();
+            searchButtonTable()
             searchUserSignUp();
             showinforUser(userId);
-           
         };
 
         function addUser() {
@@ -473,6 +472,25 @@
             });
         }
 
+        function renderButtonAlertTable(users) {
+            const tbody = document.getElementById("user_table_body");
+            tbody.innerHTML = ""; 
+
+            users.forEach(user => {
+                const row = document.createElement("tr");
+                row.setAttribute('id', `user-row-${user.id}`);
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete User</button></td>
+
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
         function deleteUser(userId) {
             if (confirm('Are you sure you want to delete this user?')) {
                 fetch(`/api/users/${userId}`, {
@@ -547,6 +565,82 @@
                 });
             }
         }
+    
+    
+    
+    
+    
+        
+        // Lấy dữ liệu và hiển thị
+        function searchButtonTable() {
+            const keyword = document.getElementById("search_buttonAlertevent").value;
+            console.log("Từ khóa tìm kiếm:", keyword);
+
+            fetch(`/api/button_event?keyword=${encodeURIComponent(keyword)}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Dữ liệu trả về từ API:", data);
+                    if (data.events) {
+                        renderButtonAlertTable(data.events);
+                    } else {
+                        console.error("Search failed");
+                    }
+                })
+                .catch(err => console.error("Fetch error:", err));
+        }
+
+
+        //  reset bảng
+        function resetSearchButtonTable() {
+            document.getElementById("search_buttonAlertevent").value = "";
+            searchButtonTable();
+        }
+
+
+
+        function renderButtonAlertTable(events) {
+            const tbody = document.getElementById("buttonAlert_table_body");
+            tbody.innerHTML = ""; 
+
+            events.forEach(event => {
+                const row = document.createElement("tr");
+                row.setAttribute('id', `event-row-${event.id}`);
+                row.innerHTML = `
+                    <td>${event.id}</td>
+                    <td>${event.date}</td>
+                    <td>${event.time_start}</td>
+                    <td>${event.time_end || '-'}</td>
+                    <td>${event.note || ''}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="delete_event(${event.id})">Delete</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // xóa user
+        // function delete_event(userId) {
+        //     if (confirm('Are you sure you want to delete this event?')) {
+        //         fetch(`/api/users/${userId}`, {
+        //             method: 'DELETE'
+        //         })
+        //         .then(res => res.json())
+        //         .then(data => {
+        //             if (data.success) {
+        //                 alert(data.message);
+        //                 searchUser();
+        //                 const row = document.getElementById(`user-row-${userId}`);
+        //                 if (row) row.remove();
+        //             } else {
+        //                 alert(data.message);
+        //             }
+        //         })
+        //         .catch(err => {
+        //             alert("Error: " + err);
+        //         });
+        //     }
+        // }
+    
+    
     </script>
 </head>
 <body>
@@ -573,6 +667,7 @@
                                     {% if role == 'admin' %}
                                         <li id="6"><p>User Manager</p></li>
                                     {% endif %}
+                                    <li id="7"><p>Table Button Alert</p></li>
                                 </ul>
                             </div>
                             <form class="buttonLogout" action="{{ url_for('logout') }}" method="POST">
@@ -928,7 +1023,6 @@
                                 <div class="col-12">
                                     <div class="list_user row">
                                     </div>
-                                    <div id="userFormContainer"></div>
                                 </div>
                             </div>
                             <div class="row">
@@ -957,6 +1051,90 @@
 
                             
                         </div>
+
+                        <div id="buttonAlert_manager">
+                            
+                            <div class="namepage">
+                                <h3>List Table User</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" id="search_buttonAlertevent" class="form-control" placeholder="Search by date...">
+                                    <button onclick="searchButtonTable()" class="btn btn-primary mt-2">Search</button>
+                                    <button onclick="resetSearchButtonTable()" class="btn btn-primary mt-2"> Refresh Lists</button>
+                                    <button id="btnButtonTable" onclick="addButtonTable()" class="btn btn-primary mt-2">Add Button Event</button>
+
+                                    
+                                    <div id="overlay" style="display: none;"></div>
+
+                                   
+                                    <div id="popup3" style="display: none;">
+                                        <div id="popup_content3">
+                                            <div class="namepage">
+                                                <h3>Form new user information</h3>
+                                            </div>
+                                            <form id="addButtonEvent" method="POST">
+                                                <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
+                                                
+                                                <input type="text" id="add_date" name="add_date" required placeholder="Enter new date"><br><br>
+                                                <input type="text" id="add_time_start" name="add_time_start" required placeholder="Enter new start time"><br><br>
+                                                <input type="text" id="add_time_end" name="add_time_end" required placeholder="Enter new end time"><br><br>
+                                                {{ macros.show_flash('username_error') }}
+                                                {{ macros.show_flash('phone_error') }}
+
+                                                {{ macros.show_flash('username_space') }}
+                                                {{ macros.show_flash('phone_space') }}
+                                                {{ macros.show_flash('email_space') }}
+
+                                                <button onclick="addNewButtonAlertEvent(event)" type="button" class="btn btn-success mt-2">Add new event</button>
+                                                <button onclick="closePopup_ButtonEvent()" type="button" class="btn btn-danger mt-2">Close Form</button>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="list_event_button_alert row">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-striped" id=" button_event_table">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="1">ID</th>
+                                                <th rowspan="1">Date</th>
+                                                <th rowspan="1">Time Start</th>
+                                                <th rowspan="1">Time End</th>
+                                                <th colspan="1">Note</th>
+                                            </tr>
+                                            
+                                        </thead>
+
+                                        <tbody id="buttonAlert_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                
+                            </div>
+
+                            
+                        </div>
+
+
+
+
+
+
+
+
+
                     </div>
                 </div>
             </div>

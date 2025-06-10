@@ -1,4 +1,4 @@
-from models.model_project import SignUpQueue, User 
+from models.model_project import SignUpQueue, User , ButtonAlertEvent
 from models.connect_db import db
 from services.password_hash import generate_password, verify_pass
 from flask import jsonify, request
@@ -15,6 +15,10 @@ class UserRepo:
         user_queue = SignUpQueue.query.filter_by(username=username).first()
         return user or user_queue
 
+    def get_user_by_username_login(username: str):
+        user = User.query.filter_by(username=username).first()
+        return user
+
     def get_user_by_email(email: str):
         user = User.query.filter_by(email=email).first()
         user_queue = SignUpQueue.query.filter_by(email=email).first()
@@ -24,7 +28,7 @@ class UserRepo:
         user = User.query.filter_by(phone=phone).first()
         user_queue = SignUpQueue.query.filter_by(phone=phone).first()
         return user or user_queue
-
+    
     def create_user(username_signup: str, password: str, phone_signup: str, email_signup: str):
         new_user = SignUpQueue(username=username_signup, password=password, phone=phone_signup, email=email_signup,role="user",approved=False)
         db.session.add(new_user)
@@ -58,28 +62,6 @@ class UserRepo:
         db.session.commit()
         return True
 
-    def search_users(user_type, keyword):
-        keyword = keyword.strip()
-
-        if user_type == 'queue':
-            query = SignUpQueue.query
-            if keyword:
-                query = query.filter(SignUpQueue.username.like(f"%{keyword}%"))
-        else:
-            query = User.query.filter(User.role != 'admin')
-            if keyword:
-                query = query.filter(User.username.like(f"%{keyword}%"))
-
-        results = query.all()
-
-        user_list = [{
-            'id': user.id,
-            'username': user.username,
-            'email': user.email,
-            'phone': user.phone
-        } for user in results]
-
-        return jsonify({'users': user_list})
 
     def delete_user(user_id):
         user = User.query.filter_by(id=user_id).first()
@@ -135,12 +117,56 @@ class UserRepo:
             return True
         return False
     
-    def update_password(user_id, old_password:str, new_password:str):
+    def update_password(user_id, old_password: str, new_password: str):
         user = User.query.filter_by(id=user_id).first()
-        hash_new_password = generate_password(new_password)
-        if user:
-            user.password = hash_new_password
-            db.session.commit()
-            return True
-        return False
 
+        if not user:
+            return False
+
+        if generate_password(old_password) != user.password:
+            return False 
+
+        user.password = generate_password(new_password)
+        db.session.commit()
+        return True
+
+    def search_users(user_type, keyword):
+        keyword = keyword.strip()
+
+        if user_type == 'queue':
+            query = SignUpQueue.query
+            if keyword:
+                query = query.filter(SignUpQueue.username.like(f"%{keyword}%"))
+        else:
+            query = User.query.filter(User.role != 'admin')
+            if keyword:
+                query = query.filter(User.username.like(f"%{keyword}%"))
+
+        results = query.all()
+
+        user_list = [{
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'phone': user.phone
+        } for user in results]
+
+        return jsonify({'users': user_list})
+
+    def search_eventButton(keyword):
+        keyword = keyword.strip()
+        query = ButtonAlertEvent.query
+        query = query.filter(ButtonAlertEvent.date.like(f"%{keyword}%"))
+
+        results = query.all()
+
+        event_list = [{
+            'id': event.id,
+            'date': event.date,
+            'time_start': event.time_start,
+            'time_end': event.time_end,
+            'note': event.note,
+
+        } for event in results]
+
+        return jsonify({'events': event_list})

@@ -7,7 +7,7 @@ from Alert import send_email_resetpass
 # Class UserService handle logic
 class UserService:
     def login(username:str, password:str):
-        user = UserRepo.get_user_by_username(username)
+        user = UserRepo.get_user_by_username_login(username)
         # Check user in database table "user"
         if user is None:
             return False, None
@@ -49,6 +49,31 @@ class UserService:
 
         return "ok"
 
+    def validate_username(username: str):
+        if len(username) > 10:
+            return "username_format"
+        if ' ' in username:
+            return "username_space"
+        if not re.fullmatch(r"[A-Za-z0-9]+", username):
+            return "username_format"
+        return "ok"
+    def validate_phone(phone: str):
+        if len(phone) != 10:
+            return "phone_format"
+        if ' ' in phone:
+            return "phone_space"
+        if not re.fullmatch(r"\d{10}", phone):
+            return "phone_format"
+        return "ok"
+    def validate_email(email: str):
+        if ' ' in email:
+            return "email_space"
+        pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+        if not re.match(pattern, email):
+            return "email_format"
+        return "ok"
+
+
     def validate_password_format(password: str):
         if len(password) > 16:
             return "password_format"
@@ -81,8 +106,7 @@ class UserService:
         return UserRepo.reset_password(email, password_hashed)
 
    
-    def get_users_by_type(user_type, keyword):
-        return UserRepo.search_users(user_type, keyword)
+    
 
     def updateUserQueue(userId, isAccepted):
         user = UserRepo.get_user_by_id(userId)
@@ -134,3 +158,16 @@ class UserService:
     def update_password(userid, old_password:str, new_password:str) -> bool:
         user = UserRepo.update_password(userid, old_password, new_password)
         return user
+
+    def update_email(userid, new_email:str) -> bool:
+        user = UserRepo.update_email(userid, new_email)
+        return user
+
+
+
+    def get_users_by_type(user_type, keyword):
+        return UserRepo.search_users(user_type, keyword)
+
+    # Button event
+    def get_eventButton_by_type(keyword):
+        return UserRepo.search_eventButton(keyword)

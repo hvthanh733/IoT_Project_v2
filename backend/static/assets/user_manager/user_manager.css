@@ -1,3 +1,5 @@
+
+#buttonAlert_manager,
 #user_manager,
 #signup_list_manager{
     margin-top: 10px;
@@ -10,17 +12,22 @@
     margin-bottom: 2%;
     box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
 }
-
+#buttonAlert_manager .list_event_button_alert,
 #signup_list_manager .list_user,
 #user_manager .list_user {
     margin-top: 20px;
 }
 
+#buttonAlert_manager input,
 #signup_list_manager input,
 #user_manager input {
     width: 40%;
+
 }
 
+#buttonAlert_manager table tr,
+#buttonAlert_manager table td,
+#buttonAlert_manager table th,
 #signup_list_manager table tr,
 #signup_list_manager table td,
 #signup_list_manager table th,
@@ -86,9 +93,16 @@
 #popup_content .namepage{
     margin-bottom: 5%;
 }
+
+#addButtonEvent input[type="password"],
+#addButtonEvent input[type="email"],
+#addButtonEvent input[type="text"],
 #popup_inputs input[type="password"],
 #popup_inputs input[type="email"],
-#popup_inputs input[type="text"]{
+#popup_inputs input[type="text"],
+#addUserForm input[type="password"],
+#addUserForm input[type="email"],
+#addUserForm input[type="text"]{
     width: 100%;
     padding: 10px 14px;
     border: 3px solid rgba(39, 56, 150, 0.82);

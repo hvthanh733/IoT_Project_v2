@@ -1,0 +1,2 @@
+Nếu tôi add user nhưng trong queue có rồi thì
+-> Add ko thành công vì nó tồn tại
