@@ -21,7 +21,7 @@ from flask import session, redirect, url_for
 import time
 # test
 # from SensorData import value_all_blocks
-import SensorData
+# import SensorData
 
 load_dotenv()
 
@@ -218,10 +218,43 @@ def api_users():
     keyword = request.args.get('keyword', '').strip()
     return UserService.get_users_by_type('user', keyword)
 
+
+# Button alert
 @app.route('/api/button_event', methods=['GET'])
 def api_get_button_events():
     keyword = request.args.get('keyword', '').strip()
     return UserService.get_eventButton_by_type(keyword)
+
+@app.route('/button_event_update_time_end', methods=['POST', 'DEL'])
+def button_event_update_time_end():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            id = data.get("id")
+            time_end = data.get("time_end")
+            time_start = data.get("time_start")
+            
+            success = UserService.update_time_end(id, time_end, time_start)
+
+            if success:
+                return jsonify({"message": "Success"}), 200
+            return jsonify({"message": "Fail"}), 422
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    if request.method == 'DEL':
+        try:
+            data = request.get_json()
+            id = data.get("id")
+
+            resp = UserService.del_date(id)
+            if (resp):
+                return jsonify({"message": "Success"}), 200
+            return jsonify({"message": "Fail"}), 422
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+# Button alert
+
 
 @app.route('/api/signup_queue')
 def api_signup_queue():

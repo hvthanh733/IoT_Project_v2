@@ -1,0 +1,47 @@
+
+
+.scroll_alert_table {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 8px; /* Thêm tí khoảng trống tránh đè vào scrollbar */
+}
+
+/* Scrollbar chung cho tất cả */
+.scroll_alert_table::-webkit-scrollbar {
+    width: 6px; /* Độ rộng scrollbar */
+}
+
+/* Track của scrollbar (nền của thanh cuộn) */
+.scroll_alert_table::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05); /* Màu nền mờ mờ */
+    border-radius: 10px;
+}
+
+/* "Nút" cuộn */
+.scroll_alert_table::-webkit-scrollbar-thumb {
+    background: rgba(100, 100, 100, 0.3); /* Màu nút cuộn mờ */
+    border-radius: 10px;
+}
+
+/* Hover vào "nút" cuộn */
+.scroll_alert_table::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 100, 100, 0.5); /* Hover sáng lên xíu */
+}
+
+/* Tùy chỉnh mũi tên nhỏ trên/dưới thanh cuộn */
+.scroll_alert_table::-webkit-scrollbar-button {
+    height: 8px; /* Chiều cao nút */
+    background: rgba(100, 100, 100, 0.2); /* Màu mờ */
+    border-radius: 50%; /* Bo tròn */
+}
+
+/* Hover vào nút mũi tên */
+.scroll_alert_table::-webkit-scrollbar-button:hover {
+    background: rgba(100, 100, 100, 0.4);
+}
+
+/* Cần thêm để đảm bảo bo góc nếu webkit không tự bo */
+.scroll_alert_table {
+    scrollbar-color: rgba(100, 100, 100, 0.3) rgba(0, 0, 0, 0.05);
+    scrollbar-width: thin;
+}

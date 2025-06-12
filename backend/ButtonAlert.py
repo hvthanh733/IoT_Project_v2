@@ -1,57 +1,76 @@
 from gpiozero import Button
-from signal import pause
+import configparser
 import time
-import sqlite3
 from datetime import datetime
+from Saver import save_event
 
-button = Button(19, pull_up=True, bounce_time=0.2)
+# Lấy chân GPIO từ config.ini
+config = configparser.ConfigParser()
+config.read("config.ini")
+gpio_pin1 = int(config["Button1"]["GPIO"])
+button1 = Button(gpio_pin1, pull_up=True, bounce_time=0.2)
 
 last_press_time = 0
-min_interval = 2.0  # giây giữa 2 lần nhấn
+min_interval = 2.0
+is_processing = False
+click = False
 
-DB_PATH = "iot_system.db"
+button2.when_pressed = ButtonAlert
+def ButtonAlert():
+    click = True
 
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS button_alert (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            time_start TEXT NOT NULL,
-            time_end TEXT,
-            note TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
+    return click
+    # global last_press_time, is_processing
+    # now = time.time()
 
-def save_button_event(note="Ghi chú mặc định"):
-    now = datetime.now()
-    date = now.strftime("2026-07-08")
-    time_start = now.strftime("%H:%M:%S")
+    # if is_processing:
+    #     return
 
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO button_alert (date, time_start, time_end, note)
-        VALUES (?, ?, ?, ?)
-    """, (date, time_start, None, note))
-    conn.commit()
-    conn.close()
+    # if now - last_press_time >= min_interval:
+    #     is_processing = True
+    #     save_event("Human click")
+    #     last_press_time = time.time()
+    #     is_processing = False
 
-    print(f"Đã lưu nút bấm lúc {date} {time_start}")
+# from gpiozero import Button
+# from signal import pause
+# import time
+# from Saver import save_event
 
-def on_press():
-    global last_press_time
-    now = time.time()
-    if now - last_press_time >= min_interval:
-        save_button_event()
-        last_press_time = now
+# from datetime import datetime
+# from LedAlert import blink_led
+# import configparser
 
-print("🟢 Đang chờ nhấn nút GPIO 19...")
+# config = configparser.ConfigParser()
+# config.read("config.ini")
+# gpio_pin = int(config["Button1"]["GPIO"])
+# button1 = Button(gpio_pin, pull_up=True, bounce_time=0.2)
 
-init_db()
-button.when_activated = on_press
+# last_press_time = 0
+# min_interval = 2.0  # giây giữa 2 lần nhấn
+# is_processing = False  
 
-pause()
+
+# def ButtonAlert():
+#     global last_press_time, is_processing
+#     now = time.time()
+
+#     if is_processing:
+#         print("Đang xử lý... bỏ qua lần nhấn này.")
+#         return
+
+#     if now - last_press_time >= min_interval:
+#         is_processing = True
+#         node = "Human click"
+#         save_event(node)
+#         # blink_led()  # mất khoảng 5 giây để nhấp nháy
+#         last_press_time = time.time()
+#         is_processing = False
+
+
+# print("Đang chờ nhấn nút GPIO 19...")
+
+# init_db()
+# button.when_activated = ButtonAlert
+
+# pause()

@@ -3,6 +3,7 @@ from models.model_project import User
 from services.password_hash import generate_password, verify_pass
 import re
 from Alert import send_email_resetpass
+from datetime import datetime
 
 # Class UserService handle logic
 class UserService:
@@ -171,3 +172,16 @@ class UserService:
     # Button event
     def get_eventButton_by_type(keyword):
         return UserRepo.search_eventButton(keyword)
+
+    def update_time_end(id, time_end, time_start):
+        check = False
+        if (time_end > time_start):
+            check = UserRepo.update_time_end(id, time_end)
+            check=True
+        elif (time_end <= time_start):
+            pass
+        return check
+    
+    def del_date(id):
+        resp = UserRepo.del_time(id)
+        return resp

@@ -38,6 +38,10 @@ def send_email_resetpass(receiver_email):
     except Exception as e:
         print("Có lỗi xảy ra:", e)
     return newpassword
+
+# def readDatabase():
+
+# def send_email_to_all()
 # sender_email = os.getenv("GMAIL_ALERT")
 # def send_email_notification(receiver_email, subject, body):
 #     sender_email = "alertiotproject@gmail.com"

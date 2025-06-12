@@ -153,6 +153,7 @@ class UserRepo:
 
         return jsonify({'users': user_list})
 
+    # Button alert
     def search_eventButton(keyword):
         keyword = keyword.strip()
         query = ButtonAlertEvent.query
@@ -170,3 +171,19 @@ class UserRepo:
         } for event in results]
 
         return jsonify({'events': event_list})
+
+    def update_time_end(id, time_end):
+        event = ButtonAlertEvent.query.filter_by(id=id).first()
+        if event and event.time_end:
+            event.time_end = time_end
+            db.session.commit()
+            return True
+        return False
+
+    def del_time(id):
+        event = ButtonAlertEvent.query.filter_by(id=id).first()
+        if (event):
+            db.session.delete(event)
+            db.session.commit()
+            return True
+        return False

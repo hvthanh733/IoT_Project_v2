@@ -5,43 +5,64 @@ from services.password_hash import generate_password, verify_pass
 conn = sqlite3.connect("iot_system.db")
 cursor = conn.cursor()
 
-# Tạo bảng room
+# cursor.execute("DROP TABLE IF EXISTS room")
+
 # cursor.execute("""
 # CREATE TABLE IF NOT EXISTS room (
 #     id INTEGER PRIMARY KEY AUTOINCREMENT,
 #     name_room   TEXT UNIQUE,
-#     size_m2     REAL
+#     size_m2     REAL,
+#     x           INTEGER,
+#     y           INTEGER,
+#     z           INTEGER
 # )
 # """)
+# cursor.execute("""
+# INSERT OR IGNORE INTO room (name_room, size_m2, x, y, z)
+# VALUES (?, ?, ?, ?, ?)
+# """, ("machine room", 20.0, 4, 5, 3))
 
-# # Tạo bảng sensor_block_position
+# Tạo bảng sensor_block_position
+# cursor.execute("DROP TABLE IF EXISTS sensor_block_position")
+
 # cursor.execute("""
 # CREATE TABLE IF NOT EXISTS sensor_block_position (
 #     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     room_id         INTEGER,
-#     x               INTEGER,
-#     y               INTEGER,
+#     room_id INTEGER,
+#     node    TEXT,
+#     x       REAL,
+#     y       REAL,
+#     z       REAL,
 #     FOREIGN KEY (room_id) REFERENCES room(id)
 # )
 # """)
-
-# # Tạo bảng sensor_block_property
 # cursor.execute("""
-# CREATE TABLE IF NOT EXISTS sensor_block_property (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     block_name          TEXT,
-#     sensor_type1        TEXT,
-#     coverage_sensor1    REAL,
-#     sensor_type2        TEXT,
-#     coverage_sensor2    REAL,
-#     threshold_temp_max  REAL,
-#     threshold_temp_min  REAL,
-#     threshold_humi_max  REAL,
-#     threshold_humi_min  REAL,
-#     fire_state_alert    BOOLEAN,
-#     FOREIGN KEY (block_id) REFERENCES sensor_block_position(id)
-# )
-# """)
+# INSERT OR IGNORE INTO sensor_block_position (room_id, node, x, y, z)
+# VALUES (?, ?, ?, ?, ?)
+# """, (1, "Node 1", 0.0, 2.5, 2.5))
+
+
+
+# Tạo bảng sensor_block_property
+# cursor.execute("DROP TABLE IF EXISTS sensor_block_property")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS sensor_block_property (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    block_id                INTEGER UNIQUE,
+    sensor_type1            TEXT,
+    sensor_type2            TEXT,
+    threshold_temp_alert    REAL,
+    threshold_humi_alert    REAL,
+    FOREIGN KEY (block_id) REFERENCES sensor_block_position(id)
+)
+""")
+
+cursor.execute("""
+UPDATE sensor_block_property
+SET threshold_temp_alert = ?, threshold_humi_alert = ?
+WHERE block_id = ?
+""", (60.0, 40.0, 1))
 
 # # Tạo bảng sensor_block_data
 # cursor.execute("""
@@ -126,19 +147,31 @@ cursor = conn.cursor()
 #     except sqlite3.IntegrityError:
 #         print(f"Tài khoản '{u[0]}' đã tồn tại.")
 
+# from datetime import datetime, timedelta
+# cursor.execute("DROP TABLE IF EXISTS button_alert;")  # XÓA bảng cũ
 
-cursor.execute("DROP TABLE IF EXISTS button_alert;")  # XÓA bảng cũ
+# cursor.execute("""
+# CREATE TABLE button_alert (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     date TEXT NOT NULL,
+#     time_start TEXT NOT NULL,
+#     time_end TEXT,
+#     note TEXT
+# );
+# """)
 
-cursor.execute("""
-CREATE TABLE button_alert (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date TEXT NOT NULL,
-    time_start TEXT NOT NULL,
-    time_end TEXT,
-    note TEXT
-);
-""")
 
+# # Thiết lập thông tin
+# base_date = "2025-01-09"
+# start_time = datetime.strptime("09:00:00", "%H:%M:%S")
+
+# # Tạo 10 bản ghi
+# for i in range(10):
+#     time_start_str = (start_time + timedelta(hours=i)).strftime("%H:%M:%S")
+#     cursor.execute("""
+#         INSERT INTO button_alert (date, time_start, time_end, note)
+#         VALUES (?, ?, NULL, ?)
+#     """, (base_date, time_start_str, "Hello"))
 
 # cursor.execute("DELETE FROM button_alert")
 # Lưu thay đổi và đóng kết nối

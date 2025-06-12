@@ -112,3 +112,47 @@
     transition: border-color 0.3s ease;
 }
 
+
+.scroll_list_user_signup,
+.scroll_list_user {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 8px; 
+    scrollbar-color: rgba(100, 100, 100, 0.3) rgba(0, 0, 0, 0.05);
+    scrollbar-width: thin;
+}
+
+.scroll_list_user_signup::-webkit-scrollbar,
+.scroll_list_user::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scroll_list_user_signup::-webkit-scrollbar-track,
+.scroll_list_user::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.scroll_list_user_signup::-webkit-scrollbar-thumb,
+.scroll_list_user::-webkit-scrollbar-thumb {
+    background: rgba(100, 100, 100, 0.3);
+    border-radius: 10px;
+}
+
+.scroll_list_user_signup::-webkit-scrollbar-thumb:hover,
+.scroll_list_user::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 100, 100, 0.5); 
+}
+
+.scroll_list_user_signup::-webkit-scrollbar-button,
+.scroll_list_user::-webkit-scrollbar-button {
+    height: 8px;
+    background: rgba(100, 100, 100, 0.2);
+    border-radius: 50%;
+}
+
+.scroll_list_user_signup::-webkit-scrollbar-button:hover,
+.scroll_list_user::-webkit-scrollbar-button:hover {
+    background: rgba(100, 100, 100, 0.4);
+}
+
