@@ -30,3 +30,14 @@ class ButtonAlertEvent(db.Model):
     time_start = db.Column(db.String, nullable=False)
     time_end = db.Column(db.String, nullable=True)
     note = db.Column(db.String, nullable=True)
+
+
+class SensorBlockProperty(db.Model):
+    __tablename__ = 'sensor_block_property'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    block_id = db.Column(db.Integer, db.ForeignKey('sensor_block_position.id'), unique=True)
+    sensor_type1 = db.Column(db.String, nullable=True)
+    sensor_type2 = db.Column(db.String, nullable=True)
+    threshold_temp_alert = db.Column(db.Float, nullable=True)
+    threshold_humi_alert = db.Column(db.Float, nullable=True)

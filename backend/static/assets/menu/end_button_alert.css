@@ -1,0 +1,34 @@
+.end_button_alert {
+    position: absolute;
+    width: 80%;
+    height: 15%;
+    background-color: rgb(75, 73, 73);
+    bottom: 20%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.end_button_alert:hover {
+    transform: translateY(2px); /* cảm giác như nút bị ấn xuống */
+    box-shadow: 2px 2px 0px 0px rgb(0, 0, 0); /* bóng đổ giảm bớt */
+    background-color: rgb(55, 53, 53); /* tối hơn một chút */
+}
+
+
+.end_button_alert p {
+    color: #ffffffdb;
+    font-size: 18px;
+    font-weight: 400;
+
+}
+
+.end_button_alert.active {
+    background-color: red;
+}

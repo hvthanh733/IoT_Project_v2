@@ -1,4 +1,4 @@
-from repositories.user_repo import UserRepo
+from repositories.user_repo import UserRepo, ThresholdRepo
 from models.model_project import User
 from services.password_hash import generate_password, verify_pass
 import re
@@ -185,3 +185,54 @@ class UserService:
     def del_date(id):
         resp = UserRepo.del_time(id)
         return resp
+
+    def check_threshold_temp(id):
+        take_threshold_temp = ThresholdRepo.threhold_temp(id)
+        return take_threshold_temp
+
+    def get_time_start():
+        today = datetime.now().strftime("%Y-%m-%d")
+        current_time = datetime.now().strftime("%H:%M:%S")
+        take_id , check = ThresholdRepo.get_time_start(today, current_time)
+        return take_id, check
+
+    def get_time_end(id_event):
+        today = datetime.now().strftime("%Y-%m-%d")
+        current_time = datetime.now().strftime("%H:%M:%S")
+
+        return ThresholdRepo.get_time_end(id_event, today, current_time)
+    #     take_threshold_temp = ThresholdRepo.threhold_temp(id)
+    #     take_threshold_humi = ThresholdRepo.threhold_humi(id)
+    #     alert_temp = None
+    #     alert_humi = None
+    #     mix_alert = False
+    #     if high_temp > take_threshold_temp:
+    #         alert_temp = high_temp
+
+    #     if low_humi < take_threshold_humi:
+    #         alert_humi = low_humi
+
+    #     if high_temp > take_threshold_temp and low_humi < take_threshold_humi:
+    #         mix_alert = True
+    #     return alert_temp, alert_humi, mix_alert
+    
+    # def saveLogFireEvent(high_temp, time_high_temp) -> bool:
+    #     today = datetime.now().strftime("%Y-%m-%d")
+    #     note = f"Fire > Threshold ({high_temp}°C)"
+    #     return ThresholdRepo.save_event(today, time_high_temp, None, note)
+
+    # def saveLogHumiEvent(low_humi, time_low_humi) -> bool:
+    #     today = datetime.now().strftime("%Y-%m-%d")
+    #     note = f"Humi < Threshold ({low_humi}%)"
+    #     return ThresholdRepo.save_event(today, time_low_humi, None, note)
+
+    # def saveLogMixEvent(high_temp, time_high_temp, low_humi, time_low_humi) -> bool:
+    #     today = datetime.now().strftime("%Y-%m-%d")
+    #     note = f"Fire > {high_temp}°C & Humi < {low_humi}%"
+    #     return ThresholdRepo.save_event(today, time_high_temp, None, note)
+
+    # def save_end_time_alert():
+    #     now = datetime.now()
+    #     time_end = now.strftime("%H:%M:%S")
+    #     date = now.strftime("%Y-%m-%d")
+    #     return ThresholdRepo.save_end_time_alert(date, time_end)

@@ -16,10 +16,12 @@ import sqlite3
 from flask import jsonify, request
 # from flask_login import login_required, 
 from functools import wraps
-from flask_login import LoginManager,login_user
+from flask_login import LoginManager, login_user
 from flask import session, redirect, url_for
 import time
-# test
+# from LedAlert import blink_led
+from Saver import readCSV, delete_csv_file
+# from ButtonAlert import click_event
 # from SensorData import value_all_blocks
 # import SensorData
 
@@ -63,11 +65,52 @@ def default_route():
 #     return data
 
 
-@app.route('/test_sensor')
-def test_sensor():
-    return render_template('test.html')
+
+# @app.route('/alert/end', methods=['POST'])
+# def end_alert():
 
 
+#     # Gọi xuống service
+#     success = UserService.save_end_time_alert()
+
+#     if success:
+#         return jsonify({"status": "success", "message": "End time saved"})
+#     else:
+#         return jsonify({"status": "fail", "message": "No active alert to update"}), 400
+        
+@app.route('/alert')
+def alert():
+    try:
+        result = readCSV()
+        print("result", result)
+
+        high_temp, time_high_temp = result
+        # 20
+        threshold_temp = UserService.check_threshold_temp(1)
+        
+        if high_temp > threshold_temp:
+            id_event, check = UserService.get_time_start()
+            if check == True:
+                delete_csv_file()
+            return jsonify({"status": "success", "message": "FIREE", "id": id_event})
+            
+        return jsonify({"status": "normal", "message": "no Fire"})
+    except Exception as e:
+        return jsonify({"status": "false", "message": str(e)})
+        # import ButtonAlert
+         
+@app.route('/save_time_end')
+def save_time_end():   
+    try:
+        id_event = request.args.get('id')
+        print("id",id_event)
+        check = UserService.get_time_end(id_event)
+        if check == True:
+            return jsonify({"status": "success", "message": "Save End Time Fire"})
+        return jsonify({"status": "normal", "message": "Cant Save"})
+    except Exception as e:
+        return jsonify({"status": "false", "message": str(e)})
+    
 @app.route('/dashboard')
 def dashboard():
     if(session.get('user_id') != None):
@@ -450,7 +493,7 @@ if __name__ == '__main__':
 
         print(f"http://{tailscale_ip}:8000")
         app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
-       
+
     except Exception as e:
         print(f"Error starting the app: {e}")
 

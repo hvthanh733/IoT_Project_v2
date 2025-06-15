@@ -1,4 +1,4 @@
-from models.model_project import SignUpQueue, User , ButtonAlertEvent
+from models.model_project import SignUpQueue, User , ButtonAlertEvent, SensorBlockProperty
 from models.connect_db import db
 from services.password_hash import generate_password, verify_pass
 from flask import jsonify, request
@@ -187,3 +187,60 @@ class UserRepo:
             db.session.commit()
             return True
         return False
+
+class ThresholdRepo():
+    def threhold_temp(block_id):
+        temp = SensorBlockProperty.query.filter_by(block_id=block_id).first()
+        if temp:
+            return temp.threshold_temp_alert
+        return None
+
+    def get_time_start(today, start_time):
+        new_event = ButtonAlertEvent(date=today, time_start=start_time, time_end=None, note="hehe")
+        db.session.add(new_event)
+        db.session.commit()
+        return new_event.id,True
+    
+    def get_time_end(id, today, end_time):
+        full_end_time = f"{today} {end_time}"
+        event = ButtonAlertEvent.query.filter_by(id=id).first()
+        if event:
+            event.time_end = full_end_time
+            db.session.commit()
+            return True
+        return False
+
+
+    # def threhold_humi(block_id):
+    #     prop = SensorBlockProperty.query.filter_by(block_id=block_id).first()
+    #     if prop:
+    #         return prop.threshold_humi_alert
+    #     return None
+    
+    # def save_event(date, time_start, time_end=None, note=None):
+    #     try:
+    #         event = ButtonAlertEvent(
+    #             date=date,
+    #             time_start=time_start,
+    #             time_end=time_end,
+    #             note=note
+    #         )
+    #         db.session.add(event)
+    #         db.session.commit()
+    #         return True
+    #     except Exception as e:
+    #         print(f"[DB ERROR] Failed to save ButtonAlertEvent: {e}")
+    #         return False
+
+
+    # def save_end_time_alert(date, time_end):
+    #     try:
+    #         event = ButtonAlertEvent.query.filter_by(date=date, time_end=None).order_by(ButtonAlertEvent.id.desc()).first()
+    #         if event:
+    #             event.time_end = time_end
+    #             db.session.commit()
+    #             return True
+    #         return False
+    #     except Exception as e:
+    #         print("Lỗi khi lưu time_end:", e)
+    #         return False

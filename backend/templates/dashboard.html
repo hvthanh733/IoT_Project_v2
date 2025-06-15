@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_middle.css" class="">
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_left.css" class="">
 
+    <link rel="stylesheet" href="../static/assets/menu/end_button_alert.css" class="">
     <link rel="stylesheet" href="../static/assets/data_table/data_table.css" class="">
 
     <link rel="stylesheet" href="../static/assets/threshold_settings/threshold.css" class="">
@@ -359,7 +360,12 @@
         }, 1000);
 
         window.onload = function () {
-            
+            if (localStorage.getItem('state_click') === null) {
+                localStorage.setItem('state_click', 'false');
+            }
+            if (localStorage.getItem('state_fire') === null) {
+                localStorage.setItem('state_fire', 'false');
+            }
             // fetchData34();
             const userId = document.getElementById("user_id_hidden").value;
             console.log('UserId lấy được:', userId);
@@ -367,6 +373,7 @@
             searchButtonTable()
             searchUserSignUp();
             showinforUser(userId);
+            // checkAlertStatus();
         };
 
         function addUser() {
@@ -690,8 +697,33 @@
             });
             }
         }
-    
-    
+        //<div class="end_button_alert" id="endBtn" onclick="click_end_alert()">
+        //<p>End Alert</p>
+        //</div>
+        let id_vent = null;
+        fetch('/alert')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data["status"] == "success") {
+                    id_vent = data["id"];
+                    const button = document.getElementById("endBtn");
+                    button.style.backgroundColor = "red";
+                }
+        });
+
+        function click_end_alert(){
+            fetch(`/save_time_end?id=${id_vent}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data["status"] == "success") {
+                        const button = document.getElementById("endBtn");
+                        button.style.backgroundColor = "rgb(75, 73, 73)";
+                    }
+                   
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -720,6 +752,9 @@
                                     {% endif %}
                                     <li id="7"><p>Table Button Alert</p></li>
                                 </ul>
+                                <div class="end_button_alert" id="endBtn" onclick="click_end_alert()">
+                                    <p>End Alert</p>
+                                </div>
                             </div>
                             <form class="buttonLogout" action="{{ url_for('logout') }}" method="POST">
                                 <button type="submit" class="btn btn-danger mt-2">Log out</button>
@@ -816,36 +851,34 @@
                                             <h3>Block Property</h3>
                                         </div>
                                         <div class="col_roll">
-                                            {% for i in range(1, 5) %}
-                                                <div class="box_khoi {{ i }}">
-                                                    <p class="name_block">Khối {{ i }}</p>
-        
-                                                    <div class="row">
-                                                        <div class="col-7">
-                                                            <div class="box_circle">
-                                                                <div id="alertBoxFire" class="box_fire">
-                                                                    <p>Test</p>
-                                                                </div>
-                                                                <div id="alertBoxTemp" class="box_temp">
-                                                                    <p>Test</p>
-                                                                </div>
-                                                                <div id="alertBoxHumi" class="box_humi">
-                                                                    <p>Test</p>
-                                                                </div>
+                                            <div class="box_khoi {{ i }}">
+                                                <p class="name_block">Khối {{ i }}</p>
+    
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <div class="box_circle">
+                                                            <div id="alertBoxFire" class="box_fire">
+                                                                <p>Test</p>
+                                                            </div>
+                                                            <div id="alertBoxTemp" class="box_temp">
+                                                                <p>Test</p>
+                                                            </div>
+                                                            <div id="alertBoxHumi" class="box_humi">
+                                                                <p>Test</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-5">
-                                                            <div class="content_box">
-                                                                <p><i class="fa-solid fa-temperature-three-quarters"></i> <span id="Block{{ i }}_temp"></span></p>
-                                                                <p><i class="fa-solid fa-water"></i> <span id="Block{{ i }}_humi"></span></p>
-                                                                <p><i id="alertIconFire" class="fa fa-fire" aria-hidden="true"></i> <span id="Block{{ i }}_fire"></span></p>
-                                                                <p><i class="fa-regular fa-clock"></i> <span id="Block{{ i }}_time"></span></p>
-                                                            </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="content_box">
+                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> <span id="Block{{ i }}_temp"></span></p>
+                                                            <p><i class="fa-solid fa-water"></i> <span id="Block{{ i }}_humi"></span></p>
+                                                            <p><i id="alertIconFire" class="fa fa-fire" aria-hidden="true"></i> <span id="Block{{ i }}_fire"></span></p>
+                                                            <p><i class="fa-regular fa-clock"></i> <span id="Block{{ i }}_time"></span></p>
                                                         </div>
-                                                    </div>                                             
-                                                </div>   
-                                            {% endfor %}           
-                                            
+                                                    </div>
+                                                </div>                                             
+                                            </div>   
+                                        
                                         </div>
                                     </div>
                                 </div>
