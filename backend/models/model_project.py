@@ -23,13 +23,18 @@ class SignUpQueue(db.Model):
     approved = db.Column(db.Boolean, default=False)
 
 # This class defines the structure and attribute of the ButtonAlertEvent table and in the database.
-class ButtonAlertEvent(db.Model):
-    __tablename__ = 'button_alert' 
+class FireEvent(db.Model):
+    __tablename__ = 'fire_event' 
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=True)  # thêm dòng này
     date = db.Column(db.String, nullable=False)
     time_start = db.Column(db.String, nullable=False)
     time_end = db.Column(db.String, nullable=True)
     note = db.Column(db.String, nullable=True)
+
+    # (Optional) relationship nếu bạn muốn truy xuất ngược
+    room = db.relationship("Room", backref="fire_event")
 
 
 class SensorBlockProperty(db.Model):

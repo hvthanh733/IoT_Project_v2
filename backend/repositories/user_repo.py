@@ -1,4 +1,4 @@
-from models.model_project import SignUpQueue, User , ButtonAlertEvent, SensorBlockProperty
+from models.model_project import SignUpQueue, User , FireEvent, SensorBlockProperty
 from models.connect_db import db
 from services.password_hash import generate_password, verify_pass
 from flask import jsonify, request
@@ -31,8 +31,11 @@ class UserRepo:
     
     def create_user(username_signup: str, password: str, phone_signup: str, email_signup: str):
         new_user = SignUpQueue(username=username_signup, password=password, phone=phone_signup, email=email_signup,role="user",approved=False)
-        db.session.add(new_user)
-        db.session.commit()
+        if new_user:
+            db.session.add(new_user)
+            db.session.commit()
+            return True
+        return False
 
     def add_newuser(new_username: str, password_hashed: str, new_phone: str,  new_email: str):
         new_user = User(username=new_username, password=password_hashed, phone=new_phone, email=new_email,role="user")
@@ -56,13 +59,14 @@ class UserRepo:
     
     def reset_password(email: str, newpassword: str):
         user = User.query.filter_by(email=email).first()
-        if not user:
-            return False
+        print(f"Resetting password for user: {user}")
+        if user:
+            return True
         user.password = newpassword
         db.session.commit()
-        return True
+        return False
 
-
+    
     def delete_user(user_id):
         user = User.query.filter_by(id=user_id).first()
         if user:
@@ -156,8 +160,8 @@ class UserRepo:
     # Button alert
     def search_eventButton(keyword):
         keyword = keyword.strip()
-        query = ButtonAlertEvent.query
-        query = query.filter(ButtonAlertEvent.date.like(f"%{keyword}%"))
+        query = FireEvent.query
+        query = query.filter(FireEvent.date.like(f"%{keyword}%"))
 
         results = query.all()
 
@@ -173,7 +177,7 @@ class UserRepo:
         return jsonify({'events': event_list})
 
     def update_time_end(id, time_end):
-        event = ButtonAlertEvent.query.filter_by(id=id).first()
+        event = FireEvent.query.filter_by(id=id).first()
         if event and event.time_end:
             event.time_end = time_end
             db.session.commit()
@@ -181,7 +185,7 @@ class UserRepo:
         return False
 
     def del_time(id):
-        event = ButtonAlertEvent.query.filter_by(id=id).first()
+        event = FireEvent.query.filter_by(id=id).first()
         if (event):
             db.session.delete(event)
             db.session.commit()
@@ -196,14 +200,14 @@ class ThresholdRepo():
         return None
 
     def get_time_start(today, start_time):
-        new_event = ButtonAlertEvent(date=today, time_start=start_time, time_end=None, note="hehe")
+        new_event = FireEvent(date=today, time_start=start_time, time_end=None, note="hehe")
         db.session.add(new_event)
         db.session.commit()
         return new_event.id,True
     
     def get_time_end(id, today, end_time):
         full_end_time = f"{today} {end_time}"
-        event = ButtonAlertEvent.query.filter_by(id=id).first()
+        event = FireEvent.query.filter_by(id=id).first()
         if event:
             event.time_end = full_end_time
             db.session.commit()
@@ -219,7 +223,7 @@ class ThresholdRepo():
     
     # def save_event(date, time_start, time_end=None, note=None):
     #     try:
-    #         event = ButtonAlertEvent(
+    #         event = FireEvent(
     #             date=date,
     #             time_start=time_start,
     #             time_end=time_end,
@@ -229,13 +233,13 @@ class ThresholdRepo():
     #         db.session.commit()
     #         return True
     #     except Exception as e:
-    #         print(f"[DB ERROR] Failed to save ButtonAlertEvent: {e}")
+    #         print(f"[DB ERROR] Failed to save FireEvent: {e}")
     #         return False
 
 
     # def save_end_time_alert(date, time_end):
     #     try:
-    #         event = ButtonAlertEvent.query.filter_by(date=date, time_end=None).order_by(ButtonAlertEvent.id.desc()).first()
+    #         event = FireEvent.query.filter_by(date=date, time_end=None).order_by(FireEvent.id.desc()).first()
     #         if event:
     #             event.time_end = time_end
     #             db.session.commit()

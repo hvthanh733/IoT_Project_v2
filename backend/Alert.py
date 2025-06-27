@@ -15,61 +15,58 @@ sender_email = os.getenv("GMAIL_SEND_ALERT")
 receiver_email_test = "hthanhjj0703@gmail.com"
 password = os.getenv("PASSWORD_GMAIL_ALERT")
 
+def send_signup_email(receiver_email):
+    body = "Your request for registration was sent successfully."
+    subject = "IoT - Signup Confirmation"
+    send_email_base(receiver_email, subject, body)
 
-def send_email_resetpass(receiver_email):
-    newpassword = generate_random_password()
+def send_password_recovery_email(receiver_email):
+    new_password = generate_random_password()
+    body = f"Your new password is: {new_password}\n\nPlease change it after logging in."
+    subject = "IoT - Password Recovery"
+    send_email_base(receiver_email, subject, body)
+    return new_password
 
+
+def send_email_base(receiver_email, subject, body):
     message = MIMEMultipart()
     message["From"] = sender_email
-    message["To"] = receiver_email_test
-    message["Subject"] = "IoT - Sending New Password"
-
-    body = f"Your new password is: {newpassword}\n\nPlease change it after logging in."
-
-
+    message["To"] = receiver_email
+    message["Subject"] = subject
     message.attach(MIMEText(body, "plain"))
-    
+
     try:
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls() 
+            server.starttls()
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
-            print("Email đã được gửi thành công!")
+            print("Email sent successfully!")
     except Exception as e:
-        print("Có lỗi xảy ra:", e)
-    return newpassword
+        print("Email sending error:", e)
 
-# def readDatabase():
 
-# def send_email_to_all()
-# sender_email = os.getenv("GMAIL_ALERT")
-# def send_email_notification(receiver_email, subject, body):
-#     sender_email = "alertiotproject@gmail.com"
-#     password = "dvnj riqm rlvp cxyd"  # App password từ Google
+# def send_email(receiver_email, note):
+#     newpassword = generate_random_password()
+#     if note == "sign up message":
+#         body = "Your request for register is send successful"
+#     if note == "password recovery":
+#         body = f"Your new password is: {newpassword}\n\nPlease change it after logging in."
 
-#     # Tạo nội dung email
 #     message = MIMEMultipart()
 #     message["From"] = sender_email
 #     message["To"] = receiver_email
-#     message["Subject"] = subject
+#     message["Subject"] = "IoT - Sending New Password"
+
 
 #     message.attach(MIMEText(body, "plain"))
-
+    
 #     try:
 #         with smtplib.SMTP("smtp.gmail.com", 587) as server:
-#             server.starttls()  # Bắt đầu giao tiếp an toàn
+#             server.starttls() 
 #             server.login(sender_email, password)
-#             server.sendmail(sender_email, receiver_email, message.as_string())
-#             print("Email đã được gửi đến", receiver_email)
+#             server.sendmail(sender_email, receiver_email_test, message.as_string())
+#             print("Email send succesfully!")
 #     except Exception as e:
-#         print("Lỗi khi gửi email:", e)
+#         print("Error:", e)
+#     return newpassword
 
-
-# def alertZalo():
-#     bot = ZaloAPI(phone="0923775005", password="vinahey309", imei="IMEI", session_cookies=COOKIES)
-
-#     friends = bot.getFriends()
-#     for friend in friends:
-#         print(friend["user_id"], "-", friend["display_name"])
-
-# alertZalo()

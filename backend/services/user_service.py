@@ -2,7 +2,7 @@ from repositories.user_repo import UserRepo, ThresholdRepo
 from models.model_project import User
 from services.password_hash import generate_password, verify_pass
 import re
-from Alert import send_email_resetpass
+from Alert import send_password_recovery_email, send_signup_email
 from datetime import datetime
 
 # Class UserService handle logic
@@ -51,36 +51,24 @@ class UserService:
         return "ok"
 
     def validate_username(username: str):
-        if len(username) > 10:
-            return "username_format"
-        if ' ' in username:
-            return "username_space"
-        if not re.fullmatch(r"[A-Za-z0-9]+", username):
+        if (len(username) > 10) or (' ' in username) or not re.fullmatch(r"[A-Za-z0-9]+", username):
             return "username_format"
         return "ok"
+
     def validate_phone(phone: str):
-        if len(phone) != 10:
-            return "phone_format"
-        if ' ' in phone:
-            return "phone_space"
-        if not re.fullmatch(r"\d{10}", phone):
+        if (len(phone) != 10) or (' ' in phone) or not re.fullmatch(r"\d{10}", phone):
             return "phone_format"
         return "ok"
+
     def validate_email(email: str):
-        if ' ' in email:
-            return "email_space"
         pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
-        if not re.match(pattern, email):
+        if (' ' in email) or not re.match(pattern, email):
             return "email_format"
         return "ok"
 
 
     def validate_password_format(password: str):
-        if len(password) > 16:
-            return "password_format"
-        if ' ' in password:
-            return "password_space"
-        if not re.fullmatch(r"[A-Za-z0-9]+", password):
+        if (len(password) > 16) or (' ' in password) or not re.fullmatch(r"[A-Za-z0-9]+", password):
             return "password_format"
         return "ok"
 
@@ -97,16 +85,24 @@ class UserService:
             return True, check_email
         return None
 
-    # Create user form sign_up form
-    def create_user(username_signup: str, password: str, email_signup: str, phone_signup: str) -> bool:
+    # Create user form sign_up form     DONE
+    def create_user(username_signup: str, password: str, phone_signup: str, email_signup: str) -> bool:
         password_hashed = generate_password(password)
-        UserRepo.create_user(username_signup, password_hashed, email_signup, phone_signup)
-    
+        new_user = UserRepo.create_user(username_signup, password_hashed, phone_signup, email_signup)
+        if new_user:
+            send_signup_email(email_signup)
+            # print(email_signup)
+            return True
+        return False
+
     def reset_newpassword(email: str, newpassword: str) -> bool:
         password_hashed = generate_password(newpassword)
         return UserRepo.reset_password(email, password_hashed)
 
-   
+    def check_email_user(email: str) -> bool:
+        user = User.query.filter_by(email=email).first()
+        return user is not None
+
     
 
     def updateUserQueue(userId, isAccepted):
@@ -142,7 +138,7 @@ class UserService:
         return message, success
 
     def add_newuser(new_username: str,  new_phone: str, new_email: str) -> bool:
-        newpass = send_email_resetpass(new_email)
+        newpass = send_email(new_email)
         password_hashed = generate_password(newpass)
         new_user = UserRepo.add_newuser(new_username , password_hashed, new_phone, new_email)
         return new_user

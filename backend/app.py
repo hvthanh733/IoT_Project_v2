@@ -10,7 +10,7 @@ import re
 from models.connect_db import db  # chỉ import db từ connect_db
 from services.user_service import UserService
 import subprocess
-from Alert import send_email_resetpass
+from Alert import send_signup_email, send_password_recovery_email
 from services.password_hash import generate_password, verify_pass
 import sqlite3
 from flask import jsonify, request
@@ -385,21 +385,19 @@ def api_change_username(user_id):
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
-        # username_forgot_password = request.form.get('username_forgot_password')
+
         email_forgot_password = request.form.get('email_forgot_password')
 
-        result = UserService.check_email(email_forgot_password)
-        print(result)
-        if result:
-            # result trả về (True, user_obj, email_obj) nếu tồn tại
-            newpass = send_email_resetpass(email_forgot_password) 
-            check = UserService.reset_newpassword(email_forgot_password, newpass)
-            if check:
-                flash("Đã gửi yêu cầu thay đổi mật khẩu thành công", "reset_pass_successfull")
+        truth_user = UserService.check_email_user(email_forgot_password)
+        if truth_user:
+            newpass = send_password_recovery_email(email_forgot_password)
+            updated = UserService.reset_newpassword(email_forgot_password, newpass)
+            if updated:
+                flash("Send request recovery password successful", "reset_pass_successfull")
             else:
-                flash("Đã gửi email nhưng không lưu được mật khẩu mới", "reset_fail_db")
+                flash("Send request recovery password not successful", "reset_fail_db")
         else:
-            flash("Username hoặc email không tồn tại", "wrong_user_or_pass")
+            flash("The username does not exist or account in sign up queue", "wrong_user_or_pass")
         
         return redirect(url_for('forgot_password'))
     
@@ -413,49 +411,44 @@ def sign_up():
         password = request.form.get('password_signup')
         phone = request.form.get('phone_signup')
         email = request.form.get('email_signup')
-
         validation_errors = [
             (UserService.validate_username(username), {
-                "username_format": ("Tên đăng nhập không đúng định dạng (chỉ chứa chữ/số, tối đa 10 ký tự, không dấu cách hoặc ký tự đặc biệt)", "username_error"),
-                "username_space":  ("Tên đăng nhập không được chứa khoảng trắng", "username_space"),
+                "username_format": ("Invalid name format (just text/number, max 10 character, no space or special character)", "username_error"),
             }),
             (UserService.validate_phone(phone), {
-                "phone_format": ("Số điện thoại phải là số và đúng 10 chữ số", "phone_error"),
-                "phone_space":  ("Số điện thoại không được chứa khoảng trắng", "phone_space"),
+                "phone_format": ("The phone number must be numeric, exactly 10 digits long, and contain no spaces", "phone_error"),
             }),
             (UserService.validate_email(email), {
-                "email_space": ("Email không được chứa khoảng trắng", "email_space"),
-                "email_format": ("Email không đúng định dạng hợp lệ", "email_format"),
+                "email_format": ("The email is not in a valid format or contains spaces", "email_format"),
             }),
             (UserService.validate_password_format(password), {
-                "password_format": ("Mật khẩu không đúng định dạng (tối đa 16 ký tự, không dấu cách hoặc ký tự đặc biệt)", "password_error"),
-                "password_space":  ("Mật khẩu không được chứa khoảng trắng", "password_space"),
+                "password_format": ("The password is not in a valid format (maximum 16 characters, no spaces or special characters)", "password_error"),
             }),
         ]
 
-        # Nếu có lỗi thì hiển thị flash và redirect
         for result, mapping in validation_errors:
             if result != "ok":
-                msg, category = mapping.get(result, ("Lỗi không xác định", "error"))
+                msg, category = mapping.get(result, ("Unknown error", "error"))
                 flash(msg, category)
                 return redirect(url_for('sign_up'))
 
-        # Kiểm tra trùng dữ liệu
         exists = UserService.check_user_exists(username, phone, email)
         exist_errors = {
-            "username": ("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác", "username_exist"),
-            "email":    ("Email đã được đăng ký, vui lòng nhập email khác", "email_exist"),
-            "phone":    ("Số điện thoại đã được đăng ký, vui lòng nhập số khác", "number_exist"),
+            "username": ("The username already exists. Please choose a different one", "username_exist"),
+            "email":    ("The email has already been registered. Please enter a different one", "email_exist"),
+            "phone":    ("The phone number has already been registered. Please enter a different one.", "number_exist"),
         }
 
         if exists:
-            msg, category = exist_errors.get(exists, ("Thông tin đã tồn tại", "exist_error"))
+            msg, category = exist_errors.get(exists, ("The information already exists", "exist_error"))
             flash(msg, category)
             return redirect(url_for('sign_up'))
 
-        # Tạo user
-        UserService.create_user(username, password, phone, email)
-        flash('Đã gửi yêu cầu tạo tài khoản đến admin', 'signup_successfull')
+        # Create user
+        new_user = UserService.create_user(username, password, phone, email)
+        if new_user:
+            flash('Request register sent to admin', 'signup_successfull')
+        
         return redirect(url_for('sign_up'))
 
     return render_template('sign_up.html')

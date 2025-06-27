@@ -7,6 +7,16 @@ cursor = conn.cursor()
 
 # cursor.execute("DROP TABLE IF EXISTS room")
 
+
+# # cursor.execute("""
+# # INSERT OR IGNORE INTO room (name_room, size_m2, x, y, z)
+# # VALUES (?, ?, ?, ?, ?)
+# # """, ("machine room", 20.0, 4, 5, 3))
+
+# # Tạo bảng sensor_block_position
+# # cursor.execute("DROP TABLE IF EXISTS sensor_block_position")
+
+
 # cursor.execute("""
 # CREATE TABLE IF NOT EXISTS room (
 #     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,13 +27,7 @@ cursor = conn.cursor()
 #     z           INTEGER
 # )
 # """)
-# cursor.execute("""
-# INSERT OR IGNORE INTO room (name_room, size_m2, x, y, z)
-# VALUES (?, ?, ?, ?, ?)
-# """, ("machine room", 20.0, 4, 5, 3))
 
-# Tạo bảng sensor_block_position
-# cursor.execute("DROP TABLE IF EXISTS sensor_block_position")
 
 # cursor.execute("""
 # CREATE TABLE IF NOT EXISTS sensor_block_position (
@@ -36,40 +40,16 @@ cursor = conn.cursor()
 #     FOREIGN KEY (room_id) REFERENCES room(id)
 # )
 # """)
+
+
 # cursor.execute("""
-# INSERT OR IGNORE INTO sensor_block_position (room_id, node, x, y, z)
-# VALUES (?, ?, ?, ?, ?)
-# """, (1, "Node 1", 0.0, 2.5, 2.5))
-
-
-
-# Tạo bảng sensor_block_property
-# cursor.execute("DROP TABLE IF EXISTS sensor_block_property")
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS sensor_block_property (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    block_id                INTEGER UNIQUE,
-    sensor_type1            TEXT,
-    sensor_type2            TEXT,
-    threshold_temp_alert    REAL,
-    threshold_humi_alert    REAL,
-    FOREIGN KEY (block_id) REFERENCES sensor_block_position(id)
-)
-""")
-
-cursor.execute("""
-UPDATE sensor_block_property
-SET threshold_temp_alert = ?, threshold_humi_alert = ?
-WHERE block_id = ?
-""", (60.0, 40.0, 1))
-
-# # Tạo bảng sensor_block_data
-# cursor.execute("""
-# CREATE TABLE IF NOT EXISTS sensor_block_data (
+# CREATE TABLE IF NOT EXISTS sensor_block_property (
 #     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     date                DATETIME,
-#     block_id            INTEGER,
+#     block_id                INTEGER UNIQUE,
+#     sensor_type1            TEXT,
+#     sensor_type2            TEXT,
+#     threshold_temp_alert    REAL,
+#     threshold_humi_alert    REAL,
 #     max_temp            REAL,
 #     min_temp            REAL,
 #     time_max_temp       TIME,
@@ -86,18 +66,28 @@ WHERE block_id = ?
 # )
 # """)
 
-# # Tạo bảng user
+# # Tạo bảng mới
 # cursor.execute("""
-# CREATE TABLE IF NOT EXISTS user (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     username TEXT UNIQUE NOT NULL,
-#     password TEXT NOT NULL,
-#     email TEXT,
-#     phone TEXT,
-#     role TEXT CHECK(role IN ('admin', 'user')) DEFAULT 'user'
-# )
+#     CREATE TABLE fire_event (
+#         id INTEGER PRIMARY KEY AUTOINCREMENT,
+#         room_id INTEGER,
+#         date TEXT NOT NULL,
+#         time_start TEXT NOT NULL,
+#         time_end TEXT,
+#         note TEXT
+#     );
 # """)
-# Tạo bảng user
+# # cursor.execute("""
+# # CREATE TABLE IF NOT EXISTS user (
+# #     id INTEGER PRIMARY KEY AUTOINCREMENT,
+# #     username TEXT UNIQUE NOT NULL,
+# #     password TEXT NOT NULL,
+# #     email TEXT,
+# #     phone TEXT,
+# #     role TEXT CHECK(role IN ('admin', 'user')) DEFAULT 'user'
+# # )
+# # """)
+
 # cursor.execute("""
 # CREATE TABLE IF NOT EXISTS sign_up_queue (
 #     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -110,55 +100,101 @@ WHERE block_id = ?
 # );
 
 # """)
-# Danh sách các bảng cần reset ID
+
+
+# # cursor.execute("""
+# # UPDATE sensor_block_property
+# # SET threshold_temp_alert = ?, threshold_humi_alert = ?
+# # WHERE block_id = ?
+# # """, (60.0, 40.0, 1))
+
+# # # Tạo bảng user
+# cursor.execute("""
+# CREATE TABLE IF NOT EXISTS user (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     username TEXT UNIQUE NOT NULL,
+#     password TEXT NOT NULL,
+#     email TEXT,
+#     phone TEXT,
+#     role TEXT CHECK(role IN ('admin', 'user')) DEFAULT 'user'
+# )
+# """)
+
+
+
+
+admin_username = "admin"
+admin_password = "1"
+hashed_password = generate_password(admin_password)
+admin_email = "admin@example.com"
+admin_phone = "0123456789"
+
+try:
+    cursor.execute("""
+        INSERT INTO user (username, password, email, phone, role)
+        VALUES (?, ?, ?, ?, 'admin')
+    """, (admin_username, hashed_password, admin_email, admin_phone))
+    print("[+] Admin account created successfully.")
+except sqlite3.IntegrityError:
+    print("[!] Admin account already exists.")
+
+# # Tạo bảng user
+
+# # Danh sách các bảng cần reset ID
 # tables = [
 #     "user",
 #     "sign_up_queue"
 # ]
 
-# for table in tables:
-#     cursor.execute(f"DELETE FROM {table};")  # Xoá dữ liệu
-#     cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset AUTOINCREMENT (nếu có)
+# # for table in tables:
+# #     cursor.execute(f"DELETE FROM {table};")  # Xoá dữ liệu
+# #     cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table}';")  # Reset AUTOINCREMENT (nếu có)
 
-# #  Thiet lap user
+# # #  Thiet lap user
 # users = [
 #     ("admin", generate_password("1"), None, None, "admin"),
 #     ("kien", generate_password("1"), "kien@gmail.com", "0123456789", "user")
 #     # ("nam", "1", "nam@mail.com", "0901234567", "user"),
 #     # ("mai", "1", "mai@mail.com", "0934567890", "user")
 # ]
-# verify_pass("1",generate_password("1"))
-# print(verify_pass("1",generate_password("1")))
-# print(generate_password("1"))
-# x = pass_controller.hash_password("1")
-# kq = pass_controller.verify_password("1", x)
-# if kq == True:
-#     print("oke r")
-# else:
-#     print("sai r")
+# # verify_pass("1",generate_password("1"))
+# # print(verify_pass("1",generate_password("1")))
+# # print(generate_password("1"))
+# # x = pass_controller.hash_password("1")
+# # kq = pass_controller.verify_password("1", x)
+# # if kq == True:
+# #     print("oke r")
+# # else:
+# #     print("sai r")
 
 
-# for u in users:
-#     try:
-#         cursor.execute("""
-#         INSERT INTO user (username, password, email, phone, role)
-#         VALUES (?, ?, ?, ?, ?)
-#         """, u)
-#     except sqlite3.IntegrityError:
-#         print(f"Tài khoản '{u[0]}' đã tồn tại.")
+# # for u in users:
+# #     try:
+# #         cursor.execute("""
+# #         INSERT INTO user (username, password, email, phone, role)
+# #         VALUES (?, ?, ?, ?, ?)
+# #         """, u)
+# #     except sqlite3.IntegrityError:
+# #         print(f"Tài khoản '{u[0]}' đã tồn tại.")
 
-# from datetime import datetime, timedelta
-# cursor.execute("DROP TABLE IF EXISTS button_alert;")  # XÓA bảng cũ
+# # from datetime import datetime, timedelta
+# # cursor.execute("DROP TABLE IF EXISTS button_alert;")  # XÓA bảng cũ
 
-# cursor.execute("""
-# CREATE TABLE button_alert (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     date TEXT NOT NULL,
-#     time_start TEXT NOT NULL,
-#     time_end TEXT,
-#     note TEXT
-# );
-# """)
+# # Xóa bảng cũ
+# # cursor.execute("DROP TABLE button_alert;")
+
+# # # Tạo bảng mới
+# # cursor.execute("""
+# #     CREATE TABLE fire_event (
+# #         id INTEGER PRIMARY KEY AUTOINCREMENT,
+# #         room_id INTEGER,
+# #         date TEXT NOT NULL,
+# #         time_start TEXT NOT NULL,
+# #         time_end TEXT,
+# #         note TEXT
+# #     );
+# # """)
+
 
 
 # # Thiết lập thông tin
