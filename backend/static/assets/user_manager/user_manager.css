@@ -12,6 +12,7 @@
     margin-bottom: 2%;
     box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
 }
+
 #buttonAlert_manager .list_event_button_alert,
 #signup_list_manager .list_user,
 #user_manager .list_user {
@@ -70,7 +71,7 @@
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* mờ */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
 
@@ -115,7 +116,7 @@
 
 .scroll_list_user_signup,
 .scroll_list_user {
-    max-height: 70vh;
+    max-height: 65vh;
     overflow-y: auto;
     padding-right: 8px; 
     scrollbar-color: rgba(100, 100, 100, 0.3) rgba(0, 0, 0, 0.05);

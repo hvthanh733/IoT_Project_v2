@@ -15,7 +15,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../static/assets/reset.css" class="">
 
-    <link rel="stylesheet" href="../static/assets/dashboard/dashboard.css" class="">
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_right.css" class="">
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_middle.css" class="">
     <link rel="stylesheet" href="../static/assets/dashboard/dashboard_left.css" class="">
@@ -35,13 +34,13 @@
     <script>
         
         document.addEventListener('DOMContentLoaded', function() {
-            const dasboardBtn = document.getElementById("1");
+            const dashboardBtn = document.getElementById("1");
             const thresholdBtn = document.getElementById("2");
             const table_eventBtn = document.getElementById("3");
             const user_informationBtn = document.getElementById("4"); 
             const signup_listuser_managerBtn = document.getElementById("5"); 
             const user_managerBtn = document.getElementById("6"); 
-            const buttonAlert_managerBtn = document.getElementById("7"); 
+            const fire_event_managerBtn = document.getElementById("7"); 
 
 
             const dashboardPage = document.getElementById("dashboard");
@@ -50,44 +49,67 @@
             const user_informationPage = document.getElementById("user_information");
             const signup_listuser_managerPage = document.getElementById("signup_list_manager");
             const user_managerPage = document.getElementById("user_manager");
-            const buttonAlert_managerPage = document.getElementById("buttonAlert_manager"); 
+            const fire_event_managerPage = document.getElementById("buttonAlert_manager"); 
 
 
             if (dashboardPage && thresholdPage 
                 && table_eventPage && user_informationPage 
-                && user_managerPage && buttonAlert_managerPage ) {
-                dashboardPage.style.display = "none";
+                && user_managerPage && fire_event_managerPage ) {
+                dashboardBtn.style.backgroundColor = "darkblue";
+                // table_eventBtn.style.backgroundColor = "5D60EF";
+                
+                dashboardPage.style.display = "block";
                 thresholdPage.style.display = "none";
                 table_eventPage.style.display = "none";
                 user_informationPage.style.display = "none";
                 signup_listuser_managerPage.style.display = "none";
-                user_managerPage.style.display = "block";
-                buttonAlert_managerPage.style.display = "none";
+                user_managerPage.style.display = "none";
+                fire_event_managerPage.style.display = "none";
+
             }
 
-            if (dasboardBtn) {
-                dasboardBtn.addEventListener('click', function() {
+            if (dashboardBtn) {
+                dashboardBtn.addEventListener('click', function() {
+                    
                     dashboardPage.style.display = "block";
                     thresholdPage.style.display = "none";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
-                    buttonAlert_managerPage.style.display = "none";
+                    fire_event_managerPage.style.display = "none";
+
+                    dashboardBtn.style.backgroundColor = "darkblue";
+                    thresholdBtn.style.backgroundColor = "#5D60EF";
+                    table_eventBtn.style.backgroundColor = "#5D60EF";
+                    user_informationBtn.style.backgroundColor = "#5D60EF";
+                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+                    user_managerBtn.style.backgroundColor = "#5D60EF";
+                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+
 
                 });
             }
 
             if (thresholdBtn) {
                 thresholdBtn.addEventListener('click', function() {
+                    
                     dashboardPage.style.display = "none";
                     thresholdPage.style.display = "block";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
-                    buttonAlert_managerPage.style.display = "none";
+                    fire_event_managerPage.style.display = "none";
 
+                    
+                    dashboardBtn.style.backgroundColor = "#5D60EF";
+                    thresholdBtn.style.backgroundColor = "darkblue";
+                    table_eventBtn.style.backgroundColor = "#5D60EF";
+                    user_informationBtn.style.backgroundColor = "#5D60EF";
+                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+                    user_managerBtn.style.backgroundColor = "#5D60EF";
+                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
                 });
             }
 
@@ -99,8 +121,17 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
-                    buttonAlert_managerPage.style.display = "none";
+                    fire_event_managerPage.style.display = "none";
+                    table_eventBtn.style.backgroundColor = "darkblue";
 
+                    
+                    dashboardBtn.style.backgroundColor = "#5D60EF";
+                    thresholdBtn.style.backgroundColor = "#5D60EF";
+                    table_eventBtn.style.backgroundColor = "darkblue";
+                    user_informationBtn.style.backgroundColor = "#5D60EF";
+                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+                    user_managerBtn.style.backgroundColor = "#5D60EF";
+                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
                 });
             }
 
@@ -112,8 +143,16 @@
                     user_informationPage.style.display = "block";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
-                    buttonAlert_managerPage.style.display = "none";
+                    fire_event_managerPage.style.display = "none";
 
+                    
+                    dashboardBtn.style.backgroundColor = "#5D60EF";
+                    thresholdBtn.style.backgroundColor = "#5D60EF";
+                    table_eventBtn.style.backgroundColor = "#5D60EF";
+                    user_informationBtn.style.backgroundColor = "darkblue";
+                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+                    user_managerBtn.style.backgroundColor = "#5D60EF";
+                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
                 });
             }
 
@@ -125,8 +164,16 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "block";
                     user_managerPage.style.display = "none";
-                    buttonAlert_managerPage.style.display = "none";
+                    fire_event_managerPage.style.display = "none";
 
+                   
+                    dashboardBtn.style.backgroundColor = "#5D60EF";
+                    thresholdBtn.style.backgroundColor = "#5D60EF";
+                    table_eventBtn.style.backgroundColor = "#5D60EF";
+                    user_informationBtn.style.backgroundColor = "#5D60EF";
+                    signup_listuser_managerBtn.style.backgroundColor = "darkblue";
+                    user_managerBtn.style.backgroundColor = "#5D60EF";
+                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
                 });
             }
 
@@ -138,119 +185,42 @@
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "block";
-                    buttonAlert_managerPage.style.display = "none";
+                    fire_event_managerPage.style.display = "none";
+                    user_managerBtn.style.backgroundColor = "darkblue";
 
+                    dashboardBtn.style.backgroundColor = "#5D60EF";
+                    thresholdBtn.style.backgroundColor = "#5D60EF";
+                    table_eventBtn.style.backgroundColor = "#5D60EF";
+                    user_informationBtn.style.backgroundColor = "#5D60EF";
+                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+                    user_managerBtn.style.backgroundColor = "darkblue";
+                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
                 });
             }
 
-            if (buttonAlert_managerBtn) {
-                buttonAlert_managerBtn.addEventListener('click', function() {
+            if (fire_event_managerBtn) {
+                fire_event_managerBtn.addEventListener('click', function() {
                     dashboardPage.style.display = "none";
                     thresholdPage.style.display = "none";
                     table_eventPage.style.display = "none";
                     user_informationPage.style.display = "none";
                     signup_listuser_managerPage.style.display = "none";
                     user_managerPage.style.display = "none";
-                    buttonAlert_managerPage.style.display = "block";
+                    fire_event_managerPage.style.display = "block";
 
+
+                    
+                    dashboardBtn.style.backgroundColor = "#5D60EF";
+                    thresholdBtn.style.backgroundColor = "#5D60EF";
+                    table_eventBtn.style.backgroundColor = "#5D60EF";
+                    user_informationBtn.style.backgroundColor = "#5D60EF";
+                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+                    user_managerBtn.style.backgroundColor = "#5D60EF";
+                    fire_event_managerBtn.style.backgroundColor = "darkblue";
                 });
             }
 
         });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const container = document.getElementById("thresholdform");
-
-            for (let row = 0; row < 2; row++) {
-                const rowDiv = document.createElement("div");
-                rowDiv.className = "row";
-
-                for (let col = 0; col < 2; col++) {
-                    const i = row * 2 + col + 1;
-
-                    const colDiv = document.createElement("div");
-                    colDiv.className = "col-6";
-
-                    colDiv.innerHTML = `
-                        <div class="box_form ">
-                            <h3>Khối ${i}</h3>
-
-                            <div class="row">
-                                <label class="col-4 col-form-label">Nhiệt độ tối đa (°C):</label>
-                                <div class="col-7">
-                                    <input type="number" id="maxTemp${i}" class="form-control" required min="0" max="100">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <label class="col-4 col-form-label">Nhiệt độ tối thiểu (°C):</label>
-                                <div class="col-7">
-                                    <input type="number" id="minTemp${i}" class="form-control" required min="0" max="100">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <label class="col-4 col-form-label">Độ ẩm tối đa (%):</label>
-                                <div class="col-7">
-                                    <input type="number" id="maxHumi${i}" class="form-control" required min="0" max="100">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <label class="col-4 col-form-label">Độ ẩm tối thiểu (%):</label>
-                                <div class="col-7">
-                                    <input type="number" id="minHumi${i}" class="form-control" required min="0" max="100">
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    rowDiv.appendChild(colDiv);
-                }
-
-                container.appendChild(rowDiv);
-            }
-
-            const pushBtn = document.querySelector(".push_threshold");
-            pushBtn.addEventListener("click", function () {
-                for (let i = 1; i <= 4; i++) {
-                    const maxTemp = document.getElementById(`maxTemp${i}`);
-                    const minTemp = document.getElementById(`minTemp${i}`);
-                    const maxHumi = document.getElementById(`maxHumi${i}`);
-                    const minHumi = document.getElementById(`minHumi${i}`);
-
-                    let hasValue = false;
-
-                    if (maxTemp.value) {
-                        console.log(`Khối ${i} - Nhiệt độ tối đa: ${maxTemp.value}`);
-                        hasValue = true;
-                    }
-                    if (minTemp.value) {
-                        console.log(`Khối ${i} - Nhiệt độ tối thiểu: ${minTemp.value}`);
-                        hasValue = true;
-                    }
-                    if (maxHumi.value) {
-                        console.log(`Khối ${i} - Độ ẩm tối đa: ${maxHumi.value}`);
-                        hasValue = true;
-                    }
-                    if (minHumi.value) {
-                        console.log(`Khối ${i} - Độ ẩm tối thiểu: ${minHumi.value}`);
-                        hasValue = true;
-                    }
-
-                    if (hasValue) {
-                        maxTemp.value = "";
-                        minTemp.value = "";
-                        maxHumi.value = "";
-                        minHumi.value = "";
-                    }
-                }
-            });
-        });
-
-
-
-
 
 
         function openUpdatePopup(type) {
@@ -321,72 +291,7 @@
             });
         }
 
-        // function fetchData12() {
-        //     fetch("/sensor_data12")
-        //         .then(res => res.json())
-        //         .then(data => {
-        //             const now = new Date();
-        //             const timeNow = now.toLocaleTimeString();
-
-        //             for (let block in data) {
-        //                 document.getElementById(block + "_temp").innerText = data[block].temperature + "°C";
-        //                 document.getElementById(block + "_humi").innerText = data[block].humidity + "%";
-        //                 document.getElementById(block + "_fire").innerText = data[block].fire;
-        //                 document.getElementById(block + "_time").innerText = timeNow;
-        //             }
-        //         })
-        //         .catch(err => console.log("Lỗi:", err));
-        // }
-        // function fetchData34() {
-        //     fetch("/sensor_data34")
-        //         .then(res => res.json())
-        //         .then(data => {
-        //             const now = new Date();
-        //             const timeNow = now.toLocaleTimeString();
-
-        //             for (let block in data) {
-        //                 document.getElementById(block + "_temp").innerText = data[block].temperature + "°C";
-        //                 document.getElementById(block + "_humi").innerText = data[block].humidity + "%";
-        //                 document.getElementById(block + "_fire").innerText = data[block].fire;
-        //                 document.getElementById(block + "_time").innerText = timeNow;
-        //             }
-        //         })
-        //         .catch(err => console.log("Lỗi:", err));
-        // }
-
-        setInterval(() => {
-            // fetchData12();
-            // fetchData34();
-        }, 1000);
-
-        window.onload = function () {
-            if (localStorage.getItem('state_click') === null) {
-                localStorage.setItem('state_click', 'false');
-            }
-            if (localStorage.getItem('state_fire') === null) {
-                localStorage.setItem('state_fire', 'false');
-            }
-            // fetchData34();
-            const userId = document.getElementById("user_id_hidden").value;
-            console.log('UserId lấy được:', userId);
-            searchUser();
-            searchButtonTable()
-            searchUserSignUp();
-            showinforUser(userId);
-            // checkAlertStatus();
-        };
-
-        function addUser() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('popup').style.display = 'block';
-        }
-
-        function closePopup() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('popup').style.display = 'none';
-        }
-
-
+       
 
 
 
@@ -407,7 +312,6 @@
             .then(data => {
                 resetSearchUser();
                 
-                alert(data.message);
             })
             .catch(err => {
                 alert("Error: " + err);
@@ -521,14 +425,14 @@
         }
         
         function showinforUser(userId) {
-            console.log('showinforUser được gọi với userId:', userId);
+            // console.log('showinforUser userId:', userId);
 
             fetch(`/api/users/${userId}`, {
                 method: 'GET'
             })
             .then(res => res.json())
             .then(data => {
-                // console.log('Data từ API:', data);
+                // console.log('Data API:', data);
                 if (data.success) {
                     const user = data.user;
                     document.getElementById("username_info").textContent = user.username;
@@ -578,15 +482,14 @@
     
     
         
-        // Lấy dữ liệu và hiển thị
         function searchButtonTable() {
             const keyword = document.getElementById("search_buttonAlertevent").value;
-            console.log("Từ khóa tìm kiếm:", keyword);
+            // console.log("Key found:", keyword);
 
             fetch(`/api/button_event?keyword=${encodeURIComponent(keyword)}`)
                 .then(res => res.json())
                 .then(data => {
-                    console.log("Dữ liệu trả về từ API:", data);
+                    // console.log("Data:", data);
                     if (data.events) {
                         renderButtonAlertTable(data.events);
                     } else {
@@ -597,10 +500,158 @@
         }
 
 
-        //  reset bảng
         function resetSearchButtonTable() {
             document.getElementById("search_buttonAlertevent").value = "";
             searchButtonTable();
+        }
+
+        
+        // let id_vent = null;
+        // fetch('/alert')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log(data)
+        //         if (data["status"] == "success") {
+        //             id_vent = data["id"];
+        //             const button = document.getElementById("endBtn");
+        //             button.style.backgroundColor = "red";
+        //         }
+        // });
+
+        // function click_end_alert(){
+        //     fetch(`/save_time_end?id=${id_vent}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data["status"] == "success") {
+        //                 const button = document.getElementById("endBtn");
+        //                 button.style.backgroundColor = "rgb(75, 73, 73)";
+        //             }
+                   
+        //     });
+        // }
+        // ----------------------------------------------------------------
+        // Real-time Data
+        function fetchRealtimeData() {
+            fetch('/api/latest_data')
+                .then(response => response.json())
+                .then(data => {
+                    const elTemp = document.getElementById('temp');
+                    const elHumi = document.getElementById('humi');
+                    const elFire = document.getElementById('fire');
+
+                    const boxTemp = document.getElementById('alertBoxTemp');
+                    const boxTempText = boxTemp.querySelector('p');
+                    
+                    const boxHumi = document.getElementById('alertBoxHumi');
+                    const boxHumiText = boxHumi.querySelector('p');
+
+                    const boxFire = document.getElementById('alertBoxFire');
+                    const boxFireText = boxFire.querySelector('p');
+                    const node_scope = document.getElementById('node_scope');
+                    elTemp.textContent = data.temp + "°C";
+                    elHumi.textContent = data.humi + "%";
+
+                    // ----- FIRE -----
+                    if (data.fire === 1) {
+                        boxFireText.textContent = "Good";
+                        boxFire.style.backgroundColor = "green";
+                        boxFireText.style.color = "white";
+                        elFire.textContent = "No Fire";
+                        node_scope.style.backgroundColor = "#ade8f4ab";
+                    } else {
+                        boxFireText.textContent = "Warning";
+                        boxFire.style.backgroundColor = "#d00000";
+
+                        node_scope.style.backgroundColor = "#d00000b3";
+
+                        boxFireText.style.color = "white";
+                        elFire.textContent = "Fire";
+                    }
+
+                    // ----- TEMP -----
+                    if (data.temp < 35) {
+                        boxTempText.textContent = "Cool";
+                        boxTemp.style.backgroundColor = "#b7e4c7";
+                    } else if (data.temp >= 35  && data.temp < 40) {
+                        boxTempText.textContent = "Warm";
+                        boxTemp.style.backgroundColor = "#f9c74f";
+                    } else if (data.temp >= 40) {
+                        boxTempText.textContent = "Hot";
+                        boxTemp.style.backgroundColor = "#f94144";
+                    }
+
+                    // ----- HUMI -----
+                    if (data.humi < 30) {
+                        boxHumiText.textContent = "Dry";
+                        boxHumi.style.backgroundColor = "#f9c74f";
+                    } else if (data.humi >= 30 && data.humi < 60) {
+                        boxHumiText.textContent = "Fresh";
+                        boxHumi.style.backgroundColor = "#ade8f4";
+                    } else if (data.humi >= 60) {
+                        boxHumiText.textContent = "Humid";
+                        boxHumi.style.backgroundColor = "#219ebc";
+                    }
+
+
+                })
+                .catch(err => {
+                    console.error("Error:", err);
+                });
+        }
+        // ----------------------------------------------------------------
+        
+
+
+        // ----------------------------------------------------------------
+        // Today Data
+        function fetchTodayData() {
+            fetch('/api/data_day')
+                .then(response => response.json())
+                .then(data_day => {
+                    const temp = data_day.data.temperature;
+                    const humi = data_day.data.humidity;
+
+                    const today = new Date();
+                    const formattedToday = today.toISOString().split('T')[0];
+                    document.getElementById("today").innerText = formattedToday;
+
+                    // Threshold
+                    document.getElementById("threshold_temp").innerText = data_day.threshold_temp;
+                    document.getElementById("threshold_humi").innerText = data_day.threshold_humi;
+
+                    // Temperature
+                    document.getElementById("max_temp").innerText = temp.max[0] + "°C";
+                    document.getElementById("time_max_temp").innerText = temp.max[1];
+
+                    document.getElementById("min_temp").innerText = temp.min[0] + "°C";
+                    document.getElementById("time_min_temp").innerText = temp.min[1];
+
+                    // Humidity
+                    document.getElementById("max_humi").innerText = humi.max[0] + "%";
+                    document.getElementById("time_max_humi").innerText = humi.max[1];
+
+                    document.getElementById("min_humi").innerText = humi.min[0] + "%";
+                    document.getElementById("time_min_humi").innerText = humi.min[1];
+                })
+
+                .catch(err => {
+                    console.error("Error:", err);
+                });
+        }
+
+        let originalData = [];
+        // Save Data Day to Database
+        function loadData() {
+            fetch('/api/get_all_properties')
+                .then(res => res.json())
+                .then(data => {
+                    // console.log(data);
+                    originalData = data;
+                    renderTable(data);
+                })
+                .catch(error => {
+                console.error('Error:', error);
+                });
         }
 
 
@@ -611,67 +662,21 @@
 
             events.forEach(event => {
                 const row = document.createElement("tr");
-                row.setAttribute('id', `event-row-${event.id}`);
+                row.setAttribute('id', `event_row_${event.id}`);
                 row.innerHTML = `
                     <td>${event.id}</td>
-                    <td id="date-start-${event.id}">${event.date}</td>
-                    <td id="time-start-${event.id}">${event.time_start}</td>
+                    <td id="date_start_${event.id}">${event.date}</td>
+                    <td id="time_start_${event.id}">${event.time_start}</td>
                     <td>${event.time_end || '-'}</td>
                     <td>${event.note || ''}</td>
-                    <td>
-                        
-                        <input type="date" id="date-end-input-${event.id}" />
-                        <input type="time" id="time-end-input-${event.id}" step="1" /> 
-
-                        <button class="btn btn-primary btn-sm" onclick="updateTimeEnd(${event.id})">Cập nhật</button>
-                    </td>
+                 
                     <td><button class="btn btn-danger btn-sm" onclick="delete_event(${event.id})">Delete</button></td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        function updateTimeEnd(id) {
-            const dateStartInput = document.getElementById(`date-start-${id}`).textContent;
-            const timeStartInput = document.getElementById(`time-start-${id}`).textContent;
-            const fullStarttime = `${dateStartInput} ${timeStartInput}`;
-
-            const dateEndInput = document.getElementById(`date-end-input-${id}`).value;
-            const timeEndInput = document.getElementById(`time-end-input-${id}`).value;
-
-            const fullDatetime = `${dateEndInput} ${timeEndInput}`;
-
-            if (!timeEndInput) {
-                alert("Vui lòng nhập thời gian kết thúc!");
-                return;
-            }
-
-            fetch('/button_event_update_time_end', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: id,
-                    time_start: fullStarttime,
-                    time_end: fullDatetime
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Cập nhật thành công!");
-                    searchButtonTable();
-                } else {
-                    alert("Cập nhật thất bại!");
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi:", error);
-                alert("Có lỗi xảy ra!");
-            });
-        }
-
-
+  
         function delete_event(id) {
             if (confirm('Are you sure you want to delete this event?')) {
                 fetch('/button_event_update_time_end', {
@@ -685,43 +690,313 @@
             })
             .then(response => {
                 if (response.ok) {
-                    alert("Cập nhật thành công!");
+                    alert("Update Succesful!");
                     searchButtonTable();
                 } else {
-                    alert("Cập nhật thất bại!");
+                    alert("Update Error!");
                 }
             })
             .catch(error => {
-                console.error("Lỗi:", error);
-                alert("Có lỗi xảy ra!");
+                console.error("Error:", error);
             });
             }
         }
-        //<div class="end_button_alert" id="endBtn" onclick="click_end_alert()">
-        //<p>End Alert</p>
-        //</div>
-        let id_vent = null;
-        fetch('/alert')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                if (data["status"] == "success") {
-                    id_vent = data["id"];
-                    const button = document.getElementById("endBtn");
-                    button.style.backgroundColor = "red";
-                }
-        });
+        
+        // Render Data Day
+        function renderTable(data) {
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = '';
 
-        function click_end_alert(){
-            fetch(`/save_time_end?id=${id_vent}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data["status"] == "success") {
-                        const button = document.getElementById("endBtn");
-                        button.style.backgroundColor = "rgb(75, 73, 73)";
-                    }
-                   
+            const now = new Date();
+            const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+            const filteredData = data.filter(row => {
+                const rowDate = new Date(row.date);
+                return (now - rowDate) <= THIRTY_DAYS_MS;
             });
+
+            filteredData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.date}</td>
+                    <td>Node 1</td>
+                    <td>${row.threshold_temp_alert}</td>
+                    <td>${row.threshold_humi_alert}</td>
+
+                    <td>${row.max_temp}</td>
+                    <td>${row.time_max_temp}</td>
+                    <td>${row.min_temp}</td>
+                    <td>${row.time_min_temp}</td>
+
+                    <td>${row.max_humi}</td>
+                    <td>${row.time_max_humi}</td>
+                    <td>${row.min_humi}</td>
+                    <td>${row.time_min_humi}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+
+
+        // Search Day
+        function searchDay() {
+            const day_input = document.getElementById('search_day_data').value.trim();
+
+            if (!/^\d{8}$/.test(day_input)) {
+                alert("Please enter correct date format: YYYYMMDD (Example: 20250701)");
+                return;
+            }
+
+            const day_final = day_input.slice(0, 4) + '-' + day_input.slice(4, 6) + '-' + day_input.slice(6, 8);
+
+            const filteredData = originalData.filter(row => row.date === day_final);
+
+            if (filteredData.length === 0) {
+                alert("No data found for date: " + day_final);
+            }
+
+            renderTable(filteredData);
+        }
+
+        // Refresh Day
+        function refreshDay() {
+            loadData();
+        }
+
+        // Save Data Day to Database
+        function saveDataToDB() {
+            fetch('/api/save_data_day')
+                .then(res => res.json())
+                .then(data => {
+                    // console.log(data)
+                    // console.log("Auto save:", data.message);
+                })
+                .catch(err => {
+                    console.error("Save failed:", err);
+                });
+        }
+
+       
+        // ----------------------------------------------------------------
+        
+        
+        // ----------------------------------------------------------------
+        // Check Threshold
+        function checkThreshold() {
+            fetch('/api/check_threshold').catch(err => {
+                console.error("Failed:", err);
+            });
+        }
+
+        
+        
+        //  Push Threshold
+        function getThreshold() {
+            fetch('/api/get_threshold')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('tempThreshold').placeholder = data["threshold_temp_alert"] + "°C";
+                    document.getElementById('humidityThreshold').placeholder = data["threshold_humi_alert"] +"%";
+                })
+                .catch(err => {
+                    console.error("Save failed:", err);
+                });
+        }
+
+        function updateThreshold() {
+            let tempInput = document.getElementById('tempThreshold');
+            let humiInput = document.getElementById('humidityThreshold');
+            
+            let temp_value = tempInput.value.trim();
+            let humi_value = humiInput.value.trim();
+
+            if (!temp_value && !humi_value) {
+                alert("Input at least 1 value (Temperature or Humidity)!");
+                tempInput.value = "";
+                humiInput.value = "";
+                return;
+            }
+
+            // Type default to compare values
+            let tempNum = temp_value ? parseFloat(temp_value) : 40;
+            let humiNum = humi_value ? parseFloat(humi_value) : 30;
+
+            // Check max temp, max humi
+            if (temp_value > 45 || temp_value < 40) {
+                alert("Temperature Threshold between 40 and 45");
+                tempInput.value = "";
+                humiInput.value = "";
+                return;
+            }
+            if (humi_value < 30 || humi_value > 35) {
+                alert("Humidity Threshold between 30 and 35°C");
+                tempInput.value = "";
+                humiInput.value = "";
+                return;
+            }
+
+            // Default value
+            if (!temp_value && humi_value) {
+                temp_value = "40";
+            } else if (temp_value && !humi_value) {
+                humi_value = "30";
+            }
+
+            fetch('/api/update_threshold', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    temp: temp_value,
+                    humi: humi_value
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(`Send email succesful\nUpdate Threshold:\n- Temperature: ${temp_value}°C\n- Humidity: ${humi_value}%`);
+                tempInput.value = "";
+                humiInput.value = "";
+                
+                tempInput.placeholder = `${temp_value}°C`;
+                humiInput.placeholder = `${humi_value}%`;
+            })
+            .catch(err => {
+                console.error("Save failed:", err);
+            });
+        }
+        // ----------------------------------------------------------------
+        // System Alert
+        function SystemAlert() {
+            fetch('/api/system_alert', {
+                method: 'POST'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.is_fire) {
+                    // console.log("Fire!");
+                } else {
+                    // console.log("No Fire");
+                }
+            })
+            .catch(err => {
+                console.error("Error:", err);
+            });
+        }
+
+
+        // ----------------------------------------------------------------
+
+        window.onload = function () {
+            const userId = document.getElementById("user_id_hidden").value;
+            console.log('UserId:', userId);
+            searchUser();
+            searchButtonTable()
+            searchUserSignUp();
+            showinforUser(userId);
+            fetchRealtimeData();
+            fetchTodayData();
+            loadData();
+            getThreshold();
+            saveDataToDB();
+            checkThreshold()
+            SystemAlert();
+            setInterval(() => {
+                fetchRealtimeData();
+                fetchTodayData();
+                checkThreshold();
+                getThreshold();
+                SystemAlert();
+            }, 5000);
+            setInterval(() => {
+                saveDataToDB();
+                loadData();
+            }, 5000);
+        };
+
+        function addUser() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function exportFireEvent() {
+            const rows = [];
+            const headers = ["ID", "Date", "Start Time", "End Time", "Note"];
+            rows.push(headers.join(","));
+
+            const tbody = document.getElementById("buttonAlert_table_body");
+            const trList = tbody.getElementsByTagName("tr");
+
+            for (let tr of trList) {
+                const tds = tr.getElementsByTagName("td");
+                const row = [
+                    tds[0].innerText, // ID
+                    tds[1].innerText, // Date
+                    tds[2].innerText, // Start Time
+                    tds[3].innerText, // End Time
+                    tds[4].innerText  // Note
+                ];
+                rows.push(row.join(","));
+            }
+
+            const csvContent = rows.join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+            const downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = "fire_events.csv";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        function exportDataDay() {
+            const rows = [];
+            const headers = [
+                "Timestemp",
+                "Node",
+                "Temp Threshold",
+                "Humi Threshold",
+                "High Temp",
+                "Time at High Temp",
+                "Low Temp",
+                "Time at Low Temp",
+                "High Humi",
+                "Time at High Humi",
+                "Low Humi",
+                "Time at Low Humi"
+            ];
+            rows.push(headers.join(","));
+
+            const table = document.getElementById("dataTable").getElementsByTagName("tbody")[0];
+            const trList = table.getElementsByTagName("tr");
+
+            for (let tr of trList) {
+                const tds = tr.getElementsByTagName("td");
+                const row = [];
+                for (let i = 0; i < tds.length; i++) {
+                    row.push(tds[i].innerText.trim());
+                }
+                rows.push(row.join(","));
+            }
+
+            const csvContent = rows.join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+            const downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = "data_table_event.csv";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }
 
     </script>
@@ -741,16 +1016,14 @@
                                     <li id="1"><p>Dashboard</p></li>
                                     <li id="2"><p>Threshold Settings</p></li>
                                     <li id="3"><p>Data Table</p></li>
-                                    <!-- {% if role == 'user' %} -->
                                     <li id="4"><p>User information</p></li>
-                                    <!-- {% endif %} -->
                                     {% if role == 'admin' %}
                                         <li id="5"><p>Sign Up List Manager</p></li>
                                     {% endif %}
                                     {% if role == 'admin' %}
                                         <li id="6"><p>User Manager</p></li>
                                     {% endif %}
-                                    <li id="7"><p>Table Button Alert</p></li>
+                                    <li id="7"><p>Table Fire Event</p></li>
                                 </ul>
                                 <div class="end_button_alert" id="endBtn" onclick="click_end_alert()">
                                     <p>End Alert</p>
@@ -768,112 +1041,107 @@
                             
                             <div class="box_content">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="col-9">
                                         <div class="namepage">
                                             <h3>Dashboard</h3>
                                         </div>
                                         <div class="main_content">
                                             <div class="mat_san">
                                                 <div class="namepage">
-                                                    <h3>Sơ đồ nhà</h3>
+                                                    <h3>Room Overview</h3>
                                                 </div>
-                                                <img src="../static/img/dashboard_img/so_do_nha.jpg" alt="Database Diagram" class="rotated-img">
-        
-                                            </div>
+                                                
+                                                <div class="image_container" style="position: relative; display: inline-block;">
+                                                    <img src="../static/img/dashboard_img/so_do_nha.jpg" alt="House Diagram" style="width: 100%; display: block;">
+
+                                                    <div class="node_scope" id="node_scope"><span>Node 1</span></div>
+                                                    <div class="cpu_position"><span>RPi</span></div>
+                                                </div>
+
+                                            </div> 
                                             <div class="table_dashboard">
                                                 <div class="namepage">
-                                                    <h3>Sự kiện gần nhất</h3>
+                                                    <h3>Data Today</h3>
                                                 </div>
                                                 <table>
                                                     <tr>
-                                                        <th colspan="2" rowspan="2">Thời gian</th>
-                                                        <th colspan="2">Nhiệt độ</th>
-                                                        <th colspan="2">Độ ẩm</th>
-                                                        <th colspan="2">Lửa</th>
+                                                        <th colspan="2" rowspan="2">Timestemp</th>
+                                                        <th colspan="2">Threshold</th>
+                                                        <th colspan="4">Temperature</th>
+                                                        <th colspan="4">Humidity</th>
                                                     </tr>
                                             
-                                                    <tr>
-                                                        <td>Cao nhất</td>
-                                                        <td>Thấp nhất</td>
-                                                        <td>Cao nhất</td>
-                                                        <td>Thấp nhất</td>
-                                                        <td>Bắt đầu</td>
-                                                        <td>Kết thúc</td>
-                                                        
+                                                    <tr>  
+                                                        <th>Theshold Temp</th>
+                                                        <th>Threshold Humi</th>
+                                                        <th>High Temp</th>
+                                                        <th>Time at High Temp</th>
+                                                        <th>Low Temp</th>
+                                                        <th>Time at Low Temp</th>
+
+                                                        <th>High Humi</th>
+                                                        <th>Time at High Humi</th>
+                                                        <th>Low Humi</th>
+                                                        <th>Time at Low Humi</th>
                                                     </tr>
-                                                    <tr>
-                                                        <td rowspan="4">07/03/2003 - Hiện tại</td>
-                                                        <td>Khối 1</td>
-                                                        <td>33°C</td>
-                                                        <td>33°C</td>
-                                                        <td>20%</td>
-                                                        <td>80%</td>
-                                                        <td>00:00:00</td>
-                                                        <td>01:00:00</td>
-                                                        
+                                                   <tr>
+                                                        <td rowspan="4"><p id="today"></p></td>
+                                                        <td>Node 1</td>
+                                                        <td id="threshold_temp">--</td>
+                                                        <td id="threshold_humi">--</td>
+
+                                                        <!-- Temperature -->
+                                                        <td id="max_temp">--</td>
+                                                        <td id="time_max_temp">--</td>
+                                                        <td id="min_temp">--</td>
+                                                        <td id="time_min_temp">--</td>
+
+                                                        <!-- Humidity -->
+                                                        <td id="max_humi">--</td>
+                                                        <td id="time_max_humi">--</td>
+                                                        <td id="min_humi">--</td>
+                                                        <td id="time_min_humi">--</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Khối 2</td>
-                                                        <td>33°C</td>
-                                                        <td>33°C</td>
-                                                        <td>20%</td>
-                                                        <td>80%</td>
-                                                        <td>00:00:00</td>
-                                                        <td>01:00:00</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Khối 3</td>
-                                                        <td>33°C</td>
-                                                        <td>33°C</td>
-                                                        <td>20%</td>
-                                                        <td>80%</td>
-                                                        <td>00:00:00</td>
-                                                        <td>01:00:00</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Khối 4</td>
-                                                        <td>33°C</td>
-                                                        <td>33°C</td>
-                                                        <td>20%</td>
-                                                        <td>80%</td>
-                                                        <td>00:00:00</td>
-                                                        <td>01:00:00</td>
-                                                        
-                                                    </tr>
+
+                                                    
                                                 </table> 
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <div class="namepage">
-                                            <h3>Block Property</h3>
+                                            <h3>Real-time Sensor Data</h3>
                                         </div>
                                         <div class="col_roll">
-                                            <div class="box_khoi {{ i }}">
-                                                <p class="name_block">Khối {{ i }}</p>
+                                            <div class="box_khoi">
+                                                <p class="name_block">Node 1</p>
     
                                                 <div class="row">
-                                                    <div class="col-7">
+                                                    <div class="col-8">
                                                         <div class="box_circle">
                                                             <div id="alertBoxFire" class="box_fire">
-                                                                <p>Test</p>
+                                                                <p>No Fire</p>
+                                                                <!-- Fire -->
                                                             </div>
                                                             <div id="alertBoxTemp" class="box_temp">
-                                                                <p>Test</p>
+                                                                <p></p>
+                                                                <!-- <p>Cool</p> -->
+                                                                <!-- Normal -->
+                                                                <!-- Hot -->
                                                             </div>
                                                             <div id="alertBoxHumi" class="box_humi">
-                                                                <p>Test</p>
+                                                                <p></p>
+                                                                <!-- <p>Humid</p> -->
+                                                                <!-- Normal -->
+                                                                <!-- Dry -->
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-5">
+                                                    <div class="col-4">
                                                         <div class="content_box">
-                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i> <span id="Block{{ i }}_temp"></span></p>
-                                                            <p><i class="fa-solid fa-water"></i> <span id="Block{{ i }}_humi"></span></p>
-                                                            <p><i id="alertIconFire" class="fa fa-fire" aria-hidden="true"></i> <span id="Block{{ i }}_fire"></span></p>
-                                                            <p><i class="fa-regular fa-clock"></i> <span id="Block{{ i }}_time"></span></p>
+                                                            <p><i class="fa-solid fa-temperature-three-quarters"></i><span id="temp"></span></p>
+                                                            <p><i class="fa-solid fa-water"></i> <span id="humi"></span></p>
+                                                            <p><i id="alertIconFire" class="fa fa-fire" aria-hidden="true"></i> <span id="fire"></span></p>
                                                         </div>
                                                     </div>
                                                 </div>                                             
@@ -894,13 +1162,28 @@
                                                 <h3>Threshold Settings</h3>
                                             </div>
                                         </div>
-                                        <div class="col-2 d-flex justify-content-end align-items-center">
-                                            <button class="push_threshold">Push Threshold</button>
-                                        </div>
+                                        
                                     </div>
 
                                     <div id="thresholdform">
-
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="box_form" id="threshold">
+                                                    <div class="namepage">
+                                                        <h3>Node 1</h3>
+                                                    </div>
+                                                    <div class="form_row">
+                                                        <label for="tempThreshold">Temperature Threshold (40-47°C):</label>
+                                                        <input type="number" id="tempThreshold" placeholder="{{ threshold_temp_alert }}" name="tempThreshold">
+                                                    </div>
+                                                    <div class="form_row">
+                                                        <label for="humidityThreshold">Humidity Threshold (30-35%):</label>
+                                                        <input type="number" id="humidityThreshold" placeholder="{{ threshold_humi_alert }}" name="humidityThreshold">
+                                                    </div>
+                                                    <button onclick="updateThreshold()" id="push_threshold" class="btn btn-primary mt-2">Push Threshold</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                                 
                                                 
                                     </div>
@@ -912,65 +1195,38 @@
                                 <div class="col-12">
                                     <div class="table_data">
                                         <p>Data Table Event</p>
-                                        <table>
-                                            <tr>
-                                                <th colspan="2" rowspan="2">Thời gian</th>
-                                                <th colspan="2">Nhiệt độ</th>
-                                                <th colspan="2">Độ ẩm</th>
-                                                <th colspan="2">Lửa</th>
-                                            </tr>
-                                    
-                                            <tr>
-                                                <td>Cao nhất</td>
-                                                <td>Thấp nhất</td>
-                                                <td>Cao nhất</td>
-                                                <td>Thấp nhất</td>
-                                                <td>Bắt đầu</td>
-                                                <td>Tổng thời gian cháy</td>
-                                                
-                                            </tr>
-                                            <tr>
-                                                <td rowspan="4">07/03/2003 - Hiện tại</td>
-                                                <td>Khối 1</td>
-                                                <td>33°C</td>
-                                                <td>33°C</td>
-                                                <td>20%</td>
-                                                <td>80%</td>
-                                                <td>00:00:00</td>
-                                                <td>5 tiếng</td>
-                                                
-                                            </tr>
-                                            <tr>
-                                                <td>Khối 2</td>
-                                                <td>33°C</td>
-                                                <td>33°C</td>
-                                                <td>20%</td>
-                                                <td>80%</td>
-                                                <td>00:00:00</td>
-                                                <td>5 tiếng</td>
-                                                
-                                            </tr>
-                                            <tr>
-                                                <td>Khối 3</td>
-                                                <td>33°C</td>
-                                                <td>33°C</td>
-                                                <td>20%</td>
-                                                <td>80%</td>
-                                                <td>00:00:00</td>
-                                                <td>5 tiếng</td>
-                                                
-                                            </tr>
-                                            <tr>
-                                                <td>Khối 4</td>
-                                                <td>33°C</td>
-                                                <td>33°C</td>
-                                                <td>20%</td>
-                                                <td>80%</td>
-                                                <td>00:00:00</td>
-                                                <td>5 tiếng</td>
-                                                
-                                            </tr>
-                                        </table> 
+                                        <div class="box_search_dataday">
+                                            <input type="text" id="search_day_data" class="form-control" placeholder="Search day (Ex: 20250701)...">
+                                            <button onclick="searchDay()" class="btn btn-primary">Search Day</button>
+                                            <button onclick="refreshDay()" class="btn btn-primary">Refresh</button>
+                                        </div>
+                                        <table id="dataTable" class="display">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2" rowspan="2">Timestemp</th>
+                                                    <th colspan="2">Threshold</th>
+                                                    <th colspan="4">Temperature</th>
+                                                    <th colspan="4">Humidity</th>
+                                                    <th colspan="1" rowspan="2">Export Day</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th>Temp Threshold</th>
+                                                    <th>Humi Threshold</th>
+                                                    <th>High Temp</th>
+                                                    <th>Time at High Temp</th>
+                                                    <th>Low Temp</th>
+                                                    <th>Time at Low Temp</th>
+                                                    <th>High Humi</th>
+                                                    <th>Time at High Humi</th>
+                                                    <th>Low Humi</th>
+                                                    <th>Time at Low Humi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                            </table>
                                     </div>
                                 </div>
                             </div>
@@ -1088,12 +1344,6 @@
                                                 <input type="text" id="add_username" name="add_username" required placeholder="Enter new username"><br><br>
                                                 <input type="text" id="add_phone" name="add_phone" required placeholder="Enter new user phone"><br><br>
                                                 <input type="text" id="add_email" name="add_email" required placeholder="Enter new user email"><br><br>
-                                                {{ macros.show_flash('username_error') }}
-                                                {{ macros.show_flash('phone_error') }}
-
-                                                {{ macros.show_flash('username_space') }}
-                                                {{ macros.show_flash('phone_space') }}
-                                                {{ macros.show_flash('email_space') }}
 
                                                 <button onclick="addNewUser(event)" type="button" class="btn btn-success mt-2">Add new User</button>
                                                 <button onclick="closePopup()" type="button" class="btn btn-danger mt-2">Close Form</button>
@@ -1139,43 +1389,14 @@
                         <div id="buttonAlert_manager">
                             
                             <div class="namepage">
-                                <h3>List Table User</h3>
+                                <h3>List Fire Event</h3>
                             </div>
                             <div class="row">
                                 <div class="col-6">
                                     <input type="text" id="search_buttonAlertevent" class="form-control" placeholder="Search by date...">
-                                    <button onclick="searchButtonTable()" class="btn btn-primary mt-2">Search</button>
+                                    <button onclick="searchButtonTable()" id="search_day_event" class="btn btn-primary mt-2">Search</button>
                                     <button onclick="resetSearchButtonTable()" class="btn btn-primary mt-2"> Refresh Lists</button>
-                                    <button id="btnButtonTable" onclick="addButtonTable()" class="btn btn-primary mt-2">Add Button Event</button>
-
-                                    
-                                    <div id="overlay" style="display: none;"></div>
-
-                                   
-                                    <div id="popup3" style="display: none;">
-                                        <div id="popup_content3">
-                                            <div class="namepage">
-                                                <h3>Form new user information</h3>
-                                            </div>
-                                            <form id="addButtonEvent" method="POST">
-                                                <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
-                                                
-                                                <input type="text" id="add_date" name="add_date" required placeholder="Enter new date"><br><br>
-                                                <input type="text" id="add_time_start" name="add_time_start" required placeholder="Enter new start time"><br><br>
-                                                <input type="text" id="add_time_end" name="add_time_end" required placeholder="Enter new end time"><br><br>
-                                                {{ macros.show_flash('username_error') }}
-                                                {{ macros.show_flash('phone_error') }}
-
-                                                {{ macros.show_flash('username_space') }}
-                                                {{ macros.show_flash('phone_space') }}
-                                                {{ macros.show_flash('email_space') }}
-
-                                                <button onclick="addNewButtonAlertEvent(event)" type="button" class="btn btn-success mt-2">Add new event</button>
-                                                <button onclick="closePopup_ButtonEvent()" type="button" class="btn btn-danger mt-2">Close Form</button>
-
-                                            </form>
-                                        </div>
-                                    </div>
+                                    <button onclick="exportFireEvent()" class="btn btn-primary mt-2"> Export Events</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -1191,10 +1412,10 @@
                                             <tr>
                                                 <th rowspan="1">ID</th>
                                                 <th rowspan="1">Date</th>
-                                                <th rowspan="1">Time Start</th>
-                                                <th rowspan="1">Time End</th>
+                                                <th rowspan="1">Start Time</th>
+                                                <th rowspan="1">End Time</th>
                                                 <th colspan="1">Note</th>
-                                                <th colspan="2">Approved</th>
+                                                <th colspan="1">Approved</th>
                                             </tr>
                                             
                                         </thead>

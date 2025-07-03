@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 import sqlite3
 
-# Biến lưu trạng thái cũ
 previous_temp = None
 previous_humi = None
 # 100 Lines equal 16-18Kb
@@ -26,7 +25,7 @@ def init_db():
     conn.close()
 
 
-# --- Tạo file nếu chưa tồn tại ---
+# --- Create File CSV ---
 def makeFile():
     today = datetime.now().strftime("%Y%m%d")
     folder_path = os.path.join("logs", today)
@@ -36,12 +35,12 @@ def makeFile():
 
     try:
         if not os.path.exists(file_path):
-            # Nếu file không tồn tại, tạo mới luôn
+            # If file not exist, create new
             with open(file_path, 'w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(["time_stemp", "temperature", "humidity", "fire_state"])
         else:
-            # Kiểm tra số dòng, nếu vượt MAX_LINES thì xóa và tạo lại
+            # Check max line, if > MAX_LINES delete file and create new
             with open(file_path, 'r', encoding='utf-8') as f:
                 lines = sum(1 for _ in f)
             if lines >= MAX_LINES:
@@ -50,60 +49,32 @@ def makeFile():
                     writer = csv.writer(f)
                     writer.writerow(["time_stemp", "temperature", "humidity", "fire_state"])
     except Exception as e:
-        print(f"Lỗi trong makeFile: {e}")
+        print(f"Error: {e}")
 
     return file_path
 
-# def makeFile():
-#     today = datetime.now().strftime("%Y%m%d")
-#     folder_path = os.path.join("logs", today)
-#     os.makedirs(folder_path, exist_ok=True)
+last_data = {"temperature": None, "humidity": None, "fire_state": None}
 
-#     file_path = os.path.join(folder_path, "block1_data.csv")
-
-#     if not os.path.exists(file_path):
-#         with open(file_path, 'w', newline='', encoding='utf-8') as f:
-#             writer = csv.writer(f)
-#             writer.writerow(["time_stemp", "temperature", "humidity", "fire_state"])
-#     else:
-#         with open(file_path, 'r', encoding='utf-8') as f:
-#             lines = sum(1 for _ in f)
-#         if lines >= MAX_LINES:
-#             os.remove(file_path)
-#             with open(file_path, 'w', newline='', encoding='utf-8') as f:
-#                 writer = csv.writer(f)
-#                 writer.writerow(["time_stemp", "temperature", "humidity", "fire_state"])
-#     return file_path
-
-
-last_data = {"temperature": None, "humidity": None, "fire_state": None}  # Theo dõi dữ liệu cũ
 def saveDataFromSTM32(temperature, humidity, fire_state):
     file_path = makeFile()
+    
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    temp = float(row["temperature"])
+                    humi = float(row["humidity"])
+                except ValueError:
+                    continue
+                if temp == temperature and humi == humidity:
+                    return
 
-    # Ghi dữ liệu mới vào CSV (không kiểm tra trùng lặp)
     time_stamp = datetime.now().strftime("%H:%M:%S")
     with open(file_path, 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([time_stamp, temperature, humidity, fire_state])
-# def saveDataFromSTM32(temperature, humidity, fire_state):
-#     file_path = makeFile()
-    
-#     if os.path.exists(file_path):
-#         with open(file_path, 'r', encoding='utf-8') as f:
-#             reader = csv.DictReader(f)
-#             for row in reader:
-#                 try:
-#                     temp = float(row["temperature"])
-#                     humi = float(row["humidity"])
-#                 except ValueError:
-#                     continue
-#                 if temp == temperature and humi == humidity:
-#                     return
 
-#     time_stamp = datetime.now().strftime("%H:%M:%S")
-#     with open(file_path, 'a', newline='', encoding='utf-8') as f:
-#         writer = csv.writer(f)
-#         writer.writerow([time_stamp, temperature, humidity, fire_state])
 def delete_csv_file():
     today = datetime.now().strftime("%Y%m%d")
     file_path = os.path.join("logs", today, "block1_data.csv")
@@ -111,56 +82,72 @@ def delete_csv_file():
     if os.path.exists(file_path):
         try:
             os.remove(file_path)
-            print(f"Đã xóa: {file_path}")
+            print(f"Deleted: {file_path}")
         except Exception as e:
-            print(f"Lỗi khi xóa file: {e}")
+            print(f"Error when delete file: {e}")
     else:
-        print(f"File không tồn tại: {file_path}")
+        print(f"File not exist: {file_path}")
 
-def readCSV():
+def read_CSV():
     today = datetime.now().strftime("%Y%m%d")
     file_path = os.path.join("logs", today, "block1_data.csv")
-    print("file_path", file_path)
     if not os.path.exists(file_path):
         return None
 
-    max_temp = None
-    time_max_temp = None
-    min_humi = None
-    time_min_humi = None
-    fire_states = []
+    max_temp = float('-inf')
+    min_temp = float('inf')
+    max_temp_time = min_temp_time = ""
 
-    with open(file_path, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
+    max_humi = float('-inf')
+    min_humi = float('inf')
+    max_humi_time = min_humi_time = ""
 
+    fire_transitions = []
+    prev_fire_state = None
+
+    with open(file_path, mode='r', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
         for row in reader:
-            try:
-                temp = float(row["temperature"])
-                humi = float(row["humidity"])
-                fire = int(float(row["fire_state"]))
-                time = row["time_stemp"]
-            except (ValueError, KeyError):
-                continue
+            temp = float(row['temperature'])
+            humi = float(row['humidity'])
+            time = row['time_stemp']
+            fire_state = float(row['fire_state'])
 
-            if max_temp is None or temp > max_temp:
+            # Temperature
+            if temp > max_temp:
                 max_temp = temp
-                time_max_temp = time
+                max_temp_time = time
+            if temp < min_temp:
+                min_temp = temp
+                min_temp_time = time
 
-            if min_humi is None or humi < min_humi:
+            # Humidity
+            if humi > max_humi:
+                max_humi = humi
+                max_humi_time = time
+            if humi < min_humi:
                 min_humi = humi
-                time_min_humi = time
+                min_humi_time = time
 
-            fire_states.append(fire)
+            # # Save if fire_state changed
+            if prev_fire_state is None or fire_state != prev_fire_state:
+                fire_transitions.append({
+                    "time_stemp": time,
+                    "temperature": temp,
+                    "humidity": humi,
+                    "fire_state": fire_state
+                })
 
-    if max_temp is None or min_humi is None:
-        return None
-
-    fire_detected = 0 if 0 in fire_states else 1
-
-    return (
-        max_temp,
-        time_max_temp,
-        # min_humi,
-        # time_min_humi,
-        # fire_detected
-    )
+            prev_fire_state = fire_state
+    return {
+        "time_stemp": time,
+        "temperature": {
+            "max": (max_temp, max_temp_time),
+            "min": (min_temp, min_temp_time),
+        },
+        "humidity": {
+            "max": (max_humi, max_humi_time),
+            "min": (min_humi, min_humi_time),
+        },
+        "fire_changes": fire_transitions
+    }

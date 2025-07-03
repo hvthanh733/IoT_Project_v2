@@ -1,12 +1,80 @@
-from repositories.user_repo import UserRepo, ThresholdRepo
+from repositories.user_repo import UserRepo, ThresholdRepo, RealTimeRepo, DataLogRepo
 from models.model_project import User
 from services.password_hash import generate_password, verify_pass
 import re
-from Alert import send_password_recovery_email, send_signup_email
+from Alert import send_password_recovery_email, send_signup_email, send_email_alert,send_email_create_user
 from datetime import datetime
+class DataLogService:
+    def save_start_time():
+        return DataLogRepo.save_start_time()
+
+    def save_end_time():
+        return DataLogRepo.save_end_time()
+
+    def threhold_byDay(date_now):
+        temp, humi = ThresholdRepo.threhold_byDay(date_now)
+        return temp, humi
+    
+    def save_datalog(max_temp, max_temp_time,
+                    min_temp, min_temp_time,
+                    max_humi, max_humi_time,
+                    min_humi, min_humi_time):
+        check = DataLogRepo.save_datalog(max_temp, max_temp_time,
+                                        min_temp, min_temp_time,
+                                        max_humi, max_humi_time,
+                                        min_humi, min_humi_time)
+        if check:
+            return True
+        return False
+
+    def get_alldays():
+        return DataLogRepo.get_alldays()
+    
+    def get_threshold():
+        temp, humi = ThresholdRepo.get_threshold()
+        return temp, humi
+    
+    def update_threshold(temp_value, humi_value):
+        date_today = datetime.now().date()
+        update_threshold = ThresholdRepo.update_threshold(date_today, temp_value, humi_value)
+        if update_threshold:
+            return True
+        return False
+
+    def get_id_temp_humi_day():
+        id_day, threshold_temp, threshold_humi = ThresholdRepo.get_id_temp_humi_day()
+        return id_day, threshold_temp, threshold_humi
+
+    def set_default_threshold(id_day, threshold_temp, threshold_humi):
+        all_days = DataLogRepo.get_alldays()
+        first_day = next((day for day in all_days if day.id == 1), None)
+
+        if first_day and id_day == 1 and threshold_temp is None and threshold_humi is None:
+            threshold_temp = 40
+            threshold_humi = 30
+            return ThresholdRepo.set_default_threshold_case1(id_day, threshold_temp, threshold_humi)
+
+        elif id_day != 1 and threshold_temp is None and threshold_humi is None:
+            return ThresholdRepo.set_default_threshold_case2(id_day)
+
+        return False
+
+
 
 # Class UserService handle logic
 class UserService:
+    #-------------------------------------------------------------------
+    # Get All Email
+    def get_all_email():
+        emails = UserRepo.get_all_email()
+        if emails:
+            return True, emails
+        return False, None
+    #-------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------
+    # Login
     def login(username:str, password:str):
         user = UserRepo.get_user_by_username_login(username)
         # Check user in database table "user"
@@ -16,7 +84,18 @@ class UserService:
         if verify_pass(password, user.password):
             return True, user
         return False, None
-    
+    #-------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------
+    # Get Node
+    def get_node(node):
+        return RealTimeRepo.get_node(node)
+    #-------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------
+    # Check username, password, phone, email
     def check_user_exists(username: str, phone: str, email: str):
         # Check if the username, email, or phone already exists in the database
         if not username:
@@ -28,27 +107,6 @@ class UserService:
         if UserRepo.get_user_by_email(email):
             return "email"
         return None
-
-    
-    def validate_user_fields(username: str, phone: str, email: str):
-        if len(username) > 10:
-            return "username_format"
-        if len(phone) != 10:
-            return "phone_format"
-
-        if ' ' in username:
-            return "username_space"
-        if ' ' in phone:
-            return "phone_space"
-        if ' ' in email:
-            return "email_space"
-
-        if not re.fullmatch(r"[A-Za-z0-9]+", username):
-            return "username_format"
-        if not re.fullmatch(r"\d{1,10}", phone):
-            return "phone_format"
-
-        return "ok"
 
     def validate_username(username: str):
         if (len(username) > 10) or (' ' in username) or not re.fullmatch(r"[A-Za-z0-9]+", username):
@@ -66,12 +124,14 @@ class UserService:
             return "email_format"
         return "ok"
 
-
     def validate_password_format(password: str):
         if (len(password) > 16) or (' ' in password) or not re.fullmatch(r"[A-Za-z0-9]+", password):
             return "password_format"
         return "ok"
+    #-------------------------------------------------------------------
 
+
+    #-------------------------------------------------------------------
     # Function for forgot_password part
     def check_email(email: str):
         # Check the exist of user and email
@@ -84,17 +144,27 @@ class UserService:
         if check_email:
             return True, check_email
         return None
+    #-------------------------------------------------------------------
 
+
+
+
+
+    #-------------------------------------------------------------------
     # Create user form sign_up form     DONE
     def create_user(username_signup: str, password: str, phone_signup: str, email_signup: str) -> bool:
         password_hashed = generate_password(password)
-        new_user = UserRepo.create_user(username_signup, password_hashed, phone_signup, email_signup)
+        new_user, get_username = UserRepo.create_user(username_signup, password_hashed, phone_signup, email_signup)
+        
         if new_user:
-            send_signup_email(email_signup)
-            # print(email_signup)
+            send_signup_email(email_signup, f"Hi {get_username}, your account is sign up successful!")
             return True
         return False
+    #-------------------------------------------------------------------
 
+
+    #-------------------------------------------------------------------
+    # Password Recover
     def reset_newpassword(email: str, newpassword: str) -> bool:
         password_hashed = generate_password(newpassword)
         return UserRepo.reset_password(email, password_hashed)
@@ -102,19 +172,31 @@ class UserService:
     def check_email_user(email: str) -> bool:
         user = User.query.filter_by(email=email).first()
         return user is not None
+    #-------------------------------------------------------------------
 
-    
 
+
+
+    #-------------------------------------------------------------------
+    # User Manager
     def updateUserQueue(userId, isAccepted):
         user = UserRepo.get_user_by_id(userId)
-        newUser = UserRepo.updateUserQueue(user, isAccepted)
+        get_username = user.username
+        newUser, email = UserRepo.updateUserQueue(user, isAccepted)
+        if email:
+            send_email_alert(email, f"Hi {get_username}, your account is approval by Admin!")
+        else: 
+            send_email_alert(email, f"Hi {get_username}, your account is not approval by Admin!")
+
         return newUser
 
     def delete_user(user_id):
-        user = UserRepo.delete_user(user_id)
+        user, email = UserRepo.delete_user(user_id)
         message = ""
+        print(email)
         if user:
             message = "Delete successfully"
+            send_email_alert(email, "Your account is deleted by admin")
         else:
             message = "Error while delete"
         return user, message
@@ -138,12 +220,17 @@ class UserService:
         return message, success
 
     def add_newuser(new_username: str,  new_phone: str, new_email: str) -> bool:
-        newpass = send_email(new_email)
+        newpass = send_email_create_user(new_email)
         password_hashed = generate_password(newpass)
         new_user = UserRepo.add_newuser(new_username , password_hashed, new_phone, new_email)
         return new_user
+    #-------------------------------------------------------------------
 
 
+
+
+    #-------------------------------------------------------------------
+    # Edit Actor Information 
     def update_username(userid, new_username:str) -> bool:
         user = UserRepo.update_username(userid, new_username)
         return user
@@ -159,6 +246,13 @@ class UserService:
     def update_email(userid, new_email:str) -> bool:
         user = UserRepo.update_email(userid, new_email)
         return user
+    #-------------------------------------------------------------------
+
+
+
+
+
+
 
 
 
@@ -232,3 +326,5 @@ class UserService:
     #     time_end = now.strftime("%H:%M:%S")
     #     date = now.strftime("%Y-%m-%d")
     #     return ThresholdRepo.save_end_time_alert(date, time_end)
+
+

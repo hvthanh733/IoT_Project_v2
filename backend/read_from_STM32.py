@@ -16,19 +16,59 @@
 #         print("Nhận được (hex):", hex_string)
 #     time.sleep(0.1)
 
+# import serial
+# import time
+
+# print("Đang lắng nghe dữ liệu dạng HEX từ HC-12 (qua USB)...")
+# try:
+#     ser = serial.Serial(
+#         port='/dev/ttyUSB0',
+#         baudrate=115200,
+#         timeout=1
+#     )
+# except serial.SerialException as e:
+#     print(f"Lỗi mở cổng serial: {e}")
+#     exit()
+
+# def is_valid_reading(temp, humi, fire):
+#     return (
+#         -20.0 <= temp <= 60.0 and
+#         5.0 <= humi <= 95.0 and
+#         0.0 <= fire <= 1.0
+#     )
+
+# from Datalink.DataProcessing import decode
+# from Saver import saveDataFromSTM32
+
+# while True:
+#     if ser.in_waiting > 0:
+#         data = ser.read(ser.in_waiting)
+#         hex_string = ' '.join(f'{b:02X}' for b in data)
+#         # print("Received (hex):", hex_string)
+
+#         try:
+#             temp, humi, fire = decode(data)
+
+#             if is_valid_reading(temp, humi, fire):
+#                 continue
+
+#             print(f"Temp={temp}, Humi={humi}, Fire={fire}")
+#             saveDataFromSTM32(temp, humi, fire)
+
+#         except Exception as e:
+#             print("Lỗi giải mã:", e)
+
+#     time.sleep(0.1)
+
+
 import serial
+import threading
 import time
 
-print("Đang lắng nghe dữ liệu dạng HEX từ HC-12 (qua USB)...")
-try:
-    ser = serial.Serial(
-        port='/dev/ttyUSB0',
-        baudrate=115200,
-        timeout=1
-    )
-except serial.SerialException as e:
-    print(f"Lỗi mở cổng serial: {e}")
-    exit()
+from Datalink.DataProcessing import decode
+from Saver import saveDataFromSTM32
+
+latest_data = {"temp": None, "humi": None, "fire": None}
 
 def is_valid_reading(temp, humi, fire):
     return (
@@ -37,25 +77,28 @@ def is_valid_reading(temp, humi, fire):
         0.0 <= fire <= 1.0
     )
 
-from Datalink.DataProcessing import decode
-from Saver import saveDataFromSTM32
+def listen_serial():
+    global latest_data
+    try:
+        ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, timeout=1)
+        print("Open USB serial.")
+    except serial.SerialException as e:
+        print(f"Error open USB serial: {e}")
+        return
 
-while True:
-    if ser.in_waiting > 0:
-        data = ser.read(ser.in_waiting)
-        hex_string = ' '.join(f'{b:02X}' for b in data)
-        # print("Received (hex):", hex_string)
+    while True:
+        if ser.in_waiting > 0:
+            data = ser.read(ser.in_waiting)
+            try:
+                temp, humi, fire = decode(data)
+                if is_valid_reading(temp, humi, fire):
+                    latest_data["temp"] = temp
+                    latest_data["humi"] = humi
+                    latest_data["fire"] = fire
 
-        try:
-            temp, humi, fire = decode(data)
+                    saveDataFromSTM32(temp, humi, fire)
 
-            if is_valid_reading(temp, humi, fire):
-                continue
-
-            print(f"Temp={temp}, Humi={humi}, Fire={fire}")
-            saveDataFromSTM32(temp, humi, fire)
-
-        except Exception as e:
-            print("Lỗi giải mã:", e)
-
-    time.sleep(0.1)
+                    print(f"Temp={temp}, Humi={humi}, Fire={fire}")
+            except Exception as e:
+                print("Error:", e)
+        time.sleep(0.1)

@@ -1,6 +1,5 @@
 body {
     font-family: Arial, sans-serif;
-    /* background: linear-gradient(to bottom right, #6DBDFF, #2e9df75e); */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,10 +13,9 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
-/* Đặt riêng nút back */
 .back_button a{
-    display: inline-block;      /* Rất quan trọng: không để full width */
-    margin-bottom: 10px;        /* Cách dưới một chút */
+    display: inline-block;
+    margin-bottom: 10px;
     background: #007bff;
     color: white;
     padding: 8px 16px;
@@ -33,22 +31,13 @@ body {
     background: #0056b3;
 }
 
-/* .login-container1 h2{
-    margin: 20px 0px;
-    font-size: 24px; 
-    color: #2c3e50;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-family: 'Arial', sans-serif; 
-} */
-
 .sign_up_content h2{
     margin: 20px 0px 5% 0;
     font-size: 24px; 
     color: #2c3e50;
     font-weight: bold;
     text-transform: uppercase;
-    font-family: 'Arial', sans-serif; /* Font dễ đọc */
+    font-family: 'Arial', sans-serif;
 }
 
 .login-container1 h2 span {
@@ -56,7 +45,6 @@ body {
     color: #273896;
 
 }
-
 
 .sign_up_content input[type="text"]{
     width: 100%;
@@ -129,7 +117,7 @@ body {
 
 .note {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8); /* Trắng hơi trong suốt */
+    color: rgba(255, 255, 255, 0.8);
     margin: 5px 0 10px;
     font-style: italic;
 }

@@ -1,6 +1,5 @@
 body {
     font-family: Arial, sans-serif;
-    /* background: linear-gradient(to bottom right, #6DBDFF, #2e9df75e); */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +21,7 @@ body {
     color: #2c3e50;
     font-weight: bold;
     text-transform: uppercase;
-    font-family: 'Arial', sans-serif; /* Font dễ đọc */
+    font-family: 'Arial', sans-serif;
 }
 
 .logn_in_content h2 span {

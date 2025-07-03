@@ -6,11 +6,13 @@ from flask_login import login_required
 from functools import wraps
 import jwt
 import datetime
+from datetime import datetime, timedelta
+
 import re
-from models.connect_db import db  # chỉ import db từ connect_db
-from services.user_service import UserService
+from models.connect_db import db
+from services.user_service import UserService, DataLogService
 import subprocess
-from Alert import send_signup_email, send_password_recovery_email
+from Alert import send_signup_email, send_password_recovery_email, send_email_threshold_all
 from services.password_hash import generate_password, verify_pass
 import sqlite3
 from flask import jsonify, request
@@ -19,15 +21,19 @@ from functools import wraps
 from flask_login import LoginManager, login_user
 from flask import session, redirect, url_for
 import time
-# from LedAlert import blink_led
-from Saver import readCSV, delete_csv_file
-# from ButtonAlert import click_event
-# from SensorData import value_all_blocks
-# import SensorData
+from Datalink.DataProcessing import decode
+from Saver import read_CSV, delete_csv_file
+from read_from_STM32 import listen_serial, latest_data
+import threading
+from alert_mechanism import SystemAlert
+event_id = None
 
 load_dotenv()
 
 app = Flask(__name__)
+serial_thread = threading.Thread(target=listen_serial, daemon=True)
+serial_thread.start()
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -51,53 +57,54 @@ def load_user(user_id):
 def default_route():
     session.clear()
     return redirect(url_for('login_form'))
-    # return redirect(url_for('test_sensor'))
-# source venv/bin/activate
-
-# @app.route("/sensor_data12")
-# def sensor_data12():
-#     data = SensorData.value_all_blocks12()
-#     return data
-
-# @app.route("/sensor_data34")
-# def sensor_data34():
-#     data = SensorData.value_all_blocks34()
-#     return data
 
 
 
-# @app.route('/alert/end', methods=['POST'])
-# def end_alert():
+@app.route('/api/system_alert', methods=['POST'])
+def api_system_alert():
+    date_now = datetime.now().date()
+    result = read_CSV()
+    TEMP_THRESH, HUMI_THRESH = DataLogService.threhold_byDay(date_now)
+    temp, _ = result['temperature']['max']
+    humi, _ = result['humidity']['min']
+    fire = result['fire_changes']
+    check, all_emails = UserService.get_all_email()
+
+    is_fire = SystemAlert(temp, humi, fire, TEMP_THRESH, HUMI_THRESH, all_emails)
+    # is_fire = False
+    if is_fire:
+        created = DataLogService.save_start_time()
+        if created:
+            print("New event fire.")
+    else:
+        closed = DataLogService.save_end_time()
+        if closed:
+            print("End event fire.")
+
+    return jsonify({"is_fire": is_fire})
 
 
-#     # Gọi xuống service
-#     success = UserService.save_end_time_alert()
 
-#     if success:
-#         return jsonify({"status": "success", "message": "End time saved"})
-#     else:
-#         return jsonify({"status": "fail", "message": "No active alert to update"}), 400
+
+# @app.route('/alert')
+# def alert():
+#     try:
+#         result = readCSV()
+#         print("result", result)
+
+#         high_temp, time_high_temp = result
+#         # 20
+#         threshold_temp = UserService.check_threshold_temp(1)
         
-@app.route('/alert')
-def alert():
-    try:
-        result = readCSV()
-        print("result", result)
-
-        high_temp, time_high_temp = result
-        # 20
-        threshold_temp = UserService.check_threshold_temp(1)
-        
-        if high_temp > threshold_temp:
-            id_event, check = UserService.get_time_start()
-            if check == True:
-                delete_csv_file()
-            return jsonify({"status": "success", "message": "FIREE", "id": id_event})
+#         if high_temp > threshold_temp:
+#             id_event, check = UserService.get_time_start()
+#             if check == True:
+#                 delete_csv_file()
+#             return jsonify({"status": "success", "message": "FIREE", "id": id_event})
             
-        return jsonify({"status": "normal", "message": "no Fire"})
-    except Exception as e:
-        return jsonify({"status": "false", "message": str(e)})
-        # import ButtonAlert
+#         return jsonify({"status": "normal", "message": "no Fire"})
+#     except Exception as e:
+#         return jsonify({"status": "false", "message": str(e)})
          
 @app.route('/save_time_end')
 def save_time_end():   
@@ -110,14 +117,146 @@ def save_time_end():
         return jsonify({"status": "normal", "message": "Cant Save"})
     except Exception as e:
         return jsonify({"status": "false", "message": str(e)})
-    
+
+
 @app.route('/dashboard')
 def dashboard():
     if(session.get('user_id') != None):
         role = session.get('role', 'user')
         user_id = session.get('user_id')
-        return render_template('dashboard.html', role=role, user_id=user_id)
+        nodes = UserService.get_node(1)
+        
+        # DataLogService.set_default_threshold(1, None, None)
+
+        id_day, threshold_temp, threshold_humi = DataLogService.get_id_temp_humi_day()
+        print(id_day)
+        DataLogService.set_default_threshold(id_day, threshold_temp, threshold_humi)
+
+        temp, humi = DataLogService.get_threshold()
+        return render_template('dashboard.html', role=role, 
+                                user_id=user_id,data=latest_data,
+                                nodes=nodes,
+                                threshold_temp_alert=temp,
+                                threshold_humi_alert=humi)
     return redirect(url_for('login_form'))
+
+
+@app.route('/api/save_data_day')
+def api_save_data_day():
+    result = read_CSV()
+    if result:
+        max_temp, max_temp_time = result['temperature']['max']
+        min_temp, min_temp_time = result['temperature']['min']
+
+        max_humi, max_humi_time = result['humidity']['max']
+        min_humi, min_humi_time = result['humidity']['min']
+
+        check = DataLogService.save_datalog(
+            max_temp, max_temp_time,
+            min_temp, min_temp_time,
+            max_humi, max_humi_time,
+            min_humi, min_humi_time
+        )
+
+        if check:
+            print("Save succesful")
+
+    return jsonify({"status": "success", "message": "Data saved"})
+
+
+@app.route('/api/latest_data')
+def api_latest_data():
+    return jsonify(latest_data)
+
+@app.route('/api/data_day')
+def api_data_day():
+    result = read_CSV()
+    temp, humi = DataLogService.get_threshold()
+    return jsonify({
+        "data": result,
+        "threshold_temp":temp,
+        "threshold_humi":humi
+    })
+
+
+@app.route('/api/check_threshold')
+def api_check_threshold():
+    id_day, threshold_temp, threshold_humi = DataLogService.get_id_temp_humi_day()
+
+    check = DataLogService.set_default_threshold(id_day, threshold_temp, threshold_humi)
+    if check:
+        return jsonify({"status": "success","message": "successful"})
+
+    return jsonify({"status": "fail","message": "not successful"})
+
+@app.route('/api/get_threshold', methods=['GET'])
+def api_get_threshold():
+    temp, humi = DataLogService.get_threshold()
+    if temp is not None and humi is not None:
+        return jsonify({
+            "status": "success",
+            "message": "Push Threshold Successful",
+            "threshold_temp_alert": temp,
+            "threshold_humi_alert": humi
+        })
+    return jsonify({
+        "status": "fail",
+        "message": "Push Threshold not successful"
+    })
+
+@app.route('/api/update_threshold', methods=['POST'])
+def api_update_threshold():
+    data = request.get_json()
+    temp_value = data.get('temp')
+    humi_value = data.get('humi')
+    check, all_emails = UserService.get_all_email()
+    print(all_emails)
+    if temp_value is None or humi_value is None:
+
+        return jsonify({
+            "status": "fail",
+            "message": "Missing temperature or humidity value"
+        }), 400
+
+    updated = DataLogService.update_threshold(temp_value, humi_value)
+    
+    if updated:
+        if check:
+            send_email_threshold_all(all_emails, temp_value, humi_value)
+            return jsonify({
+                "status": "success",
+                "message": "Threshold updated successfully"
+            })
+    else:
+        return jsonify({
+            "status": "fail",
+            "message": "Failed to update threshold"
+        }), 500
+
+
+@app.route("/api/get_all_properties", methods=["GET"])
+def get_all_properties():
+    days = DataLogService.get_alldays()
+    print(days)
+    result = []
+    for day in days:
+        result.append({
+            "id": day.id,
+            "date": str(day.date),
+            "threshold_temp_alert": day.threshold_temp_alert,
+            "threshold_humi_alert": day.threshold_humi_alert,
+            "block_id": day.block_id,
+            "max_temp": day.max_temp,
+            "min_temp": day.min_temp,
+            "max_humi": day.max_humi,
+            "min_humi": day.min_humi,
+            "time_max_temp": day.time_max_temp,
+            "time_min_temp": day.time_min_temp,
+            "time_max_humi": day.time_max_humi,
+            "time_min_humi": day.time_min_humi
+        })
+
+    return jsonify(result)
 
 
 
@@ -127,55 +266,6 @@ def logout():
     return redirect(url_for('login_form'))
 
 
-@app.route('/add_newusers', methods=['POST'])
-def api_addnewusers():
-    new_username = request.form.get('add_username')
-    new_phone = request.form.get('add_phone')
-    new_email = request.form.get('add_email')
-
-    # Kiểm tra hợp lệ từng trường
-    validations = [
-        (UserService.validate_username(new_username), {
-            "username_format": "Tên người dùng không đúng định dạng (chỉ chứa chữ/số, không quá 10 ký tự)",
-            "username_space":  "Tên người dùng không được chứa khoảng trắng",
-        }),
-        (UserService.validate_phone(new_phone), {
-            "phone_format": "Số điện thoại phải gồm đúng 10 chữ số",
-            "phone_space":  "Số điện thoại không được chứa khoảng trắng",
-        }),
-        (UserService.validate_email(new_email), {
-            "email_space": "Email không được chứa khoảng trắng",
-        }),
-    ]
-
-    # Xử lý lỗi validation
-    for result, messages in validations:
-        if result != "ok":
-            return jsonify({
-                'success': False,
-                'message': messages.get(result, "Dữ liệu điền không hợp lệ")
-            })
-
-    # Kiểm tra tồn tại
-    exist_field = UserService.check_user_exists(new_username, new_phone, new_email)
-    if exist_field:
-        error_messages2 = {
-            "username": "Tên người dùng đã tồn tại, vui lòng chọn tên khác",
-            "phone":    "Số điện thoại đã được sử dụng",
-            "email":    "Email đã được đăng ký",
-        }
-        return jsonify({
-            'success': False,
-            'message': error_messages2.get(exist_field, "Tài khoản đã tồn tại")
-        })
-
-    # Tạo người dùng
-    created = UserService.add_newuser(new_username, new_phone, new_email)
-    if created:
-        return jsonify({'success': True, 'message': 'Thêm người dùng thành công'})
-    
-    return jsonify({'success': False, 'message': 'Không thể tạo người dùng'})
-
 @app.route('/update_username', methods=['POST'])
 def api_update_username():
     user_id = request.form.get('user_id')
@@ -184,16 +274,15 @@ def api_update_username():
     result = UserService.validate_username(new_username)
     if result != "ok":
         error_messages = {
-            "username_format": "Tên người dùng không đúng định dạng (chỉ chứa chữ/số, tối đa 10 ký tự)",
-            "username_space":  "Tên người dùng không được chứa khoảng trắng"
+            "username_format": "Username is not in correct format (letters/numbers only, maximum 10 characters, no space)",
         }
-        return jsonify({'success': False, 'message': error_messages.get(result, "Tên người dùng không hợp lệ")})
+        return jsonify({'success': False, 'message': error_messages.get(result, "Username not valid")})
 
     success = UserService.update_username(user_id, new_username)
     if success:
-        return jsonify({'success': True, 'message': 'Update thành công'})
+        return jsonify({'success': True, 'message': 'Update succesful'})
     
-    return jsonify({'success': False, 'message': 'Update không thành công'})
+    return jsonify({'success': False, 'message': 'Update not succesful'})
 
 @app.route('/update_phone', methods=['POST'])
 def api_update_phone():
@@ -204,17 +293,15 @@ def api_update_phone():
     result = UserService.validate_phone(new_phone)
     if result != "ok":
         error_messages = {
-            "phone_format": "Số điện thoại phải gồm đúng 10 chữ số",
-            "phone_space":  "Số điện thoại không được chứa khoảng trắng"
+            "phone_format": "Phone number must consist of exactly 10 digits (no space)",
         }
-        return jsonify({'success': False, 'message': error_messages.get(result, "Số điện thoại không hợp lệ")})
+        return jsonify({'success': False, 'message': error_messages.get(result, "Phone number not valid")})
 
-    # Nếu hợp lệ, tiến hành cập nhật
     success = UserService.update_phone(user_id, new_phone)
     if success:
-        return jsonify({'success': True, 'message': 'Update thành công'})
+        return jsonify({'success': True, 'message': 'Update succesful'})
     
-    return jsonify({'success': False, 'message': 'Update không thành công'})
+    return jsonify({'success': False, 'message': 'Update not succesful'})
 
 @app.route('/update_email', methods=['POST'])
 def api_update_email():
@@ -224,16 +311,15 @@ def api_update_email():
     result = UserService.validate_email(new_email)
     if result != "ok":
         error_messages = {
-            "email_space": "Email không được chứa khoảng trắng",
-            "email_format": "Email không đúng định dạng hợp lệ"
+            "email_format": "Email is not in valid format"
         }
-        return jsonify({'success': False, 'message': error_messages.get(result, "Email không hợp lệ")})
+        return jsonify({'success': False, 'message': error_messages.get(result, "Email not valid")})
 
     success = UserService.update_email(user_id, new_email)
     if success:
-        return jsonify({'success': True, 'message': 'Update thành công'})
+        return jsonify({'success': True, 'message': 'Update succesful'})
     
-    return jsonify({'success': False, 'message': 'Update không thành công'})
+    return jsonify({'success': False, 'message': 'Update not succesful'})
 
 @app.route('/update_password', methods=['POST'])
 def api_update_password():
@@ -241,26 +327,23 @@ def api_update_password():
     old_password = request.form.get('old_password')
     new_password = request.form.get('new_password')
 
-    # Validate định dạng mật khẩu mới
     validation_result = UserService.validate_password_format(new_password)
     if validation_result != "ok":
         error_messages = {
-            "password_format": "Mật khẩu không đúng định dạng (chỉ chữ/số, tối đa 16 ký tự)",
-            "password_space":  "Mật khẩu không được chứa khoảng trắng"
+            "password_format": "Password is not in correct format (letters/numbers only, maximum 16 characters, no space)"
         }
-        return jsonify({'success': False, 'message': error_messages.get(validation_result, "Mật khẩu không hợp lệ")})
+        return jsonify({'success': False, 'message': error_messages.get(validation_result, "Password not valid")})
 
     success = UserService.update_password(user_id, old_password, new_password)
     if success:
-        return jsonify({'success': True, 'message': 'Update thành công'})
+        return jsonify({'success': True, 'message': 'Update succesful'})
 
-    return jsonify({'success': False, 'message': 'Update không thành công'})
+    return jsonify({'success': False, 'message': 'Update not succesful'})
 
 @app.route('/api/users')
 def api_users():
     keyword = request.args.get('keyword', '').strip()
     return UserService.get_users_by_type('user', keyword)
-
 
 # Button alert
 @app.route('/api/button_event', methods=['GET'])
@@ -296,9 +379,9 @@ def button_event_update_time_end():
             return jsonify({"message": "Fail"}), 422
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-# Button alert
 
-
+#-------------------------------------------------------------------
+# Sign Up Queue
 @app.route('/api/signup_queue')
 def api_signup_queue():
     keyword = request.args.get('keyword', '').strip()
@@ -320,25 +403,24 @@ def api_userAccept():
         'success': False,
         'message': "Error while update status account"
     })
+#-------------------------------------------------------------------
 
-# @app.route('/api/user_info/<int:user_id>', methods=['GET'])
-# def api_delete_user(user_id):
-#     success, message = UserService.delete_user(user_id)
+#-------------------------------------------------------------------
+# Real-time
+# @app.route('/')
+# @login_required
+# def real_time_value():
+#     return render_template('realtime.html', data=latest_data)
 
-#     if success:
-#         return jsonify({
-#             'success': True,
-#             'message': message
-#         }), 200
+#-------------------------------------------------------------------
 
-#     return jsonify({
-#         'success': False,
-#         'message': message
-#     }), 400
+
+#-------------------------------------------------------------------
+# Delete User
 @app.route('/api/users/<int:user_id>', methods=['DELETE'])
 def api_delete_user(user_id):
     success, message = UserService.delete_user(user_id)
-
+    
     if success:
         return jsonify({
             'success': True,
@@ -349,6 +431,56 @@ def api_delete_user(user_id):
         'success': False,
         'message': message
     }), 400
+
+
+# Add New User
+@app.route('/add_newusers', methods=['POST'])
+def api_addnewusers():
+    new_username = request.form.get('add_username')
+    new_phone = request.form.get('add_phone')
+    new_email = request.form.get('add_email')
+
+    # Check all case with each input
+    validations = [
+        (UserService.validate_username(new_username), {
+            "username_format": "Username is not in correct format (letters/numbers only, no more than 10 characters, no space)",
+        }),
+        (UserService.validate_phone(new_phone), {
+            "phone_format": "Phone number must consist of exactly 10 digits, with no special characters or spaces",
+        }),
+        (UserService.validate_email(new_email), {
+            "email_format": "Email must contain a valid domain and must not contain any spaces.",
+        }),
+    ]
+
+    # Process error validation
+    for result, messages in validations:
+        if result != "ok":
+            return jsonify({
+                'success': False,
+                'message': messages.get(result, "Invalid input data")
+            })
+
+    # Check exist
+    exist_field = UserService.check_user_exists(new_username, new_phone, new_email)
+    if exist_field:
+        error_messages2 = {
+            "username": "Username already exists, please choose another one",
+            "phone":    "Phone number already in use",
+            "email":    "Email has been registered",
+        }
+        return jsonify({
+            'success': False,
+            'message': error_messages2.get(exist_field, "Account already exists")
+        })
+
+    # Create new user
+    created = UserService.add_newuser(new_username, new_phone, new_email)
+    if created:
+        return jsonify({'success': True, 'message': 'User added successfully'})
+    
+    return jsonify({'success': False, 'message': 'Unable to create user'})
+#-------------------------------------------------------------------
 
 @app.route('/api/users/<int:user_id>', methods=['GET'])
 def api_get_user(user_id):
@@ -381,7 +513,8 @@ def api_change_username(user_id):
         'message': message
     }), 400
 
-
+#-------------------------------------------------------------------
+# Password Recovery
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -402,8 +535,11 @@ def forgot_password():
         return redirect(url_for('forgot_password'))
     
     return render_template('forgot_password.html')
+#-------------------------------------------------------------------
 
 
+#-------------------------------------------------------------------
+# Sign Up       DONE
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
@@ -452,11 +588,11 @@ def sign_up():
         return redirect(url_for('sign_up'))
 
     return render_template('sign_up.html')
+#-------------------------------------------------------------------
 
 
-
-
-
+#-------------------------------------------------------------------
+# Login     DONE
 @app.route('/login', methods=['GET', 'POST'])
 def login_form():
     session.clear()
@@ -475,8 +611,7 @@ def login_form():
             flash('user not found!', category="fail_login")
 
     return render_template('login.html')
-
-
+#-------------------------------------------------------------------
 
 
 if __name__ == '__main__':

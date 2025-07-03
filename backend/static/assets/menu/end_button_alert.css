@@ -1,14 +1,13 @@
 .end_button_alert {
     position: absolute;
     width: 80%;
-    height: 15%;
+    height: 10%;
     background-color: rgb(75, 73, 73);
-    bottom: 20%;
-
-    display: flex;
+    bottom: 14%;
+    display: flex
+;
     align-items: center;
     justify-content: center;
-
     border-radius: 10px;
     box-shadow: 6px 6px 0px 0px rgb(0, 0, 0);
     transition: all 0.15s ease-in-out;
@@ -16,11 +15,10 @@
 }
 
 .end_button_alert:hover {
-    transform: translateY(2px); /* cảm giác như nút bị ấn xuống */
-    box-shadow: 2px 2px 0px 0px rgb(0, 0, 0); /* bóng đổ giảm bớt */
-    background-color: rgb(55, 53, 53); /* tối hơn một chút */
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px 0px rgb(0, 0, 0);
+    background-color: rgb(55, 53, 53);
 }
-
 
 .end_button_alert p {
     color: #ffffffdb;
