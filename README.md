@@ -1,5 +1,5 @@
 
-# 🔥 IoT_Project_v2 - Fire Monitoring & Alert System Using Raspberry Pi
+# 🔥 IoT_Project_v2 - Fire Monitoring & Alert System FOR MACHINE ROOM Using Raspberry Pi
 
 ## 📌 Overview
 
