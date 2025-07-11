@@ -11,6 +11,7 @@ class User(db.Model):
     phone       = db.Column(db.String(10))
     role = db.Column(db.String(20), nullable=False)
 
+    # rooms = db.relationship("Room", back_populates="user")
 # This class defines the structure and attribute of the SignUpQueue table and in the database.
 class SignUpQueue(db.Model):
     __tablename__ = 'sign_up_queue'
@@ -46,10 +47,11 @@ class Room(db.Model):
     x = db.Column(db.Integer)
     y = db.Column(db.Integer)
     z = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    # Relationship
-    user = db.relationship("User", backref="rooms")
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    # user = db.relationship("User", back_populates="rooms")
+
 
 class SensorBlockPosition(db.Model):
     __tablename__ = 'sensor_block_position'

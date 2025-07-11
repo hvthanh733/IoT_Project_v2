@@ -63,6 +63,9 @@ class DataLogService:
 
 # Class UserService handle logic
 class UserService:
+    def infor_room_for_user(id):
+        name_room, size_m2, x, y, z = UserRepo.infor_room_for_user(id)
+        return name_room, size_m2, x, y, z
     #-------------------------------------------------------------------
     # Get All Email
     def get_all_email():
@@ -151,11 +154,10 @@ class UserService:
 
 
     #-------------------------------------------------------------------
-    # Create user form sign_up form     DONE
+    # Create user form sign_up form
     def create_user(username_signup: str, password: str, phone_signup: str, email_signup: str) -> bool:
         password_hashed = generate_password(password)
         new_user, get_username = UserRepo.create_user(username_signup, password_hashed, phone_signup, email_signup)
-        
         if new_user:
             send_signup_email(email_signup, f"Hi {get_username}, your account is sign up successful!")
             return True

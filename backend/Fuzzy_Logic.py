@@ -5,6 +5,8 @@ def FuzzyLogic(temp, humi, fire, threshold_temp, threshold_humi):
     # Temp: 40 - 45, Humi 30 - 35
     # Membership function for Temperature
     def membership_temp_high(temp):
+        if temp is None:
+            print("Temp not found")
         # 40 - 45
         if temp <= (threshold_temp - 15):
             return 0
@@ -15,6 +17,8 @@ def FuzzyLogic(temp, humi, fire, threshold_temp, threshold_humi):
 
     # Membership function for Humidity
     def membership_humidity_low(humi):
+        if humi is None:
+            print("Humi not found")
         # 30 - 35
         if humi <= threshold_humi:
             return 1
@@ -74,6 +78,3 @@ def FuzzyLogic(temp, humi, fire, threshold_temp, threshold_humi):
         print("Fire!!")
         return True
     return False
-
-
-# if __name__ == "__main__":

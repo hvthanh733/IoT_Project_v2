@@ -7,12 +7,12 @@ from functools import wraps
 import jwt
 import datetime
 from datetime import datetime, timedelta
-
+from play_sound import play_sound_loop_alert
 import re
 from models.connect_db import db
 from services.user_service import UserService, DataLogService
 import subprocess
-from Alert import send_signup_email, send_password_recovery_email, send_email_threshold_all
+from Alert import send_signup_email, send_password_recovery_email, send_email_threshold_all, send_email_create_user
 from services.password_hash import generate_password, verify_pass
 import sqlite3
 from flask import jsonify, request
@@ -58,8 +58,6 @@ def default_route():
     session.clear()
     return redirect(url_for('login_form'))
 
-
-
 @app.route('/api/system_alert', methods=['POST'])
 def api_system_alert():
     date_now = datetime.now().date()
@@ -71,46 +69,35 @@ def api_system_alert():
     check, all_emails = UserService.get_all_email()
 
     is_fire = SystemAlert(temp, humi, fire, TEMP_THRESH, HUMI_THRESH, all_emails)
+    
+    # is_fire = True
     # is_fire = False
+    # print(is_fire)
     if is_fire:
+        play_sound_loop_alert()
         created = DataLogService.save_start_time()
-        if created:
-            print("New event fire.")
     else:
         closed = DataLogService.save_end_time()
-        if closed:
-            print("End event fire.")
-
     return jsonify({"is_fire": is_fire})
 
 
+@app.route('/api/terminate_alert', methods=['GET'])
+def api_terminate_alert():
+    try:
+        # Gọi logic lưu end_time
+        result = DataLogService.save_end_time()
+        if result:
+            return jsonify({"status": "true"})
+        else:
+            return jsonify({"status": "false", "message": "Failed to save end_time"})
+    except Exception as e:
+        return jsonify({"status": "false", "message": str(e)})
 
 
-# @app.route('/alert')
-# def alert():
-#     try:
-#         result = readCSV()
-#         print("result", result)
-
-#         high_temp, time_high_temp = result
-#         # 20
-#         threshold_temp = UserService.check_threshold_temp(1)
-        
-#         if high_temp > threshold_temp:
-#             id_event, check = UserService.get_time_start()
-#             if check == True:
-#                 delete_csv_file()
-#             return jsonify({"status": "success", "message": "FIREE", "id": id_event})
-            
-#         return jsonify({"status": "normal", "message": "no Fire"})
-#     except Exception as e:
-#         return jsonify({"status": "false", "message": str(e)})
-         
 @app.route('/save_time_end')
 def save_time_end():   
     try:
         id_event = request.args.get('id')
-        print("id",id_event)
         check = UserService.get_time_end(id_event)
         if check == True:
             return jsonify({"status": "success", "message": "Save End Time Fire"})
@@ -129,7 +116,6 @@ def dashboard():
         # DataLogService.set_default_threshold(1, None, None)
 
         id_day, threshold_temp, threshold_humi = DataLogService.get_id_temp_humi_day()
-        print(id_day)
         DataLogService.set_default_threshold(id_day, threshold_temp, threshold_humi)
 
         temp, humi = DataLogService.get_threshold()
@@ -157,9 +143,6 @@ def api_save_data_day():
             max_humi, max_humi_time,
             min_humi, min_humi_time
         )
-
-        if check:
-            print("Save succesful")
 
     return jsonify({"status": "success", "message": "Data saved"})
 
@@ -210,7 +193,6 @@ def api_update_threshold():
     temp_value = data.get('temp')
     humi_value = data.get('humi')
     check, all_emails = UserService.get_all_email()
-    print(all_emails)
     if temp_value is None or humi_value is None:
 
         return jsonify({
@@ -237,7 +219,6 @@ def api_update_threshold():
 @app.route("/api/get_all_properties", methods=["GET"])
 def get_all_properties():
     days = DataLogService.get_alldays()
-    print(days)
     result = []
     for day in days:
         result.append({
@@ -406,16 +387,6 @@ def api_userAccept():
 #-------------------------------------------------------------------
 
 #-------------------------------------------------------------------
-# Real-time
-# @app.route('/')
-# @login_required
-# def real_time_value():
-#     return render_template('realtime.html', data=latest_data)
-
-#-------------------------------------------------------------------
-
-
-#-------------------------------------------------------------------
 # Delete User
 @app.route('/api/users/<int:user_id>', methods=['DELETE'])
 def api_delete_user(user_id):
@@ -477,6 +448,7 @@ def api_addnewusers():
     # Create new user
     created = UserService.add_newuser(new_username, new_phone, new_email)
     if created:
+        new_password = send_email_create_user(new_email)
         return jsonify({'success': True, 'message': 'User added successfully'})
     
     return jsonify({'success': False, 'message': 'Unable to create user'})
@@ -485,16 +457,26 @@ def api_addnewusers():
 @app.route('/api/users/<int:user_id>', methods=['GET'])
 def api_get_user(user_id):
     success, user = UserService.infor_user(user_id)
-    if user:
+    name_room, size_m2, x, y, z = UserService.infor_room_for_user(1)
+
+    if success:
         return jsonify({
             'success': True,
-            'user': user
+            'user': user,
+            'room': {
+                'name_room': name_room,
+                'size_m2': size_m2,
+                'x': x,
+                'y': y,
+                'z': z
+            }
         }), 200
+    else:
+        return jsonify({
+            'success': False,
+            'message': user
+        }), 400
 
-    return jsonify({
-        'success': False,
-        'message': user
-    }), 400
 
 @app.route('/api/users/<int:user_id>', methods=['PUT'])
 def api_change_username(user_id):
@@ -539,7 +521,7 @@ def forgot_password():
 
 
 #-------------------------------------------------------------------
-# Sign Up       DONE
+# Sign Up
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
@@ -583,6 +565,7 @@ def sign_up():
         # Create user
         new_user = UserService.create_user(username, password, phone, email)
         if new_user:
+            
             flash('Request register sent to admin', 'signup_successfull')
         
         return redirect(url_for('sign_up'))
@@ -592,7 +575,7 @@ def sign_up():
 
 
 #-------------------------------------------------------------------
-# Login     DONE
+# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login_form():
     session.clear()
@@ -605,7 +588,6 @@ def login_form():
             session['username'] = username
             session['role'] = user.role
             session['user_id'] = user.id
-            print(user.id)
             return redirect(url_for('dashboard'))
         else:
             flash('user not found!', category="fail_login")

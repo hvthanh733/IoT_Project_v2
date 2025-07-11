@@ -1,4 +1,4 @@
-from models.model_project import SignUpQueue, User , FireEvent, SensorBlockProperty, SensorBlockPosition
+from models.model_project import SignUpQueue, User , FireEvent, SensorBlockProperty, SensorBlockPosition, Room
 from models.connect_db import db
 from services.password_hash import generate_password, verify_pass
 from flask import jsonify, request
@@ -80,6 +80,13 @@ class DataLogRepo:
 
 
 class UserRepo:
+
+    def infor_room_for_user(id):
+        room = Room.query.filter_by(id=id).first()
+        if room:
+            return room.name_room, room.size_m2, room.x, room.y, room.z
+        return None, None, None, None, None
+
     def get_all_email():
         users = User.query.all()
         
@@ -345,13 +352,21 @@ class ThresholdRepo():
         return False
     
     def set_default_threshold_case2(id_day):
-        date_now = datetime.now().date()
-        date_yesterday = date_now - timedelta(days=1)
-
-        prev_day_data = SensorBlockProperty.query.filter_by(date=date_yesterday).first()
         current_day = SensorBlockProperty.query.filter_by(id=id_day).first()
 
-        if prev_day_data and current_day:
+        if not current_day:
+            return False
+
+        current_date = current_day.date
+
+        prev_day_data = (
+            SensorBlockProperty.query
+            .filter(SensorBlockProperty.date < current_date)
+            .order_by(SensorBlockProperty.date.desc())
+            .first()
+        )
+
+        if prev_day_data:
             current_day.threshold_temp_alert = prev_day_data.threshold_temp_alert
             current_day.threshold_humi_alert = prev_day_data.threshold_humi_alert
             db.session.commit()

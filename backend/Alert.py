@@ -15,11 +15,7 @@ sender_email = os.getenv("GMAIL_SEND_ALERT")
 receiver_email_test = "hthanhjj0703@gmail.com"
 password = os.getenv("PASSWORD_GMAIL_ALERT")
 
-# Sign Up Email
-def send_alert_threshold(receiver_email, message):
-    body = message
-    subject = "IoT - Signup Confirmation"
-    send_email_base(receiver_email, subject, body)
+
 # --------------------------------------------------------------
 # Sign Up Email
 def send_signup_email(receiver_email, message):
@@ -107,7 +103,7 @@ def send_email_base(receiver_email, subject, body):
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
             server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_emails, message.as_string())
+            server.sendmail(sender_email, receiver_email, message.as_string())
             print("Email sent successfully!")
     except Exception as e:
         print("Email sending error:", e)

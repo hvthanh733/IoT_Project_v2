@@ -310,7 +310,13 @@
             })
             .then(res => res.json())
             .then(data => {
-                resetSearchUser();
+                if (data["success"] == true){
+                    alert("User created successfully, new password is sent to new user");
+                    resetSearchUser();
+                }else{
+                    alert(data["message"]);
+                    resetSearchUser();
+                }
                 
             })
             .catch(err => {
@@ -424,28 +430,37 @@
             }
         }
         
-        function showinforUser(userId) {
-            // console.log('showinforUser userId:', userId);
+      function showinforUser(userId) {
+    fetch(`/api/users/${userId}`, {
+        method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log('Data API:', data);
+        if (data.success) {
+            const user = data.user;
+            const room = data.room;
 
-            fetch(`/api/users/${userId}`, {
-                method: 'GET'
-            })
-            .then(res => res.json())
-            .then(data => {
-                // console.log('Data API:', data);
-                if (data.success) {
-                    const user = data.user;
-                    document.getElementById("username_info").textContent = user.username;
-                    document.getElementById("phone_info").textContent = user.phone;
-                    document.getElementById("email_info").textContent = user.email;
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(err => {
-                alert("Error: " + err);
-            });
+            document.getElementById("username_info").textContent = user.username;
+            document.getElementById("phone_info").textContent = user.phone;
+            document.getElementById("email_info").textContent = user.email;
+
+            if (room) {
+                document.getElementById("name_room").textContent = room.name_room;
+                document.getElementById("size_m2").textContent = room.size_m2 + "m2";
+                document.getElementById("x_infor").textContent = room.x + "m2";
+                document.getElementById("y_infor").textContent = room.y + "m2";
+                document.getElementById("z_infor").textContent = room.z + "m2";
+            }
+        } else {
+            alert('Error: ' + data.message);
         }
+    })
+    .catch(err => {
+        alert("Error: " + err);
+    });
+}
+
       
         function acceptUser(userId, isAccepted) {
             if (confirm('Are you sure you want to accept this account as your user?')) {
@@ -871,30 +886,50 @@
         // ----------------------------------------------------------------
         // System Alert
         function SystemAlert() {
-            fetch('/api/system_alert', {
+            return fetch('/api/system_alert', {
                 method: 'POST'
             })
             .then(res => res.json())
             .then(data => {
-                if (data.is_fire) {
-                    // console.log("Fire!");
-                } else {
-                    // console.log("No Fire");
-                }
+                return data.is_fire;
             })
             .catch(err => {
                 console.error("Error:", err);
+                return false;
             });
+        }
+
+        function click_end_alert() {
+            const endBtn = document.getElementById('endBtn');
+            const isRed = endBtn.style.backgroundColor === 'red';
+
+            if (isRed) {
+                fetch('/api/terminate_alert', {
+                    method: 'GET'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "true") {
+                        endBtn.style.backgroundColor = 'gray';
+                        console.log("Alert ended.");
+                    } else {
+                        console.log("Failed to end alert:", data.message);
+                    }
+                });
+            }else{
+                alert("Dont have a fire event.");
+            }
         }
 
 
         // ----------------------------------------------------------------
 
         window.onload = function () {
+            const endBtn = document.getElementById('endBtn');
+
             const userId = document.getElementById("user_id_hidden").value;
-            console.log('UserId:', userId);
             searchUser();
-            searchButtonTable()
+            searchButtonTable();
             searchUserSignUp();
             showinforUser(userId);
             fetchRealtimeData();
@@ -902,20 +937,41 @@
             loadData();
             getThreshold();
             saveDataToDB();
-            checkThreshold()
-            SystemAlert();
+            checkThreshold();
+
+            SystemAlert().then(is_fire => {
+                if (is_fire) {
+                    endBtn.style.backgroundColor = 'red';
+                    endBtn.disabled = false;
+                } else {
+                    endBtn.style.backgroundColor = 'gray';
+                    endBtn.disabled = true;
+                }
+            });
+
             setInterval(() => {
                 fetchRealtimeData();
                 fetchTodayData();
                 checkThreshold();
                 getThreshold();
-                SystemAlert();
+                SystemAlert().then(is_fire => {
+                    if (is_fire) {
+                        endBtn.style.backgroundColor = 'red';
+                        endBtn.disabled = false;
+                    } else {
+                        endBtn.style.backgroundColor = 'gray';
+                        endBtn.disabled = true;
+                    }
+                });
             }, 5000);
+
             setInterval(() => {
                 saveDataToDB();
                 loadData();
-            }, 5000);
-        };
+            }, 10000);
+
+            endBtn.onclick = click_end_alert;
+        }
 
         function addUser() {
             document.getElementById('overlay').style.display = 'block';
@@ -1173,7 +1229,7 @@
                                                         <h3>Node 1</h3>
                                                     </div>
                                                     <div class="form_row">
-                                                        <label for="tempThreshold">Temperature Threshold (40-47°C):</label>
+                                                        <label for="tempThreshold">Temperature Threshold (40-45°C):</label>
                                                         <input type="number" id="tempThreshold" placeholder="{{ threshold_temp_alert }}" name="tempThreshold">
                                                     </div>
                                                     <div class="form_row">
@@ -1199,6 +1255,7 @@
                                             <input type="text" id="search_day_data" class="form-control" placeholder="Search day (Ex: 20250701)...">
                                             <button onclick="searchDay()" class="btn btn-primary">Search Day</button>
                                             <button onclick="refreshDay()" class="btn btn-primary">Refresh</button>
+                                            <button onclick="exportDataDay()" class="btn btn-primary">Export</button>
                                         </div>
                                         <table id="dataTable" class="display">
                                             <thead>
@@ -1207,7 +1264,6 @@
                                                     <th colspan="2">Threshold</th>
                                                     <th colspan="4">Temperature</th>
                                                     <th colspan="4">Humidity</th>
-                                                    <th colspan="1" rowspan="2">Export Day</th>
 
                                                 </tr>
                                                 <tr>
@@ -1223,7 +1279,7 @@
                                                     <th>Time at Low Humi</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="table_data_body">
 
                                             </tbody>
                                             </table>
@@ -1240,6 +1296,12 @@
                                         <div class="namepage">
                                             <h3>Account Information:</h3>
                                         </div>
+                                        <p id="name_room" data-label="name_room"></p>
+                                        <p id="size_m2" data-label="size_m2"></p>
+                                        <p id="x_infor" data-label="Width"></p>
+                                        <p id="y_infor" data-label="Length"></p>
+                                        <p id="z_infor" data-label="Height"></p>
+
                                         <p id="username_info" data-label="Username"></p>
                                         <p id="phone_info" data-label="Phone Number"></p>
                                         <p id="email_info" data-label="Email"></p>

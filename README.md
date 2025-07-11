@@ -36,3 +36,21 @@ pip install zlapi
 <!--  -->
 pip install RPi.GPIO
 pip install flask_login
+
+[Block2]
+sensor1 = Temperature & Humidity
+sensor2 = Fire
+GPIO1 = D16
+GPIO2 = 12
+
+[Block3]
+sensor1 = Temperature & Humidity
+sensor2 = Fire
+GPIO1 = D17
+GPIO2 = 27
+
+[Block4]
+sensor1 = Temperature & Humidity
+sensor2 = Fire
+GPIO1 = D4
+GPIO2 = 14
