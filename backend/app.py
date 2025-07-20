@@ -263,7 +263,7 @@ def api_update_username():
     if success:
         return jsonify({'success': True, 'message': 'Update succesful'})
     
-    return jsonify({'success': False, 'message': 'Update not succesful'})
+    return jsonify({'success': False, 'message': 'Update not succesful, that usernamr maybe exists'})
 
 @app.route('/update_phone', methods=['POST'])
 def api_update_phone():
@@ -282,7 +282,7 @@ def api_update_phone():
     if success:
         return jsonify({'success': True, 'message': 'Update succesful'})
     
-    return jsonify({'success': False, 'message': 'Update not succesful'})
+    return jsonify({'success': False, 'message': 'Update not succesful, that phone number maybe exists'})
 
 @app.route('/update_email', methods=['POST'])
 def api_update_email():
@@ -300,7 +300,7 @@ def api_update_email():
     if success:
         return jsonify({'success': True, 'message': 'Update succesful'})
     
-    return jsonify({'success': False, 'message': 'Update not succesful'})
+    return jsonify({'success': False, 'message': 'Update not succesful, that email maybe exists'})
 
 @app.route('/update_password', methods=['POST'])
 def api_update_password():

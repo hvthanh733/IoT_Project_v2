@@ -33,195 +33,243 @@
     <script src="https://kit.fontawesome.com/46329671cb.js" crossorigin="anonymous"></script>
     <script>
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const dashboardBtn = document.getElementById("1");
-            const thresholdBtn = document.getElementById("2");
-            const table_eventBtn = document.getElementById("3");
-            const user_informationBtn = document.getElementById("4"); 
-            const signup_listuser_managerBtn = document.getElementById("5"); 
-            const user_managerBtn = document.getElementById("6"); 
-            const fire_event_managerBtn = document.getElementById("7"); 
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const dashboardBtn = document.getElementById("1");
+        //     const thresholdBtn = document.getElementById("2");
+        //     const table_eventBtn = document.getElementById("3");
+        //     const user_informationBtn = document.getElementById("4"); 
+        //     const signup_listuser_managerBtn = document.getElementById("5"); 
+        //     const user_managerBtn = document.getElementById("6"); 
+        //     const fire_event_managerBtn = document.getElementById("7"); 
 
 
-            const dashboardPage = document.getElementById("dashboard");
-            const thresholdPage = document.getElementById("threshold");
-            const table_eventPage = document.getElementById("table_page");
-            const user_informationPage = document.getElementById("user_information");
-            const signup_listuser_managerPage = document.getElementById("signup_list_manager");
-            const user_managerPage = document.getElementById("user_manager");
-            const fire_event_managerPage = document.getElementById("buttonAlert_manager"); 
+        //     const dashboardPage = document.getElementById("dashboard");
+        //     const thresholdPage = document.getElementById("threshold");
+        //     const table_eventPage = document.getElementById("table_page");
+        //     const user_informationPage = document.getElementById("user_information");
+        //     const signup_listuser_managerPage = document.getElementById("signup_list_manager");
+        //     const user_managerPage = document.getElementById("user_manager");
+        //     const fire_event_managerPage = document.getElementById("buttonAlert_manager"); 
 
 
-            if (dashboardPage && thresholdPage 
-                && table_eventPage && user_informationPage 
-                && user_managerPage && fire_event_managerPage ) {
-                dashboardBtn.style.backgroundColor = "darkblue";
-                // table_eventBtn.style.backgroundColor = "5D60EF";
+        //     if (dashboardPage && thresholdPage 
+        //         && table_eventPage && user_informationPage 
+        //         && user_managerPage && fire_event_managerPage ) {
+        //         dashboardBtn.style.backgroundColor = "darkblue";
+        //         // table_eventBtn.style.backgroundColor = "5D60EF";
                 
-                dashboardPage.style.display = "block";
-                thresholdPage.style.display = "none";
-                table_eventPage.style.display = "none";
-                user_informationPage.style.display = "none";
-                signup_listuser_managerPage.style.display = "none";
-                user_managerPage.style.display = "none";
-                fire_event_managerPage.style.display = "none";
+        //         dashboardPage.style.display = "block";
+        //         thresholdPage.style.display = "none";
+        //         table_eventPage.style.display = "none";
+        //         user_informationPage.style.display = "none";
+        //         signup_listuser_managerPage.style.display = "none";
+        //         user_managerPage.style.display = "none";
+        //         fire_event_managerPage.style.display = "none";
 
-            }
+        //     }
 
-            if (dashboardBtn) {
-                dashboardBtn.addEventListener('click', function() {
+        //     if (dashboardBtn) {
+        //         dashboardBtn.addEventListener('click', function() {
                     
-                    dashboardPage.style.display = "block";
-                    thresholdPage.style.display = "none";
-                    table_eventPage.style.display = "none";
-                    user_informationPage.style.display = "none";
-                    signup_listuser_managerPage.style.display = "none";
-                    user_managerPage.style.display = "none";
-                    fire_event_managerPage.style.display = "none";
+        //             dashboardPage.style.display = "block";
+        //             thresholdPage.style.display = "none";
+        //             table_eventPage.style.display = "none";
+        //             user_informationPage.style.display = "none";
+        //             signup_listuser_managerPage.style.display = "none";
+        //             user_managerPage.style.display = "none";
+        //             fire_event_managerPage.style.display = "none";
 
-                    dashboardBtn.style.backgroundColor = "darkblue";
-                    thresholdBtn.style.backgroundColor = "#5D60EF";
-                    table_eventBtn.style.backgroundColor = "#5D60EF";
-                    user_informationBtn.style.backgroundColor = "#5D60EF";
-                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
-                    user_managerBtn.style.backgroundColor = "#5D60EF";
-                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+        //             dashboardBtn.style.backgroundColor = "darkblue";
+        //             thresholdBtn.style.backgroundColor = "#5D60EF";
+        //             table_eventBtn.style.backgroundColor = "#5D60EF";
+        //             user_informationBtn.style.backgroundColor = "#5D60EF";
+        //             signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+        //             user_managerBtn.style.backgroundColor = "#5D60EF";
+        //             fire_event_managerBtn.style.backgroundColor = "#5D60EF";
 
 
-                });
-            }
+        //         });
+        //     }
 
-            if (thresholdBtn) {
-                thresholdBtn.addEventListener('click', function() {
+        //     if (thresholdBtn) {
+        //         thresholdBtn.addEventListener('click', function() {
                     
-                    dashboardPage.style.display = "none";
-                    thresholdPage.style.display = "block";
-                    table_eventPage.style.display = "none";
-                    user_informationPage.style.display = "none";
-                    signup_listuser_managerPage.style.display = "none";
-                    user_managerPage.style.display = "none";
-                    fire_event_managerPage.style.display = "none";
-
-                    
-                    dashboardBtn.style.backgroundColor = "#5D60EF";
-                    thresholdBtn.style.backgroundColor = "darkblue";
-                    table_eventBtn.style.backgroundColor = "#5D60EF";
-                    user_informationBtn.style.backgroundColor = "#5D60EF";
-                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
-                    user_managerBtn.style.backgroundColor = "#5D60EF";
-                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
-                });
-            }
-
-            if (table_eventBtn) {
-                table_eventBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";
-                    thresholdPage.style.display = "none";
-                    table_eventPage.style.display = "block";
-                    user_informationPage.style.display = "none";
-                    signup_listuser_managerPage.style.display = "none";
-                    user_managerPage.style.display = "none";
-                    fire_event_managerPage.style.display = "none";
-                    table_eventBtn.style.backgroundColor = "darkblue";
+        //             dashboardPage.style.display = "none";
+        //             thresholdPage.style.display = "block";
+        //             table_eventPage.style.display = "none";
+        //             user_informationPage.style.display = "none";
+        //             signup_listuser_managerPage.style.display = "none";
+        //             user_managerPage.style.display = "none";
+        //             fire_event_managerPage.style.display = "none";
 
                     
-                    dashboardBtn.style.backgroundColor = "#5D60EF";
-                    thresholdBtn.style.backgroundColor = "#5D60EF";
-                    table_eventBtn.style.backgroundColor = "darkblue";
-                    user_informationBtn.style.backgroundColor = "#5D60EF";
-                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
-                    user_managerBtn.style.backgroundColor = "#5D60EF";
-                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
-                });
-            }
+        //             dashboardBtn.style.backgroundColor = "#5D60EF";
+        //             thresholdBtn.style.backgroundColor = "darkblue";
+        //             table_eventBtn.style.backgroundColor = "#5D60EF";
+        //             user_informationBtn.style.backgroundColor = "#5D60EF";
+        //             signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+        //             user_managerBtn.style.backgroundColor = "#5D60EF";
+        //             fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+        //         });
+        //     }
 
-            if (user_informationBtn) {
-                user_informationBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";
-                    thresholdPage.style.display = "none";
-                    table_eventPage.style.display = "none";
-                    user_informationPage.style.display = "block";
-                    signup_listuser_managerPage.style.display = "none";
-                    user_managerPage.style.display = "none";
-                    fire_event_managerPage.style.display = "none";
+        //     if (table_eventBtn) {
+        //         table_eventBtn.addEventListener('click', function() {
+        //             dashboardPage.style.display = "none";
+        //             thresholdPage.style.display = "none";
+        //             table_eventPage.style.display = "block";
+        //             user_informationPage.style.display = "none";
+        //             signup_listuser_managerPage.style.display = "none";
+        //             user_managerPage.style.display = "none";
+        //             fire_event_managerPage.style.display = "none";
+        //             table_eventBtn.style.backgroundColor = "darkblue";
 
                     
-                    dashboardBtn.style.backgroundColor = "#5D60EF";
-                    thresholdBtn.style.backgroundColor = "#5D60EF";
-                    table_eventBtn.style.backgroundColor = "#5D60EF";
-                    user_informationBtn.style.backgroundColor = "darkblue";
-                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
-                    user_managerBtn.style.backgroundColor = "#5D60EF";
-                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
-                });
-            }
+        //             dashboardBtn.style.backgroundColor = "#5D60EF";
+        //             thresholdBtn.style.backgroundColor = "#5D60EF";
+        //             table_eventBtn.style.backgroundColor = "darkblue";
+        //             user_informationBtn.style.backgroundColor = "#5D60EF";
+        //             signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+        //             user_managerBtn.style.backgroundColor = "#5D60EF";
+        //             fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+        //         });
+        //     }
 
-            if (signup_listuser_managerBtn) {
-                signup_listuser_managerBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";
-                    thresholdPage.style.display = "none";
-                    table_eventPage.style.display = "none";
-                    user_informationPage.style.display = "none";
-                    signup_listuser_managerPage.style.display = "block";
-                    user_managerPage.style.display = "none";
-                    fire_event_managerPage.style.display = "none";
+        //     if (user_informationBtn) {
+        //         user_informationBtn.addEventListener('click', function() {
+        //             dashboardPage.style.display = "none";
+        //             thresholdPage.style.display = "none";
+        //             table_eventPage.style.display = "none";
+        //             user_informationPage.style.display = "block";
+        //             signup_listuser_managerPage.style.display = "none";
+        //             user_managerPage.style.display = "none";
+        //             fire_event_managerPage.style.display = "none";
+
+                    
+        //             dashboardBtn.style.backgroundColor = "#5D60EF";
+        //             thresholdBtn.style.backgroundColor = "#5D60EF";
+        //             table_eventBtn.style.backgroundColor = "#5D60EF";
+        //             user_informationBtn.style.backgroundColor = "darkblue";
+        //             signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+        //             user_managerBtn.style.backgroundColor = "#5D60EF";
+        //             fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+        //         });
+        //     }
+
+        //     if (signup_listuser_managerBtn) {
+        //         signup_listuser_managerBtn.addEventListener('click', function() {
+        //             dashboardPage.style.display = "none";
+        //             thresholdPage.style.display = "none";
+        //             table_eventPage.style.display = "none";
+        //             user_informationPage.style.display = "none";
+        //             signup_listuser_managerPage.style.display = "block";
+        //             user_managerPage.style.display = "none";
+        //             fire_event_managerPage.style.display = "none";
 
                    
-                    dashboardBtn.style.backgroundColor = "#5D60EF";
-                    thresholdBtn.style.backgroundColor = "#5D60EF";
-                    table_eventBtn.style.backgroundColor = "#5D60EF";
-                    user_informationBtn.style.backgroundColor = "#5D60EF";
-                    signup_listuser_managerBtn.style.backgroundColor = "darkblue";
-                    user_managerBtn.style.backgroundColor = "#5D60EF";
-                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
-                });
-            }
+        //             dashboardBtn.style.backgroundColor = "#5D60EF";
+        //             thresholdBtn.style.backgroundColor = "#5D60EF";
+        //             table_eventBtn.style.backgroundColor = "#5D60EF";
+        //             user_informationBtn.style.backgroundColor = "#5D60EF";
+        //             signup_listuser_managerBtn.style.backgroundColor = "darkblue";
+        //             user_managerBtn.style.backgroundColor = "#5D60EF";
+        //             fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+        //         });
+        //     }
 
-            if (user_managerBtn) {
-                user_managerBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";
-                    thresholdPage.style.display = "none";
-                    table_eventPage.style.display = "none";
-                    user_informationPage.style.display = "none";
-                    signup_listuser_managerPage.style.display = "none";
-                    user_managerPage.style.display = "block";
-                    fire_event_managerPage.style.display = "none";
-                    user_managerBtn.style.backgroundColor = "darkblue";
+        //     if (user_managerBtn) {
+        //         user_managerBtn.addEventListener('click', function() {
+        //             dashboardPage.style.display = "none";
+        //             thresholdPage.style.display = "none";
+        //             table_eventPage.style.display = "none";
+        //             user_informationPage.style.display = "none";
+        //             signup_listuser_managerPage.style.display = "none";
+        //             user_managerPage.style.display = "block";
+        //             fire_event_managerPage.style.display = "none";
+        //             user_managerBtn.style.backgroundColor = "darkblue";
 
-                    dashboardBtn.style.backgroundColor = "#5D60EF";
-                    thresholdBtn.style.backgroundColor = "#5D60EF";
-                    table_eventBtn.style.backgroundColor = "#5D60EF";
-                    user_informationBtn.style.backgroundColor = "#5D60EF";
-                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
-                    user_managerBtn.style.backgroundColor = "darkblue";
-                    fire_event_managerBtn.style.backgroundColor = "#5D60EF";
-                });
-            }
+        //             dashboardBtn.style.backgroundColor = "#5D60EF";
+        //             thresholdBtn.style.backgroundColor = "#5D60EF";
+        //             table_eventBtn.style.backgroundColor = "#5D60EF";
+        //             user_informationBtn.style.backgroundColor = "#5D60EF";
+        //             signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+        //             user_managerBtn.style.backgroundColor = "darkblue";
+        //             fire_event_managerBtn.style.backgroundColor = "#5D60EF";
+        //         });
+        //     }
 
-            if (fire_event_managerBtn) {
-                fire_event_managerBtn.addEventListener('click', function() {
-                    dashboardPage.style.display = "none";
-                    thresholdPage.style.display = "none";
-                    table_eventPage.style.display = "none";
-                    user_informationPage.style.display = "none";
-                    signup_listuser_managerPage.style.display = "none";
-                    user_managerPage.style.display = "none";
-                    fire_event_managerPage.style.display = "block";
+        //     if (fire_event_managerBtn) {
+        //         fire_event_managerBtn.addEventListener('click', function() {
+        //             dashboardPage.style.display = "none";
+        //             thresholdPage.style.display = "none";
+        //             table_eventPage.style.display = "none";
+        //             user_informationPage.style.display = "none";
+        //             signup_listuser_managerPage.style.display = "none";
+        //             user_managerPage.style.display = "none";
+        //             fire_event_managerPage.style.display = "block";
 
 
                     
-                    dashboardBtn.style.backgroundColor = "#5D60EF";
-                    thresholdBtn.style.backgroundColor = "#5D60EF";
-                    table_eventBtn.style.backgroundColor = "#5D60EF";
-                    user_informationBtn.style.backgroundColor = "#5D60EF";
-                    signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
-                    user_managerBtn.style.backgroundColor = "#5D60EF";
-                    fire_event_managerBtn.style.backgroundColor = "darkblue";
-                });
+        //             dashboardBtn.style.backgroundColor = "#5D60EF";
+        //             thresholdBtn.style.backgroundColor = "#5D60EF";
+        //             table_eventBtn.style.backgroundColor = "#5D60EF";
+        //             user_informationBtn.style.backgroundColor = "#5D60EF";
+        //             signup_listuser_managerBtn.style.backgroundColor = "#5D60EF";
+        //             user_managerBtn.style.backgroundColor = "#5D60EF";
+        //             fire_event_managerBtn.style.backgroundColor = "darkblue";
+        //         });
+        //     }
+
+        // });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = {
+            dashboard: document.getElementById("1"),
+            threshold: document.getElementById("2"),
+            tableEvent: document.getElementById("3"),
+            userInfo: document.getElementById("4"),
+            signupListManager: document.getElementById("5"),
+            userManager: document.getElementById("6"),
+            fireEventManager: document.getElementById("7")
+        };
+
+        const pages = {
+            dashboard: document.getElementById("dashboard"),
+            threshold: document.getElementById("threshold"),
+            tableEvent: document.getElementById("table_page"),
+            userInfo: document.getElementById("user_information"),
+            signupListManager: document.getElementById("signup_list_manager"),
+            userManager: document.getElementById("user_manager"),
+            fireEventManager: document.getElementById("buttonAlert_manager")
+        };
+
+        function showPage(activePageKey, activeBtnKey) {
+            for (const key in pages) {
+                if (pages[key]) {
+                    pages[key].style.display = (key === activePageKey) ? "block" : "none";
+                }
             }
 
-        });
+            for (const key in buttons) {
+                if (buttons[key]) {
+                    buttons[key].style.backgroundColor = (key === activeBtnKey) ? "darkblue" : "#5D60EF";
+                }
+            }
+        }
 
+        if (pages.dashboard && pages.threshold && pages.tableEvent && pages.userInfo && pages.fireEventManager) {
+            showPage('dashboard', 'dashboard');
+        }
+
+
+        if (buttons.dashboard) buttons.dashboard.addEventListener('click', () => showPage('dashboard', 'dashboard'));
+        if (buttons.threshold) buttons.threshold.addEventListener('click', () => showPage('threshold', 'threshold'));
+        if (buttons.tableEvent) buttons.tableEvent.addEventListener('click', () => showPage('tableEvent', 'tableEvent'));
+        if (buttons.userInfo) buttons.userInfo.addEventListener('click', () => showPage('userInfo', 'userInfo'));
+        if (buttons.signupListManager) buttons.signupListManager.addEventListener('click', () => showPage('signupListManager', 'signupListManager'));
+        if (buttons.userManager) buttons.userManager.addEventListener('click', () => showPage('userManager', 'userManager'));
+        if (buttons.fireEventManager) buttons.fireEventManager.addEventListener('click', () => showPage('fireEventManager', 'fireEventManager'));
+    });
 
         function openUpdatePopup(type) {
             document.getElementById('overlay2').style.display = 'block';
@@ -520,30 +568,7 @@
             searchButtonTable();
         }
 
-        
-        // let id_vent = null;
-        // fetch('/alert')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         console.log(data)
-        //         if (data["status"] == "success") {
-        //             id_vent = data["id"];
-        //             const button = document.getElementById("endBtn");
-        //             button.style.backgroundColor = "red";
-        //         }
-        // });
-
-        // function click_end_alert(){
-        //     fetch(`/save_time_end?id=${id_vent}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             if (data["status"] == "success") {
-        //                 const button = document.getElementById("endBtn");
-        //                 button.style.backgroundColor = "rgb(75, 73, 73)";
-        //             }
-                   
-        //     });
-        // }
+      
         // ----------------------------------------------------------------
         // Real-time Data
         function fetchRealtimeData() {
@@ -573,21 +598,29 @@
                         boxFireText.style.color = "white";
                         elFire.textContent = "No Fire";
                         node_scope.style.backgroundColor = "#ade8f4ab";
-                    } else {
+                    } else if (data.fire === 0) {
                         boxFireText.textContent = "Warning";
                         boxFire.style.backgroundColor = "#d00000";
-
-                        node_scope.style.backgroundColor = "#d00000b3";
-
                         boxFireText.style.color = "white";
                         elFire.textContent = "Fire";
+                        node_scope.style.backgroundColor = "#d00000b3";
+                    } else {
+                        boxFireText.textContent = "No signal";
+                        boxFire.style.backgroundColor = "#b0b0b0";
+                        boxFireText.style.color = "white";
+                        elFire.textContent = "None";
+                        node_scope.style.backgroundColor = "#b0b0b0b3";
                     }
 
+
                     // ----- TEMP -----
-                    if (data.temp < 35) {
+                    if (data.temp === null || data.temp === "none") {
+                        boxTempText.textContent = "No signal";
+                        boxTemp.style.backgroundColor = "#b0b0b0";
+                    } else if (data.temp < 35) {
                         boxTempText.textContent = "Cool";
                         boxTemp.style.backgroundColor = "#b7e4c7";
-                    } else if (data.temp >= 35  && data.temp < 40) {
+                    } else if (data.temp >= 35 && data.temp < 40) {
                         boxTempText.textContent = "Warm";
                         boxTemp.style.backgroundColor = "#f9c74f";
                     } else if (data.temp >= 40) {
@@ -595,8 +628,12 @@
                         boxTemp.style.backgroundColor = "#f94144";
                     }
 
+
                     // ----- HUMI -----
-                    if (data.humi < 30) {
+                    if (data.humi === null || data.humi === "none") {
+                        boxHumiText.textContent = "No signal";
+                        boxHumi.style.backgroundColor = "#b0b0b0";
+                    } else if (data.humi < 30) {
                         boxHumiText.textContent = "Dry";
                         boxHumi.style.backgroundColor = "#f9c74f";
                     } else if (data.humi >= 30 && data.humi < 60) {

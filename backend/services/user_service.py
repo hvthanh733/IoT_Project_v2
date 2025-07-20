@@ -234,20 +234,27 @@ class UserService:
     #-------------------------------------------------------------------
     # Edit Actor Information 
     def update_username(userid, new_username:str) -> bool:
-        user = UserRepo.update_username(userid, new_username)
-        return user
-
+        check_user = User.query.filter_by(username=new_username).first()
+        if check_user is None:
+            user = UserRepo.update_username(userid, new_username)
+            return user
+        return False
     def update_phone(userid, new_phonenumber:str) -> bool:
-        user = UserRepo.update_phone(userid, new_phonenumber)
-        return user
-
+        check_phone = User.query.filter_by(phone=new_phonenumber).first()
+        if check_phone is None:
+            user = UserRepo.update_phone(userid, new_phonenumber)
+            return user
+        return False
     def update_password(userid, old_password:str, new_password:str) -> bool:
         user = UserRepo.update_password(userid, old_password, new_password)
         return user
 
     def update_email(userid, new_email:str) -> bool:
-        user = UserRepo.update_email(userid, new_email)
-        return user
+        check_email = User.query.filter_by(email=new_email).first()
+        if check_email is None:
+            user = UserRepo.update_email(userid, new_email)
+            return user
+        return False
     #-------------------------------------------------------------------
 
 
