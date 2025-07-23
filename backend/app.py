@@ -66,16 +66,21 @@ def api_system_alert():
     temp, _ = result['temperature']['max']
     humi, _ = result['humidity']['min']
     fire = result['fire_changes']
+    # temp = 45
+    # humi = 20
+    # fire = 0.0
+    # TEMP_THRESH = 45
+    # HUMI_THRESH = 30
     check, all_emails = UserService.get_all_email()
 
     is_fire = SystemAlert(temp, humi, fire, TEMP_THRESH, HUMI_THRESH, all_emails)
     
     # is_fire = True
-    # is_fire = False
-    # print(is_fire)
+    # is_fire = False 
+    # print("hallo", is_fire)
     if is_fire:
-        play_sound_loop_alert()
         created = DataLogService.save_start_time()
+        play_sound_loop_alert()
     else:
         closed = DataLogService.save_end_time()
     return jsonify({"is_fire": is_fire})
@@ -84,7 +89,6 @@ def api_system_alert():
 @app.route('/api/terminate_alert', methods=['GET'])
 def api_terminate_alert():
     try:
-        # Gọi logic lưu end_time
         result = DataLogService.save_end_time()
         if result:
             return jsonify({"status": "true"})

@@ -73,7 +73,7 @@ class DataLogRepo:
                 time_min_humi=time_min_humi,
             )
             db.session.add(new_log)
-
+            
         db.session.commit()
         return True
 

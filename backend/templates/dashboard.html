@@ -484,7 +484,7 @@
     })
     .then(res => res.json())
     .then(data => {
-        console.log('Data API:', data);
+        // console.log('Data API:', data);
         if (data.success) {
             const user = data.user;
             const room = data.room;
@@ -664,7 +664,7 @@
                     const humi = data_day.data.humidity;
 
                     const today = new Date();
-                    const formattedToday = today.toISOString().split('T')[0];
+                    const formattedToday = today.toLocaleDateString('vi-VN');
                     document.getElementById("today").innerText = formattedToday;
 
                     // Threshold
@@ -710,7 +710,13 @@
 
         function renderButtonAlertTable(events) {
             const tbody = document.getElementById("buttonAlert_table_body");
-            tbody.innerHTML = ""; 
+            tbody.innerHTML = "";
+
+            events.sort((a, b) => {
+                const dateTimeA = new Date(`${a.date}T${a.time_start}`);
+                const dateTimeB = new Date(`${b.date}T${b.time_start}`);
+                return dateTimeB - dateTimeA;
+            });
 
             events.forEach(event => {
                 const row = document.createElement("tr");
@@ -721,12 +727,14 @@
                     <td id="time_start_${event.id}">${event.time_start}</td>
                     <td>${event.time_end || '-'}</td>
                     <td>${event.note || ''}</td>
-                 
+                    {% if role == 'admin' %}
                     <td><button class="btn btn-danger btn-sm" onclick="delete_event(${event.id})">Delete</button></td>
+                    {% endif %}
                 `;
                 tbody.appendChild(row);
             });
         }
+
 
   
         function delete_event(id) {
@@ -938,6 +946,9 @@
 
         function click_end_alert() {
             const endBtn = document.getElementById('endBtn');
+            if (!endBtn) {
+                return;
+            }
             const isRed = endBtn.style.backgroundColor === 'red';
 
             if (isRed) {
@@ -963,6 +974,7 @@
 
         window.onload = function () {
             const endBtn = document.getElementById('endBtn');
+            
 
             const userId = document.getElementById("user_id_hidden").value;
             searchUser();
@@ -975,7 +987,9 @@
             getThreshold();
             saveDataToDB();
             checkThreshold();
-
+            if (!endBtn) {
+                return;
+            }
             SystemAlert().then(is_fire => {
                 if (is_fire) {
                     endBtn.style.backgroundColor = 'red';
@@ -1107,7 +1121,9 @@
                              <div class="menu">
                                 <ul>
                                     <li id="1"><p>Dashboard</p></li>
+                                    {% if role == 'admin' %}
                                     <li id="2"><p>Threshold Settings</p></li>
+                                    {% endif %}
                                     <li id="3"><p>Data Table</p></li>
                                     <li id="4"><p>User information</p></li>
                                     {% if role == 'admin' %}
@@ -1118,9 +1134,11 @@
                                     {% endif %}
                                     <li id="7"><p>Table Fire Event</p></li>
                                 </ul>
+                                {% if role == 'admin' %}
                                 <div class="end_button_alert" id="endBtn" onclick="click_end_alert()">
                                     <p>End Alert</p>
                                 </div>
+                                {% endif %}
                             </div>
                             <form class="buttonLogout" action="{{ url_for('logout') }}" method="POST">
                                 <button type="submit" class="btn btn-danger mt-2">Log out</button>
@@ -1514,7 +1532,9 @@
                                                 <th rowspan="1">Start Time</th>
                                                 <th rowspan="1">End Time</th>
                                                 <th colspan="1">Note</th>
+                                                {% if role == 'admin' %}
                                                 <th colspan="1">Approved</th>
+                                                {% endif %}
                                             </tr>
                                             
                                         </thead>

@@ -23,7 +23,7 @@ def SystemAlert(temp, humi, fire, TEMP_THRESH, HUMI_THRESH, all_emails):
         send_email_threshold_humi(all_emails, humi, HUMI_THRESH, formatted_time)
         last_humi_alert_time = now
 
-    if temp > TEMP_THRESH and humi < HUMI_THRESH and fuzzy_fire is True:
+    if temp >= TEMP_THRESH and humi <= HUMI_THRESH and fuzzy_fire is True:
         if now - last_fuzzy >= timedelta(minutes=10):
             send_email_fuzzy(all_emails, temp, humi, TEMP_THRESH, HUMI_THRESH, formatted_time)
             last_fuzzy = now

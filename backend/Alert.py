@@ -7,7 +7,7 @@ import random
 import string
 
 def generate_random_password(length=5):
-    characters = string.ascii_lowercase + string.digits  # chỉ chữ thường và số
+    characters = string.ascii_lowercase + string.digits
     return ''.join(random.choices(characters, k=length))
 
 load_dotenv()
@@ -88,7 +88,7 @@ def send_email_base2(receiver_emails, subject, body):
             server.starttls()
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_emails, message.as_string())
-            print("Email sent successfully!")
+            print("Email sent succesasfully!")
     except Exception as e:
         print("Email sending error:", e)
 # --------------------------------------------------------------

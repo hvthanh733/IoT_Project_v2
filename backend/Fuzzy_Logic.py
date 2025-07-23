@@ -73,8 +73,7 @@ def FuzzyLogic(temp, humi, fire, threshold_temp, threshold_humi):
 
         return score
     score = fuzzy_fire_rule_base(temp, humi, fire)
-
-    if score > 7:
+    if score >= 7:
         print("Fire!!")
         return True
     return False

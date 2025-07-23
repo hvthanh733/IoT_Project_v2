@@ -33,10 +33,14 @@ def listen_serial():
             try:
                 temp, humi, fire = decode(key, data)
                 if is_valid_reading(temp, humi, fire):
+                    # temp = 45
+                    # humi = 20
+                    # fire = 0.0
+                   
+
                     latest_data["temp"] = temp
                     latest_data["humi"] = humi
                     latest_data["fire"] = fire
-
                     saveDataFromSTM32(temp, humi, fire)
 
                     print(f"Temp={temp}, Humi={humi}, Fire={fire}")
