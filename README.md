@@ -61,7 +61,7 @@ sudo apt install libgpiod-dev python3-lgpio liblgpio1
 
 ## Acknowledgements
 
-I sincerely thank my thesis supervisor Mr. PHAM Ngoc Minh (IOIT), co-supervisor Mr. LE Nhu Chu Hiep (USTH), and Mr. NGO Duy Tan (VNSC) for their unwavering support and technical mentorship. Gratitude also to my friends HOANG Van Son, NGUYEN Trung Kien, NGUYEN NHAT Anh, DOAN Quang, HO Cong Thanh, and Ms. NGUYEN Minh Huong for their constant encouragement, and to my family for their unconditional love.
+I sincerely thank my thesis supervisor Mr. PHAM Ngoc Minh (IOIT), co-supervisor Mr. LE Nhu Chu Hiep (USTH), and Mr. NGO Duy Tan (VNSC) for their unwavering support and technical mentorship. Gratitude also to my friends HOANG Van Son, NGUYEN Trung Kien, NGUYEN Nhat Anh, DOAN Quang, HO Cong Thanh, and Ms. NGUYEN Minh Huong for their constant encouragement, and to my family for their unconditional love.
 
 > “There’s nothing more rewarding than working with someone who is smarter than you are, so go find people who make you feel stupid in comparison.” — *Russell Merrick*
 
