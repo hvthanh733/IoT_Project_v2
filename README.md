@@ -39,7 +39,7 @@ Nowadays, technology is growing quickly. Many labs and machine rooms are used to
 - **Frontend**: HTML/CSS/JavaScript
 - **VPN**: TailScale
 - **Microcontroller**: STM32 (C language with STM32CubeIDE, STM32CubeMX)
-- **Encode**: MAVLink protocol, Security Coding, Channel Coding.
+- **Encode**: Packing protocol, Security Coding, Channel Coding.
 - **Central Processing Unit**: Raspberry Pi 5
 ---
 
@@ -56,20 +56,8 @@ source venv/bin/activate
 pip install adafruit-circuitpython-dht python-dotenv flask jwt flask-sqlalchemy zlapi RPi.GPIO flask_login
 sudo apt install libgpiod-dev python3-lgpio liblgpio1
 ```
-
 ---
-
-## Acknowledgements
-
-I sincerely thank my thesis supervisor Mr. PHAM Ngoc Minh (IOIT), co-supervisor Mr. LE Nhu Chu Hiep (USTH), and Mr. NGO Duy Tan (VNSC) for their unwavering support and technical mentorship. Gratitude also to my friends HOANG Van Son, NGUYEN Trung Kien, NGUYEN Nhat Anh, DOAN Quang, HO Cong Thanh, and Ms. NGUYEN Minh Huong for their constant encouragement, and to my family for their unconditional love.
-
-> “There’s nothing more rewarding than working with someone who is smarter than you are, so go find people who make you feel stupid in comparison.” — *Russell Merrick*
-
----
-
 ## Author
 
 **Hoang Viet Thanh**  
-University of Science and Technology of Hanoi  
-Bachelor’s Thesis – ICT Major 
-Academic Year: 2024–2025
+ICT Major 
