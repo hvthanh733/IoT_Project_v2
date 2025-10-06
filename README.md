@@ -39,7 +39,7 @@ Nowadays, technology is growing quickly. Many labs and machine rooms are used to
 - **Frontend**: HTML/CSS/JavaScript
 - **VPN**: TailScale
 - **Microcontroller**: STM32 (C language with STM32CubeIDE, STM32CubeMX)
-- **Encode**: MAVLink protocol, PKCS7, AES-256, LDPC, LFSR.
+- **Encode**: MAVLink protocol, Security Coding, Channel Coding.
 - **Central Processing Unit**: Raspberry Pi 5
 ---
 
